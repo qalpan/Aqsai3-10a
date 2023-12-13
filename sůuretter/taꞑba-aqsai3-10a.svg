@@ -28,7 +28,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="2.9045061"
-     inkscape:cx="90.548958"
+     inkscape:cx="88.138909"
      inkscape:cy="69.374962"
      inkscape:window-width="1600"
      inkscape:window-height="848"
@@ -72,6 +72,13 @@
          inkscape:connector-curvature="0"
          style="clip-rule:evenodd;fill:#6b470f;fill-opacity:1;fill-rule:evenodd;stroke-width:0.400637;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
          inkscape:label="path13" />
+      <rect
+         style="opacity:0.5;fill:#6b470f;stroke-width:1.32292;stroke-linecap:round"
+         id="rect848"
+         width="3.665834"
+         height="4.3869786"
+         x="-68.609421"
+         y="5.5440068" />
     </g>
   </g>
 </svg>
