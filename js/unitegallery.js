@@ -10538,7 +10538,7 @@ function UGTileDesign(){
 			tile_visible_before_image:false,		//tile visible before image load
 			
 			tile_enable_background:true,			//enable backgruond of the tile
-			tile_background_color: "#F0F0F0",		//tile background color
+			tile_background_color: "#ffffff",		//tile background color
 			
 			tile_enable_border:false,				//enable border of the tile
 			tile_border_width:3,					//tile border width
