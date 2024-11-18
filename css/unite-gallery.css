@@ -492,7 +492,6 @@ img.ug-sepia-effect{
 
 .ug-gallery-wrapper .ug-textpanel-title{
 	font-size:16px;
-	font-weight:bold;
 	color:rgba(133, 132, 116, 1);
 	text-align:center;
 	z-index:2;	
@@ -731,8 +730,7 @@ img.ug-sepia-effect{
 
 .ug-tile .ug-textpanel-title{
 	font-size:14px;
-	font-weight:bold;
-}
+	}
 
 .--------------CAROUSEL------------------{}
 
@@ -1388,12 +1386,12 @@ img.ел-пошта{bottom:9px;float:right;right:29px;position:absolute;}
 img.ел-пошта:hover{content:url(suretter/el.pohta-janyu.svg);}
 
 @media screen and (max-width:490px){
-.ug-tile .ug-textpanel-title,.ug-lightbox .ug-textpanel-title{font-size:14px;font-weight:bold;}
+.ug-tile .ug-textpanel-title,.ug-lightbox .ug-textpanel-title{font-size:14px;}
 .ug-lightbox .ug-textpanel-description{font-size:9px;font-weight:normal;}
 img{max-width: 100%;}}
 
 @media only screen and (max-width:1200px){
-.ug-tile .ug-textpanel-title,.ug-lightbox .ug-textpanel-title{font-size:14px;font-weight:bold;}
+.ug-tile .ug-textpanel-title,.ug-lightbox .ug-textpanel-title{font-size:14px;}
 .ug-lightbox .ug-textpanel-description{font-size:9px;font-weight:normal;}}
 
 @media only screen and (max-width:1500px){}
