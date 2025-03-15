@@ -5,57 +5,382 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">     
 <link rel="shortcut icon"href="sůuretter/taꞑba-aqsai3-10a.svg"type="image/svg">
 <title>Aqsai3-10a - ůi býrlestýgý</title>
-<script type='text/javascript' src='js/jquery-11.0.min.js'></script>  
-<script type='text/javascript' src='js/unitegallery.js'></script> 
-<script type='text/javascript' src='js/ug-theme-tiles.js'></script>
-<link rel='stylesheet' href='css/unite-gallery.css' type='text/css'/> 
+
+<link rel='stylesheet' href='' type='text/css'/> 
+
+
+<style>
+body{
+   padding: 0;
+   margin: 0;
+   }
+h1{
+   font-family: Arial, Helvetica, sans-serif;
+   margin: 30px auto 30px auto;
+   color: #09fbd2;
+   width:100%;
+   text-align: center;
+}
+
+ul.menu{
+   padding: 0;
+   list-style: none;
+   width: auto;
+   margin: 20px auto;
+   font-family: Arial, Helvetica, sans-serif; 
+   
+   clear: both;
+   .list{
+      font-size: 14px;
+      
+      position: relative;
+      width: auto;
+      box-sizing: border-box;
+      height: auto;
+      vertical-align: sub;
+      background: #878678;
+      clear: both;
+      
+      
+      a{
+         text-decoration: none;
+         color: #9f9e93;
+         padding: 5px 0px 7px 9px;
+         display: block;
+        text-align: center; 
+         &:hover{
+            background-color: #324252;
+                       color: #9d953b;
+         }
+      }
+      .items{
+         height: 0px;
+         overflow: hidden;
+         a{
+            padding:4px 8px;
+            &:hover{
+               background-color: #3f5d79;
+               color:#b5b4ac;
+               
+
+            }
+         }
+      }
+      &:last-child{
+         border-bottom:none;
+      }
+   }
+   .active{
+     
+      >.items{
+         display: block;
+       text-align: center;
+         padding: 0px;
+         height: auto;
+         color:#9f9e93;
+                  clear: both;
+         float: left;
+         width: 100%;
+         li{
+            padding:0px;
+            border-bottom:1px solid #324252;
+            list-style: none;
+         }
+         li:last-child{
+            border-color:transparent;
+            padding-bottom: 0px;
+         }
+         .active{
+            > .items{
+               background-color: #2f4b67;
+            }
+         }
+      }
+      > a{
+         color:#b5b4ac;
+              }
+      .list{
+         background: #697d92;
+         a{
+            padding: 17px 0px 17px 45px;
+
+         }
+      }
+   }
+}
+
+
+
+
+
+
+/*  footer   */
+footer {
+    background-color: #2b2a1e;
+    color: #fff;
+    font-size: 14px;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 999;
+}
+
+footer p {
+    margin: 10px 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+footer .fa-heart{
+    color: red;
+}
+footer .fa-dev{
+    color: #fff;
+}
+footer .fa-twitter-square{
+  color:#1da0f1;
+}
+footer .fa-instagram{
+  color: #f0007c;
+}
+fotter .fa-linkedin{
+  color:#0073b1;
+}
+footer .fa-codepen{
+  color:#fff
+}
+footer a {
+    color: #3c97bf;
+    text-decoration: none;
+  margin-right:5px;
+}
+.youtubeBtn{
+    position: fixed;
+    left: 50%;
+  transform:translatex(-50%);
+    bottom: 45px;
+    cursor: pointer;
+   
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+}
+.youtubeBtn i{
+   font-size:20px;
+  float:left;
+}
+.youtubeBtn a{
+    color:#ff0000;
+  
+  float:right;
+}
+.youtubeBtn a:hover{
+  color:#c9110f;
+ 
+  text-shadow: none;
+}
+.youtubeBtn i:active{
+  transform:scale(.9);
+  transition:all .3s ease-in-out;
+}
+.youtubeBtn span{
+    font-family: 'Lato';
+    font-weight: bold;
+    color: #fff;
+    display: block;
+    font-size: 12px;
+    float: right;
+    line-height: 20px;
+    padding-left: 5px;
+  
+}
+
+@keyframes youtubeAnim{
+  0%,100%{
+    color:#c9110f;
+  }
+  50%{
+    color:#ff0000;
+  }
+}
+/* footer  */
+.injener, .birlestik {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #9f9e93;
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  text-align: center;}
+  
+p {margin: 0px 0px 0px 8px;
+   font-family: Arial, Helvetica, sans-serif;
+   color: #9f9e93;
+   text-align: center;
+}
+a{text-decoration: none;color: #9d953b;}
+li{margin-bottom: 5px;}
+
+
+@media screen and (max-width:490px){
+.ug-tile .ug-textpanel-title,.ug-lightbox .ug-textpanel-title{font-size:14px;}
+.ug-lightbox .ug-textpanel-description{font-size:9px;font-weight:normal;}
+img{max-width: 100%;}
+#gallery {
+  padding-bottom: 26px;
+}
+}
+
+video {
+  width: 100%;
+}
+
+#gallery > img {
+  width: 50%;
+  float: right;
+ }
+
+#gallery {
+  margin-bottom: 2%;
+}
+#gallery > p {
+  color: #2b2a1e;
+  background-color: #878678;
+  width: 100%;
+  margin: 0;
+}
+</style>
 </head>
 
-<script type="text/javascript">
-document.ondragstart = test;
-document.onselectstart = test;
-document.oncontextmenu = test;
-function test(){return false}
-</script>
-
-<body>  
+<body>
 <a href="https://qalpan.github.io/Aqsai3-10a/">
-<img alt="Басты бет"title="Басты бетке - оралыу"src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg"data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg"data-description="бастау"></a> 
-   
-<div id="gallery" style=""> 
-<img alt="қызымет көрсететін мекемелер"src="sůuretter/қызымет көрсететін мекемелер.svg"data-image="sůuretter/қызымет көрсететін мекемелер.svg"data-description="">
+<img alt="Басты бет"title="Басты бетке - оралыу"src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg"data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg"data-description="бастау"></a>
 
-   
- <img alt="баиланыс телепон нөмерлері"src="sůuretter/contakt aqsai3-10a.svg"data-image="sůuretter/contakt aqsai3-10a.svg"data-description=""> 
-<img alt="бүкіл Үиді күтіп ұстауға төлем жасау"src="sůuretter/Aqsai3-10a үи бірлестігіне төлем жасау.svg"data-image="sůuretter/Aqsai3-10a үи бірлестігіне төлем жасау.svg"data-description="">   
+  
+<ul class="injener">
+<li><strong>Инженерлік желілерге қызымет</strong><p>+7 700 740 0005</p></li>
+<li>santex<p>+7 747 921 5140</p>+7 705 765 1170</li>
+<li>electr<p>+7 707 305 0635</p></li></ul>
+<ul class="birlestik">
+<li><strong>Үи бірлестігі</strong><p>+7 701 739 8309</p></li>
+<li>Электрондық пошта<a href="mailto:sk-joba@outlook.com"><p>sk-joba@outlook.com</p></a></li>
+<li>skype<a href="https://join.skype.com/LtqDgUmko00e"><p>https://join.skype.com/LtqDgUmko00e</p></a></li>
+<li>site<a href="https://qalpan.github.io/Aqsai3-10a/"><p>https://qalpan.github.io/Aqsai3-10a/</p></a></li>
+</ul>
 
-<img alt="төлем түбіртекте адам санын өзгертіу"src="sůuretter/адам санын өзгертіу.svg"data-image="sůuretter/адам санын өзгертіу.svg"data-description="">   
-<img alt="сұу есептеуіш орнатыу"src="sůuretter/su esepteu kyraldaryn ornatyu.webp"data-image="sůuretter/su esepteu kyraldaryn ornatyu.webp"data-description="">
-   
-   <img alt="қарта ақсаи3-10a"src="sůuretter/қарта ақсаи3-10a.svg"data-image="sůuretter/қарта ақсаи3-10a.svg"data-description="">    
+
+<ul class="menu">
+
+<li class="list"><a href="#">Қызымет көрсетіу мекемелері</a>
+<ul class="items">
+<span>«АлматыЭнергоСбыт» ЖШС</span>                   
+<p>Электр құуатын жеткізуші</p>
+<a href="tel:+7 727 356 9999">+7 727 356 9999</a>
+<a href="http://esalmaty.kz" target="_blank">esalmaty.kz</a>
+
+<span>«АЖК» АҚ</span>
+<p>Электр энергегиясын жеткізу және бөлу</p>
+<a href="http://azhk.kz" target="_blank">azhk.kz</a>
+
+<span>«Алматы жылу жүйесі» ЖШС</span>
+<p>Жылу жеткізушісі</p>
+<a href="http://alts.kz" target="_blank">alts.kz</a>
+<a href="tel:+77273410777">+7 727 341 0777</a>
+
+</ul>
+</li>
+
+   <li class="list"><a href="#">Мекен жәи / Адрес</a> 
+      <ul class="items">
+         <p>Алматы қаласы Ақсаи3 ықшам ауданы үи10a.<br>
+  город Алматы микрораион Ақсаи3 дом10a</p>
+  <img alt="қарта ақсаи3-10a"src="sůuretter/қарта ақсаи3-10a.svg"data-image="sůuretter/қарта ақсаи3-10a.svg"data-description=""> 
+      </ul>
+   </li>
+   <li class="list"><a href="#">List 3</a> 
+      <ul class="items">
+         <li> <a href="#" > Item 3-1 </a></li>
+         <li> <a href="#" > Item 3-2 </a></li>
+         <li> <a href="#" > Item 3-2 </a></li>
+      </ul>
+   </li>
+   <li class="list"><a href="#">List 4</a> 
+      <ul class="items">
+         <li> <a href="#" > Item 4-1 </a></li>
+         <li> <a href="#" > Item 4-2 </a></li>
+         <li class="list"><a href="#">List 4-1</a> 
+            <ul  class="items">
+               <li> <a href="#" > Item 4-1-1</a></li>
+               <li> <a href="#" > Item 4-1-2</a></li>
+               <li class="list"><a href="#">List 4-2</a> 
+                  <ul  class="items">
+                     <li> <a href="#" > Item 4-2-1</a></li>
+                     <li> <a href="#" > Item 4-2-2</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </li>
+      </ul>
+   </li>
+</ul>
+
+
+ <div id="gallery" style="">   
   <img alt="3"src="sůuretter/3.svg"data-image="sůuretter/3.svg"data-description="3">
   <img alt="4"src="sůuretter/4.svg"data-image="sůuretter/4.svg"data-description="4">
   <img alt="5"src="sůuretter/5.svg"data-image="sůuretter/5.svg"data-description="5">
    
-   <img alt="кодтергіш бұлдіріу"src="sůuretter/кодтергіш бұлдіріу.svg"data-type="html5video"data-image="sůuretter/кодтергіш бұлдіріу.svg"
+   <img alt=""src="sůuretter/кодтергіш бұлдіріу.svg"data-type="html5video"data-image="sůuretter/кодтергіш бұлдіріу.svg"
   data-videoogv=".ogv"data-videowebm=".webm"data-videomp4="sůuretter/31a.mp4"data-description="кодтергіш"> 
   
    <img alt="кіреберіс"src="sůuretter/22mamyr2022,15,18.svg"data-type="html5video"data-image="sůuretter/22mamyr2022,15,18.svg"
   data-videoogv=".ogv"data-videowebm=".webm"data-videomp4="sůuretter/22mamyr2022-15-18.mp4"data-description="aqsai3-10a">
   
-   <img alt="кіреберіс"src="sůuretter/22mamyr2022,15,18.svg"data-type="html5video"data-image="sůuretter/22mamyr2022,15,18.svg"
-  data-videoogv=".ogv"data-videowebm=".webm"data-videoavi="sůuretter/m_12_2024313161741.avi"data-description="aqsai3-10a">
+<p>қоқыс шашқан бала</p>
+<img alt="қоқыс шашқан бала"src="sůuretter/қоқыс бала 2025-03-12 150702.png"data-image="sůuretter/қоқыс бала 2025-03-12 150702.png"data-description="5">
+<img alt="қоқыс шашқан бала"src="sůuretter/қоқыс бала 2025-03-12 150715.png"data-image="sůuretter/қоқыс бала 2025-03-12 150715.png"data-description="5">
+<video controls width="250">
+<source src="/media/cc0-videos/flower.webm" type="video/webm" />
+<source src="sůuretter/қоқыс бала m_12_20250310133321.mp4" type="video/mp4"/>
+</video>
 
-
-   
 </div>
 
+
+
+
+<footer>
+<p>Aqsai3-10a yi birlestigi</p>
+</footer>
+
+
+
 <script type="text/javascript">
-jQuery("#gallery").unitegallery({
-  tile_enable_textpanel:true,
-  tile_textpanel_title_text_align: "center",
-  tile_textpanel_always_on:true,});
+   const list = document.querySelectorAll('.list');
+
+function accordion(e){
+    e.stopPropagation(); 
+    if(this.classList.contains('active')){
+        this.classList.remove('active');
+    }
+    else if(this.parentElement.parentElement.classList.contains('active')){
+        this.classList.add('active');
+    }
+    else{
+        for(i=0; i < list.length; i++){
+          list[i].classList.remove('active');
+        }
+            this.classList.add('active');
+        }
+}
+for(i = 0; i < list.length; i++ ){
+    list[i].addEventListener('click', accordion);
+}
 </script>
+
+
+
 
 </body>
 </html>
