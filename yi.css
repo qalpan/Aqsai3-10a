@@ -97,7 +97,7 @@ p {margin: 0px 3px 2px 0px; font-family: Arial, Helvetica, sans-serif; text-alig
 a { text-decoration: none; color: #9d953b;}
 
 
-@media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:49%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
+@media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:49%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>div>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:790px){.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:990px){.kөrme{min-width:50%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:1190px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:98%;}.kөrme2{width:50%;float:right;}}
@@ -118,5 +118,7 @@ a { text-decoration: none; color: #9d953b;}
 .taқyryp{border-top:4px solid #b0afa6;padding-top:1%;margin-top:0%;font-weight:bold;}
 .syuret{float:none;}
 .kөrme{width:100%;float:right;}
-img,video{width:48%;padding:2px;margin:2px;}
-
+img,video{width:48%;padding:0px;margin:0x;}
+.mәzir>img{width:98%;}
+.mәzir{float:right;width:50%;}
+.kөrme2>video{width:99%;}
