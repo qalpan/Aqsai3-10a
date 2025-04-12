@@ -100,9 +100,9 @@ a { text-decoration: none; color: #9d953b;}
 @media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:49%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>div>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:790px){.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:990px){.kөrme{min-width:50%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
-@media screen and (max-width:1190px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 20px;}}
-@media screen and (max-width:1780px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 20px;}}
-@media screen and (max-width:2180px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 20px;}}
+@media screen and (max-width:1190px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 4px;}}
+@media screen and (max-width:1780px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 4px;}}
+@media screen and (max-width:2180px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin-bottom: 4px;}}
 #gallery{margin-bottom:12%;padding:0px 4px 0px 4px;}
 #gallery>p{color:#5e5a36;width:100%;margin:0;}
 .email::after{content:url("sůuretter/emil.svg");padding:0 0 0 4px;} 
