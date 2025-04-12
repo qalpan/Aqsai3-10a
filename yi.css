@@ -113,7 +113,9 @@ a { text-decoration: none; color: #9d953b;}
 .belgi>img{float:none;width:15%;}
 .belgi{margin:0;padding:0;}
 
-#basty>p,div>p{color:#9f9e93;border-bottom: 1px solid #a2a19736;}
+#basty>p,div>p{color:#9f9e93;border-width: 0px 2px 2px 2px;
+  border-color: #bcbcb4;
+  border-style: dotted;}
 
 .taқyryp{border-top:4px solid #b0afa6;padding-top:1%;margin-top:0%;font-weight:bold;}
 .syuret{float:none;}
