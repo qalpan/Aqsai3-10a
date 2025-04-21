@@ -122,5 +122,5 @@ img,video{width:49%;padding:0px;margin:0px;}
 .mәzir>img{width:98%;}
 .mәzir{float:right;width:50%;}
 .kөrme2>video{width:99%;}
-.kөrme2>a::before{content:url("sůuretter/beine.svg");position:absolute;padding: 24% 0px 0px 46%;/*! padding-top: 0; *//*! bottom: -62px; *//*! right: 10px; */}
-.kөrme>a::before{content:url("sůuretter/beine.svg");position:absolute;padding: 24% 0px 0px 46%;/*! padding-top: 0; *//*! bottom: -62px; *//*! right: 10px; */}
+.kөrme2>a::before{content:url("sůuretter/beine.svg");position:absolute;padding: 24% 0px 0px 45%;/*! padding-top: 0; *//*! bottom: -62px; *//*! right: 10px; */}
+.kөrme>a::before{content:url("sůuretter/beine.svg");position:absolute;padding: 24% 0px 0px 45%;/*! padding-top: 0; *//*! bottom: -62px; *//*! right: 10px; */}
