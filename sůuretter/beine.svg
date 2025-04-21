@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="29"
+   height="20"
+   viewBox="0 0 7.6729163 5.2916666"
+   version="1.1"
+   id="svg1150"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="beine.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1152"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="10.460509"
+     inkscape:cx="18.498144"
+     inkscape:cy="5.6402609"
+     inkscape:window-width="1600"
+     inkscape:window-height="852"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1147" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1127"
+       transform="matrix(0.25892833,0,0,0.26458333,-14.769293,-2.9960088)">
+      <rect
+         style="font-variation-settings:'wght' 700;fill:#c6b93a;fill-opacity:0.811765;stroke:none;stroke-width:6.77222"
+         id="rect288"
+         width="24.553343"
+         height="18"
+         x="57.040081"
+         y="12.325112"
+         ry="3.8586504" />
+      <path
+         style="font-variation-settings:'wght' 700;fill:#c6b93a;fill-opacity:0.811765;stroke:none;stroke-width:3.6319"
+         d="m 85.25835,11.323498 -5.109368,9.876411 5.055089,10.123589 c 1.875819,-7.51758 2.021804,-12.451541 0.05428,-20 z"
+         id="path455"
+         sodipodi:nodetypes="cccc" />
+    </g>
+  </g>
+</svg>
