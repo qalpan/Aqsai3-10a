@@ -108,7 +108,7 @@ a { text-decoration: none; color: #9d953b;}
 .email::after{content:url("sůuretter/emil.svg");padding:0 0 0 4px;} 
 .www::after{content:url("sůuretter/www.svg");padding:0 0 0 4px;}
 .web::after{content:url("sůuretter/web.svg");padding:0 0 0 4px;} 
-.skype::after{content:url("sůuretter/teams logo.webp");padding:0 0 0 4px;position:absolute;}
+.skype::after{content:url("sůuretter/teams logo.svg");padding:0 0 0 4px;position:absolute;}
 .tysinikteme{color:#979689;}  
 .belgi>img{float:none;width:15%;}
 .belgi{margin:0;padding:0;}
