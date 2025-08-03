@@ -43,9 +43,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
-     inkscape:zoom="2.8379948"
-     inkscape:cx="134.07353"
-     inkscape:cy="-66.243954"
+     inkscape:zoom="5.6803994"
+     inkscape:cx="66.984727"
+     inkscape:cy="32.392089"
      inkscape:window-width="1600"
      inkscape:window-height="852"
      inkscape:window-x="0"
@@ -57,7 +57,7 @@
      inkscape:label="Image"
      id="g8">
     <rect
-       style="font-variation-settings:'wght' 700;opacity:0.81243;fill:#333333;fill-opacity:1;stroke-width:0.456613"
+       style="font-variation-settings:'wght' 700;opacity:0.81243;fill:#999999;fill-opacity:1;stroke-width:0.456613"
        id="rect909"
        width="13"
        height="13"
@@ -71,6 +71,6 @@
        transform="matrix(0.05,0,0,0.05,-1.8685527,-4.3213697)"><tspan
          x="111.69922"
          y="286.17843"
-         id="tspan261">T</tspan></text>
+         id="tspan303">T</tspan></text>
   </g>
 </svg>
