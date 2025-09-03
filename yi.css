@@ -40,7 +40,7 @@ ul.menu{
          &:hover{ background-color: #b2b1a8; color: #f1f0e5; }}
       .items{ height: 0px; overflow: hidden;
          a{ padding:0;
-            color: #9d953b;
+            color: #878678;
             &:hover{ background-color: #b2b1a8; color: #f1f0e5; }}
       }
       &:last-child{ border-bottom:none;} }
@@ -94,7 +94,7 @@ footer a { color: #3c97bf; text-decoration: none; margin-right:5px;}
   text-align: center;}
 .injener>a{display:block;}  
 p {margin: 0px 3px 2px 0px; font-family: Arial, Helvetica, sans-serif; text-align: center; }
-a { text-decoration: none; color: #9d953b;}
+a { text-decoration: none; color: #878678;}
 
 
 @media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:49%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>div>img,video{width:98%;}.kөrme2{min-width:100%;}}
