@@ -1,5 +1,10 @@
 <?php
-include 'basy.php';
+session_start();
+
+if ($_SESSION['user']) {
+    header('Location: basy.php');
+}
+
 ?>
   
 <div id="basty">
@@ -10,5 +15,10 @@ include 'basy.php';
 </div>
 
 <?php
-include 'aiagy.php';
+session_start();
+
+if ($_SESSION['user']) {
+    header('Location: aiagy.php');
+}
+
 ?>
