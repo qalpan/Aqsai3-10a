@@ -1,8 +1,9 @@
 <?php
-$page_name = $_GET['page'];
-if ($page_name == 'Dashboard') {
-}else{ include 'basy.php'; }
+session_start();
+if ($_SESSION['user']) 
+{header('Location: basy.php');}
 ?>
+ 
   
 <div id="basty">
 <div class="kөrme2">
@@ -12,7 +13,5 @@ if ($page_name == 'Dashboard') {
 </div>
 
 <?php
-$page_name = $_GET['page'];
-if ($page_name == 'Dashboard') {
-}else{ include 'aiagy.php'; }
+include('aiagy.php'); 
 ?>
