@@ -1,4 +1,3 @@
-<?php
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,4 +46,3 @@ for(i = 0; i < list.length; i++ ){
 
 </body>
 </html>
-?>
