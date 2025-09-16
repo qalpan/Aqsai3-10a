@@ -1,3 +1,4 @@
+<?php
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,3 +104,4 @@ Aqsai3-10a миб - үи бірлестігі шығады,
 
 </body>
 </html>
+?>
