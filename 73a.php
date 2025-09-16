@@ -1,10 +1,7 @@
 <?php
-session_start();
-
-if ($_SESSION['user']) {
-    header('Location: basy.php');
-}
-
+$page_name = $_GET['page'];
+if ($page_name == 'Dashboard') {
+}else{ include 'basy.php'; }
 ?>
   
 <div id="basty">
@@ -15,10 +12,7 @@ if ($_SESSION['user']) {
 </div>
 
 <?php
-session_start();
-
-if ($_SESSION['user']) {
-    header('Location: aiagy.php');
-}
-
+$page_name = $_GET['page'];
+if ($page_name == 'Dashboard') {
+}else{ include 'aiagy.php'; }
 ?>
