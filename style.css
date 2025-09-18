@@ -1,0 +1,42 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 50px;
+    background-color: #18191C;
+    color: #f694ff;
+    font-family: "Roboto", sans-serif;
+}
+form div {
+    margin-top: 1rem;
+}
+ 
+label, input, textarea, button, select{
+    font-size: 1.3rem;
+    line-height: 1.2
+}
+ 
+form {
+    width: 30em;
+    max-width: 90%;
+    margin: 0 auto;
+}
+ 
+label {
+    margin-bottom: 0.4rem;
+    display: block;
+}
+ 
+input, textarea {
+    padding: 0.4rem;
+    width: 100%;
+}
+ 
+button {
+    margin-top: 2rem;
+    background: #f694ff;
+    color: #fff;
+    border: none;
+    padding: 0.6rem;
+}
