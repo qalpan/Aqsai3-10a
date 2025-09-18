@@ -3,7 +3,7 @@
 $name = $_POST['name'];
 $email = $_POST['email'];
 $comment = $_POST['comment'];
-$to = 'example@admin.com';
+$to = 'sk-joba@outlook.com';
 $header = 'Отзыв от пользователя'
 // Собираем все данные в письмо
 $message = "Имя пользователя: $name \nЭлектронная почта: $email \nОтзыв: $comment";
