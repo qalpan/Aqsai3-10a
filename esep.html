@@ -86,24 +86,29 @@ for(i = 0; i < list.length; i++ ){
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
-<form action="script.php" method="post">
-    <label>
-        Ваше имя:
-        <input type="text" name="name" placeholder="Иван Иванов">
-    </label>
-       
-    <label>
-        Электронная почта:
-        <input type="email" name="email" placeholder="example@email.com">
-    </label>
-    <label>
-        Отзыв:
-        <textarea name="comment" placeholder="Что вам понравилось?"></textarea>
-    </label>
-    <button type="submit">
-        Отправить
-    </button>
-</form>
+<div class="forma">
+    <div class="form-at">
+        <div class="validate-input-at w50" data-validate="Обязательное поле">
+            <input class="input-at" type="text" name="name-at" placeholder="Ваше имя" />
+            <span class="focus-input-at"></span>
+        </div>
+        <div class="validate-input-at w50" data-validate="Обязательное поле">
+            <input class="input-at" type="text" name="email-at" placeholder="Ваш телефон или email" />
+            <span class="focus-input-at"></span>
+        </div>
+        <div class="validate-input-at" data-validate="Обязательное поле">
+            <textarea class="input-at" name="message-at" placeholder="Ваше сообщение"></textarea>
+            <span class="focus-input-at"></span>
+        </div>
+        <input checked="checked" class="input-at" id="checkbox-at" type="checkbox" name="checkbox-at" onchange="document.getElementById('submit-at').disabled = !this.checked;" />
+        <label for="checkbox-at">
+            Настоящим подтверждаю, что я ознакомлен и согласен с <a href="#rules">пользовательским соглашением</a>
+        </label> 
+        <input type="hidden" name="subject-at" value="Тема формы">
+        <button id="submit-at" class="form-at-btn">Отправить</button>
+    </div>
+    <div class="result-at"></div>
+</div>
 
   <script>
  $(function() {
