@@ -123,22 +123,4 @@ img,video{width:49%;padding:0px;margin:0px;}
 .kөrme2>video{width:99%;}
 
 .formFooter, .formFooter-wrapper,formFooter f6 branding21 {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  background-color: #0A1551;
-  position: fixed;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0 14px;
-  z-index: 10001;
-  height: 56px;
-  display: none;
-}
+  display: none;}
