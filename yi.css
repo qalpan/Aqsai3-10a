@@ -34,7 +34,7 @@ ul.menu{
       
       a{ text-decoration: none;
          color: #eceade;
-         padding: 5px 0px 7px 9px;
+         padding: 5px 0px 6px 9px;
          display: block;
         text-align: center; 
          &:hover{ background-color: #b2b1a8; color: #f1f0e5; }}
