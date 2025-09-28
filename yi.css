@@ -46,13 +46,13 @@ ul.menu{
       &:last-child{ border-bottom:none;} }
    .active{ >.items{
          display: block;
-       text-align: center;
-         padding: 9px 0 0px 0px;
+         text-align: center;
+         padding:4px 0px 4px 0px;
          height: auto;
          color:#9f9e93;
-         clear: both;
-         float: left;
-         width: 100%;
+         clear:both;
+         float:left;
+         width:100%;
          li{ padding:0px; border-bottom:1px solid #324252; list-style: none; }
          li:last-child{ border-color:transparent; padding-bottom: 0px; }
          .active{ > .items{ background-color: #2f4b67; }}
@@ -97,7 +97,7 @@ p {margin: 0px 3px 2px 0px; font-family: Arial, Helvetica, sans-serif; text-alig
 a { text-decoration: none; color: #878678;}
 
 
-@media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:49%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>div>img,video{width:98%;}.kөrme2{min-width:100%;}}
+@media screen and (max-width:490px){#gallery{padding-bottom: 26px;}.belgi>img{min-width:48%;}.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>div>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:790px){.kөrme{min-width:100%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:990px){.kөrme{min-width:50%; float:right;}img,video{min-width:97%;}.kөrme2>a>img,video{width:98%;}.kөrme2{min-width:100%;}}
 @media screen and (max-width:1190px){.kөrme{min-width:100%; float:right;}.kөrme2>a>img,video{width:99%;}.kөrme2{width:50%;float:right;margin:auto;}}
@@ -109,7 +109,7 @@ a { text-decoration: none; color: #878678;}
 .www::after{content:url("sůuretter/www.svg");padding:0 0 0 4px;}
 .web::after{content:url("sůuretter/web.svg");padding:2px 0 0 4px;} 
 .tysinikteme{color:#979689;}  
-.belgi>img{float:none;width:15%;}
+.belgi>img{float:none;width:13%;}
 .belgi{margin:0;padding:0;}
 
 #basty>p,div>p{color:#9f9e93;padding:0 0 2px 0px;margin:-4px 0px 0px 0px;border:2px dotted #abaaa0;border-top:0;}
@@ -127,4 +127,10 @@ img,video{width:49%;padding:0px;margin:0px;}
   display:none;}
 
 .\32 {
-  padding-bottom:7px;}
+  padding-bottom:7px;
+  color:#9f9e93;}
+.items{
+  padding:0;}
+
+.formFooter, .formFooter-wrapper {
+  display:none;}
