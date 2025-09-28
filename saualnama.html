@@ -387,3 +387,42 @@ div.header-large {
   </script>
 </form>
 <link id=color-scheme-style href="https://cdn.jotfor.ms/stylebuilder/static/color-scheme.css?v=3.3.65726" type="text/css" rel="stylesheet" /><script type="text/javascript">JotForm.ownerView=true;</script><script type="text/javascript">JotForm.isNewSACL=true;</script>
+
+
+
+
+
+
+
+
+
+
+<footer>
+<p>Aqsai3-10a yi birlestigi</p>
+</footer>
+
+<script type="text/javascript">
+   const list = document.querySelectorAll('.list');
+
+function accordion(e){
+    e.stopPropagation(); 
+    if(this.classList.contains('active')){
+        this.classList.remove('active');
+    }
+    else if(this.parentElement.parentElement.classList.contains('active')){
+        this.classList.add('active');
+    }
+    else{
+        for(i=0; i < list.length; i++){
+          list[i].classList.remove('active');
+        }
+            this.classList.add('active');
+        }
+}
+for(i = 0; i < list.length; i++ ){
+    list[i].addEventListener('click', accordion);
+}
+</script>
+
+</body>
+</html>	
