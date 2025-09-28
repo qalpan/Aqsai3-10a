@@ -439,7 +439,6 @@ div.widearea-wrapper {
 }
 .form-checkbox-item label,
 .form-radio-item label {
-  width:100%;
   padding-right:5px;
   word-break:break-word
 }
