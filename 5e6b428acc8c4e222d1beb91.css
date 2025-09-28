@@ -453,9 +453,9 @@ div.widearea-wrapper {
 .form-checkbox+span,
 .form-radio+label,
 .form-radio+span {
-  padding-left:30px;
-  min-height:20px;
-  font-size:.9375em;
+  padding-left:0px;
+  min-height:0px;
+  font-size:0em;
   position:relative;
   cursor:pointer;
   -webkit-user-select:none;
