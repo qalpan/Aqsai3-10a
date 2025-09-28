@@ -428,7 +428,7 @@ div.widearea-wrapper {
   min-width:unset}
 .form-checkbox-item label,
 .form-radio-item label {
-  padding-right:5px;
+  padding-right:0px;
   word-break:break-word}
 .form-matrix-values .form-checkbox,
 .form-matrix-values .form-radio {
