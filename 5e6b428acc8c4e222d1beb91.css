@@ -432,29 +432,24 @@ div.widearea-wrapper {
 }
 .form-dropdown:not([size]),
 .form-textbox {
-  height:2.5em
-}
+  height:2.5em}
 .widearea-overlayLayer .form-textarea {
-  min-width:unset
-}
+  min-width:unset}
 .form-checkbox-item label,
 .form-radio-item label {
   padding-right:5px;
-  word-break:break-word
-}
+  word-break:break-word}
 .form-matrix-values .form-checkbox,
 .form-matrix-values .form-radio {
   height:20px;
   width:20px;
   clip:auto;
-  cursor:pointer
-}
+  cursor:pointer}
 .form-matrix-values .form-checkbox+label,
 .form-matrix-values .form-checkbox+span,
 .form-matrix-values .form-radio+label,
 .form-matrix-values .form-radio+span {
-  pointer-events:none
-}
+  pointer-events:none}
 .form-checkbox,
 .form-radio {
   position:absolute;
