@@ -13052,7 +13052,7 @@ li[data-type=control_inline] .FITB-inptCont input {
   }
   .jf-form-buttons.submit-button:only-child {
     width:100%;
-    margin-left:0;
+    margin:12px;
     -ms-flex-pack:center;
     justify-content:center
   }
