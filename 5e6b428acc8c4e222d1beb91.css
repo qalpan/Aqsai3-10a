@@ -454,8 +454,8 @@ div.widearea-wrapper {
 .form-radio+label,
 .form-radio+span {
   padding-left:24px;
-  min-height:0px;
-  font-size:0em;
+  min-height:1px;
+  font-size:1em;
   position:relative;
   cursor:pointer;
   -webkit-user-select:none;
