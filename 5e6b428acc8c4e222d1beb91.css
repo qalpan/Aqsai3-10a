@@ -1132,10 +1132,10 @@ li[data-type=control_text] div [data-component=text] h6 {
 }
 .clear-pad-btn {
   display:inline-block;
-  background-color:#dadef3;
+  background-color:#eeede6;
   font-size:12px;
   cursor:pointer;
-  color:#343c6a;
+  color:#6f6d56;
   padding:4px 10px;
   border-radius:4px;
   margin-top:4px
