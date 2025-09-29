@@ -635,7 +635,7 @@ div.widearea-wrapper {
   font-family:inherit;
   padding:0 .75rem}
 .jf-form-buttons:not(.form-pagebreak-back) {
-  margin-left:10px}
+  margin-left:0px}
 .badge-wrapper {
   display:-ms-flexbox;
   display:flex;
