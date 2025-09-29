@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="3.4618283"
-     inkscape:cx="87.23714"
-     inkscape:cy="-6.9327529"
+     inkscape:cx="68.460934"
+     inkscape:cy="-6.9327528"
      inkscape:window-width="1600"
      inkscape:window-height="852"
      inkscape:window-x="0"
@@ -43,12 +43,12 @@
      stroke-linecap="round"
      stroke-linejoin="round"
      id="path4"
-     style="stroke:#878678;stroke-opacity:1" />
+     style="stroke:#878678;stroke-opacity:1;opacity:0.7" />
   <path
      d="M196.515 15.078L184.492.552a.665.665 0 00-.938-.089l-2.905 2.405a.666.666 0 00-.089.938l12.023 14.526a.665.665 0 00.939.089l2.905-2.405a.666.666 0 00.088-.938zM181.436 6.957l-10.581 2.869a.665.665 0 00-.472.481l-4.228 16.795 7.82-6.473a3.34 3.34 0 01.815-4.137 3.337 3.337 0 014.693.443 3.338 3.338 0 01-.442 4.693 3.324 3.324 0 01-2.438.75 3.33 3.33 0 01-1.778-.721l-7.82 6.472 17.289-1.015a.666.666 0 00.56-.374l4.796-9.859-8.214-9.924z"
      fill="#11111B"
      id="path6"
-     style="fill:#878678;fill-opacity:1" />
+     style="fill:#878678;fill-opacity:1;opacity:0.7" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:18.6667px;line-height:0.6;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';writing-mode:tb-rl;opacity:0.7;fill:#878678;fill-opacity:1;stroke:none;stroke-width:1.00157"
