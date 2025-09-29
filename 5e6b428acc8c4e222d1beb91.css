@@ -119,13 +119,11 @@ li.form-line:not([data-payment=true]) [data-wrapper-react=true].useJotformSign-s
   flex-direction:column
 }
 .form-line {
-  padding:12px 10px;
-  margin:12px 4px;
   border-radius:3px;
   position:relative;
   width:100%;
-  transition:background-color .15s
-}
+  transition:background-color .15s}
+
 .form-line,
 ul.page-section {
   display:-ms-flexbox;
