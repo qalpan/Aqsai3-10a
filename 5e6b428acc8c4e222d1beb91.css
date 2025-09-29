@@ -1149,8 +1149,8 @@ li[data-type=control_text] div [data-component=text] h6 {
   outline:2px solid rgba(227,229,245,.5)
 }
 .form-line[data-type=control_signature]+.form-line[data-type=control_button] {
-  margin-top:12px
-}
+  margin:19px 0px 19px 0px;}
+
 .allowTime-container {
   display:-ms-flexbox;
   display:flex;
