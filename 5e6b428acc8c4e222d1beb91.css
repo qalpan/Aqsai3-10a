@@ -12922,9 +12922,9 @@ li[data-type=control_inline] .FITB-inptCont input {
     flex-direction:column
   }
   ul.form-section {
-    margin:0;
-    padding:0
-  }
+   margin-top:18px;
+    padding:0}
+  
   .form-section div.form-header-group.header-large {
     margin:0;
     padding:28px 14px
