@@ -5029,10 +5029,13 @@ body {
 .form-checkbox+label:before,
 .form-checkbox+span:before,
 .form-radio+label:before,
-.form-radio+span:before {
+.form-radio+span:before{
   background-color:#fff;
   border-color:#b8bdc9
-}
+  right:141px;
+  position:absolute;
+  top:8px;}
+
 .form-checkbox:hover+label:before,
 .form-checkbox:hover+span:before,
 .form-radio:hover+label:before,
