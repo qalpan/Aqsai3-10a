@@ -526,8 +526,8 @@ div.widearea-wrapper {
 .form-radio+label div:after,
 .form-radio+span:after,
 .form-radio+span div:after {
-  top:3px;
-  left:3px;
+  top:11px;
+  left:-21px;
   width:14px;
   height:14px;
   content:"";
