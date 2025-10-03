@@ -680,7 +680,7 @@ div.widearea-wrapper {
   row-gap:.625rem}
 .form-buttons-left {
   -ms-flex-pack:start;
-  justify-content:flex-start}
+  justify-content:}
 .form-buttons-right {
   -ms-flex-pack:end;
   justify-content:flex-end}
