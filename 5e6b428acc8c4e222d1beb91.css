@@ -5048,8 +5048,8 @@ body {
 }
 .form-radio+label:after,
 .form-radio+span:after {
-  background-color:#2e69ff
-}
+  background-color:#ecc90c}
+
 .form-radio+label,
 .form-radio+span {
   color:#2c3345
