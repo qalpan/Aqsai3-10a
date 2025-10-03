@@ -5030,7 +5030,8 @@ body {
   border-color:#b8bdc9
   right:141px;
   position:absolute;
-  top:8px;}
+  top:8px;
+  left:-23px;}
 
 .form-checkbox:hover+label:before,
 .form-checkbox:hover+span:before,
