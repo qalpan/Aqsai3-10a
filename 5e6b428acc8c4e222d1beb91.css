@@ -615,7 +615,7 @@ div.widearea-wrapper {
   background-color:transparent}
 .jf-form-buttons {
   display:-ms-flexbox;
-  display:flex;
+  display:;
   -ms-flex-align:center;
   align-items:center;
   -ms-flex-pack:center;
