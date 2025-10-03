@@ -744,14 +744,10 @@ li[data-type=control_head] {
 .header-text {
   -ms-flex-positive:1;
   flex-grow:1}
-.httar {
-  text-align:right}
-.httal {
-  text-align:left}
-.httac {
-  text-align:center}
-.htvam {
-  margin-top:auto}
+.httar{text-align:right}
+.httal{text-align:}
+.httac{text-align:center}
+.htvam{margin-top:auto}
 .htvam,
 .htvat {
   margin-bottom:auto}
