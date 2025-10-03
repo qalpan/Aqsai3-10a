@@ -109,7 +109,7 @@ a { text-decoration: none; color: #878678;}
 .web::after{content:url("sůuretter/web.svg");padding:2px 0 0 4px;} 
 .tysinikteme{color:#979689;}  
 .belgi>img{float:none;width:13%;}
-.belgi{margin:0;padding:0;}
+.belgi{margin:0;padding:0;text-align:center;}
 
 #basty>p,div>p{color:#9f9e93;padding:0 0 2px 0px;margin:-4px 0px 0px 0px;border:2px dotted #abaaa0;border-top:0;}
 
