@@ -5065,7 +5065,7 @@ body:has(.wfFormHeader) {
 body {
   font-family:Inter,sans-serif;
   font-size:16px;
-  background-color:#f3f3fe;
+  background-color:;
   color:#2c3345
 }
 .form-all {
