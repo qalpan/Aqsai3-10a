@@ -849,10 +849,8 @@ li[data-type=control_head] {
   font-weight:500;
   line-height:1.6
 }
-.form-header-group {
-  border-bottom:1px solid;
-  padding:14px;
-  margin-top:1.25em;}
+.form-header-group{border-bottom:1px solid;padding:14px;margin-top:1.25em;}
+
 div.header-large {
   margin:0 -38px;
   padding:2.5em 52px
