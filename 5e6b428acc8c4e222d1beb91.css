@@ -12281,7 +12281,7 @@ li[data-type=control_head].isSelected .question-wrapper {
   width:100%!important
 }
 .form-line-column .form-label {
-  text-align:left!important
+  text-align:center!important
 }
 .form-line .form-subHeader .editorNoText,
 .form-line.isNotSelected .form-sub-label .editorNoText {
