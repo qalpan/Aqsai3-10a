@@ -180,7 +180,7 @@ li.form-line-column.form-line-error.fixed-width {
 }
 .form-label {
   display:inline-block;
-  font-weight:500;
+  font-weight:0;
   word-break:break-word
 }
 .form-required {
