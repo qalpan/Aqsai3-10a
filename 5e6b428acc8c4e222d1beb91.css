@@ -158,7 +158,7 @@ ul.page-section {
   white-space:nowrap
 }
 li.form-line-column.form-line-error.fixed-width {
-  white-space:normal;
+  white-space:;
   -ms-flex-preferred-size:auto;
   flex-basis:auto
 }
