@@ -12885,10 +12885,7 @@ li[data-type=control_inline] .FITB-inptCont input {
   .form-header-group[data-imagealign=Right] .header-logo {
     margin:auto
   }
-  .form-section div.form-header-group.header-large {
-    margin:0 -14px;
-    padding:28px
-  }
+  .form-section div.form-header-group.header-large{}
   .form-header-group[data-imagealign=Right] .header-logo {
     margin-top:10px
   }
