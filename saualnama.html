@@ -18,25 +18,19 @@
 <link id="custom-font" type="text/css" rel="stylesheet" href="//cdn.jotfor.ms/fonts/?family=Ubuntu" />
 <link type="text/css" rel="stylesheet" href="5e6b428acc8c4e222d1beb91.css"/>
 <link type="text/css" rel="stylesheet" href="https://cdn.jotfor.ms/css/styles/payment/payment_styles.css?3.3.65886" />
-<link type="text/css" rel="stylesheet" href="https://cdn.jotfor.ms/css/styles/payment/payment_feature.css?3.3.65886" />
+<link type="text/css" rel="stylesheet" href="payment_feature.css" />
 <style type="text/css" id="form-designer-style">
     /* Injected CSS Code */
 /*PREFERENCES STYLE*/
-    .form-all {
-      font-family: Ubuntu, sans-serif;
-    }
-  
+    .form-all{font-family:Ubuntu,sans-serif;}
     
+    .form-line{
+      margin-top:0px;
+      margin-bottom:0px;}
   
-    .form-line {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-  
-    .form-all {
-      max-width: 752px;
-      width: 100%;
-    }
+    .form-all{
+      max-width:752px;
+      width:100%;}
   
     .form-label.form-label-left,
     .form-label.form-label-right,
@@ -81,15 +75,13 @@
     .form-checkbox-other-input,
     .form-captcha input,
     .form-spinner input {
-      background-color:#ffffff;}
-  
+      background-color:#ffffff;}  
       
-    .supernova {
-      background-repeat: no-repeat;
+    .supernova{
+      background-repeat:no-repeat;
       background-size:cover;
-      background-attachment: fixed;
-      background-position: center top;
-    }
+      background-attachment:fixed;
+      background-position:center top;}
 
       .supernova, #stage{background-image:none;}
     
@@ -117,7 +109,7 @@
  
 div.header-large{margin:0;padding:0;} 
   
-  #id_43{padding-top:19px;}
+#id_43{padding-top:19px;}
   
 .page-section > li:first-child:not(.form-line-column):not([data-type="control_head"]):not([data-type="control_payment"]):not([data-type="control_text"]):not([data-type="control_button"]):not([data-type="control_collapse"]), .page-section > li:nth-child(2):not(.form-line-column):not([data-type="control_head"]):not([data-type="control_payment"]):not([data-type="control_text"]):not([data-type="control_button"]):not([data-type="control_collapse"]) {
   margin-top: 12px;}
@@ -128,35 +120,29 @@ div.header-large{margin:0;padding:0;}
 .form-single-column .form-radio-item:not(.formRadioOther):not(:last-child) {
   margin-bottom:2px;}
  
-@media screen and (max-width: 768px) {
-  .form-section div.form-header-group.header-large {
+@media screen and(max-width: 768px){
+  .form-section div.form-header-group.header-large{
   margin:0;
-  padding:0;
-  }
-} 
+  padding:0;}} 
 
-.supernova{
-  background-color:#fff;}
+.supernova{background-color:#fff;}
 
-.form-header{
-  line-height:1.1;} 
+.form-header{line-height:1.1;} 
 
- .formFooter{
-   display:none;} 
+ .formFooter{display:none;} 
 
- .form-buttons-wrapper, .form-submit-clear-wrapper {
+ .form-buttons-wrapper, .form-submit-clear-wrapper{
   margin:0 -38px 10px;
   padding:30px 28px;
   border-top:0px solid;
-  row-gap:.625rem;}  
-.form-label.form-label-auto {
-        
-      display: block;
-      float: none;
+  row-gap:.625rem;} 
+
+.form-label.form-label-auto{        
+      display:block;
+      float:none;
       text-align:center;
-      width: 100%;
-    
-      }
+      width:100%;}
+
     /* Injected CSS Code */
 </style>
 
@@ -227,28 +213,28 @@ JotForm.paymentExtrasOnTheFly([null,{"name":"heading","qid":"1","text":"Saualnam
       <li id="cid_40" class="form-input-wide" data-type="control_head">
         <div class="form-header-group  header-small">
           <div class="header-text httac htvam">
-            <h3 id="header_40" class="form-header" data-component="header">Үи кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h3>
+            <h3 id="header_40" class="form-header" data-component="header">Үи Кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h3>
           </div>
         </div>
       </li>
       <li class="form-line" data-type="control_radio" id="id_11"><label class="form-label form-label-top form-label-auto" id="label_11" aria-hidden="false"> Aijan </label>
         <div id="cid_11" class="form-input-wide" data-layout="full">
-          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_11" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_0" name="q11_Aijan11" value="қолдаимын - поддерживаю" /><label id="label_input_11_0" for="input_11_0">қолдаимын - поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_1" name="q11_Aijan11" value="қолдамаимын - не поддерживаю" /><label id="label_input_11_1" for="input_11_1">қолдамаимын - не поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_2" name="q11_Aijan11" value="қалыспын - нейтрален" /><label id="label_input_11_2" for="input_11_2">қалыспын - нейтрален</label></span></div>
+          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_11" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_0" name="q11_Aijan11" value="қолдаимын - за" /><label id="label_input_11_0" for="input_11_0">қолдаимын - за</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_1" name="q11_Aijan11" value="қарсымын - против" /><label id="label_input_11_1" for="input_11_1">қарсымын - против</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_11" type="radio" class="form-radio" id="input_11_2" name="q11_Aijan11" value="қалыспын - воздержусь" /><label id="label_input_11_2" for="input_11_2">қалыспын - воздержусь</label></span></div>
         </div>
       </li>
       <li class="form-line" data-type="control_radio" id="id_35"><label class="form-label form-label-top form-label-auto" id="label_35" aria-hidden="false"> Gylnar </label>
         <div id="cid_35" class="form-input-wide" data-layout="full">
-          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_35" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_0" name="q35_aijan35" value="қолдаимын - поддерживаю" /><label id="label_input_35_0" for="input_35_0">қолдаимын - поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_1" name="q35_aijan35" value="қолдамаимын - не поддерживаю" /><label id="label_input_35_1" for="input_35_1">қолдамаимын - не поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_2" name="q35_aijan35" value="қалыспын - нейтрален" /><label id="label_input_35_2" for="input_35_2">қалыспын - нейтрален</label></span></div>
+          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_35" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_0" name="q35_aijan35" value="қолдаимын - за" /><label id="label_input_35_0" for="input_35_0">қолдаимын - за</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_1" name="q35_aijan35" value="қарсымын - против" /><label id="label_input_35_1" for="input_35_1">қарсымын - против</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_35" type="radio" class="form-radio" id="input_35_2" name="q35_aijan35" value="қалыспын - воздержусь" /><label id="label_input_35_2" for="input_35_2">қалыспын - воздержусь</label></span></div>
         </div>
       </li>
       <li class="form-line" data-type="control_radio" id="id_37"><label class="form-label form-label-top form-label-auto" id="label_37" aria-hidden="false"> Marat </label>
         <div id="cid_37" class="form-input-wide" data-layout="full">
-          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_37" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_0" name="q37_alia37" value="қолдаимын - поддерживаю" /><label id="label_input_37_0" for="input_37_0">қолдаимын - поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_1" name="q37_alia37" value="қолдамаимын - не поддерживаю" /><label id="label_input_37_1" for="input_37_1">қолдамаимын - не поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_2" name="q37_alia37" value="қалыспын - нейтрален" /><label id="label_input_37_2" for="input_37_2">қалыспын - нейтрален</label></span></div>
+          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_37" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_0" name="q37_alia37" value="қолдаимын - за" /><label id="label_input_37_0" for="input_37_0">қолдаимын - за</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_1" name="q37_alia37" value="қарсымын - против" /><label id="label_input_37_1" for="input_37_1">қарсымын - против</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_37" type="radio" class="form-radio" id="input_37_2" name="q37_alia37" value="қалыспын - воздержусь" /><label id="label_input_37_2" for="input_37_2">қалыспын - воздержусь</label></span></div>
         </div>
       </li>
       <li class="form-line" data-type="control_radio" id="id_36"><label class="form-label form-label-top form-label-auto" id="label_36" aria-hidden="false"> Alia </label>
         <div id="cid_36" class="form-input-wide" data-layout="full">
-          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_36" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_0" name="q36_gylnar" value="қолдаимын - поддерживаю" /><label id="label_input_36_0" for="input_36_0">қолдаимын - поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_1" name="q36_gylnar" value="қолдамаимын - не поддерживаю" /><label id="label_input_36_1" for="input_36_1">қолдамаимын - не поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_2" name="q36_gylnar" value="қалыспын - нейтрален" /><label id="label_input_36_2" for="input_36_2">қалыспын - нейтрален</label></span></div>
+          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_36" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_0" name="q36_gylnar" value="қолдаимын - за" /><label id="label_input_36_0" for="input_36_0">қолдаимын - за</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_1" name="q36_gylnar" value="қарсымын - против" /><label id="label_input_36_1" for="input_36_1">қарсымын - против</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_36" type="radio" class="form-radio" id="input_36_2" name="q36_gylnar" value="қалыспын - воздержусь" /><label id="label_input_36_2" for="input_36_2">қалыспын - воздержусь</label></span></div>
         </div>
       </li>
       <li class="form-line" data-type="control_textarea" id="id_50"><label class="form-label form-label-top form-label-auto" id="label_50" for="input_50" aria-hidden="true"> </label>
@@ -263,7 +249,7 @@ JotForm.paymentExtrasOnTheFly([null,{"name":"heading","qid":"1","text":"Saualnam
       </li>
       <li class="form-line" data-type="control_radio" id="id_42"><label class="form-label form-label-top form-label-auto" id="label_42" aria-hidden="false"> Серікжан Төлеуғалыиұлы Көкебай </label>
         <div id="cid_42" class="form-input-wide" data-layout="full">
-          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_42" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_0" name="q42_marat" value="қолдаимын - поддерживаю" /><label id="label_input_42_0" for="input_42_0">қолдаимын - поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_1" name="q42_marat" value="қолдамаимын - не поддерживаю" /><label id="label_input_42_1" for="input_42_1">қолдамаимын - не поддерживаю</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_2" name="q42_marat" value="қалыспын - нейтрален" /><label id="label_input_42_2" for="input_42_2">қалыспын - нейтрален</label></span></div>
+          <div class="form-multiple-column" data-columncount="3" role="group" aria-labelledby="label_42" data-component="radio"><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_0" name="q42_marat" value="қолдаимын - за" /><label id="label_input_42_0" for="input_42_0">қолдаимын - за</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_1" name="q42_marat" value="қарсымын - против" /><label id="label_input_42_1" for="input_42_1">қарсымын - против</label></span><span class="form-radio-item"><span class="dragger-item"></span><input aria-describedby="label_42" type="radio" class="form-radio" id="input_42_2" name="q42_marat" value="қалыспын - воздержусь" /><label id="label_input_42_2" for="input_42_2">қалыспын - воздержусь</label></span></div>
         </div>
       </li>
       <li class="form-line" data-type="control_textarea" id="id_52"><label class="form-label form-label-top form-label-auto" id="label_52" for="input_52" aria-hidden="true"> </label>
