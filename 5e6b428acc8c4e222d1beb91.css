@@ -12231,42 +12231,24 @@ li[data-type=control_head].isSelected .question-wrapper {
   width:100%!important
 }
 .form-line-column[data-type=control_image] .form-image {
-  height:auto!important
-}
-.signature-pad-wrapper {
-  height:100%
-}
+  height:auto!important}
+.signature-pad-wrapper{height:100%;padding-left:32%;}
 li[data-type=control_textarea] .form-input-wide>div,
-li[data-type=control_textarea] .nicEdit-main {
-  width:100%!important
-}
-li[data-type=control_inline] input[type=text]:not(#productSearch-input) {
-  border-width:0 0 1px!important
-}
-li[data-type=control_inline] .FITB-inptCont input {
-  border-width:0 0 1px!important;
-  border-radius:0!important
-}
-.cont .language-dd {
-  margin:5px
-}
-.cont .language-dd .dd-placeholder {
-  padding:0 32px;
-  font-size:14px
-}
-.language-dd .lang-list li {
-  font-size:12px;
-  text-indent:12px
-}
-.overlay {
+li[data-type=control_textarea] .nicEdit-main{width:100%!important}
+li[data-type=control_inline] input[type=text]:not(#productSearch-input){border-width:0 0 1px!important}
+li[data-type=control_inline] .FITB-inptCont input{border-width:0 0 1px!important;border-radius:0!important}
+.cont .language-dd{margin:5px}
+.cont .language-dd .dd-placeholder{padding:0 32px;font-size:14px}
+.language-dd .lang-list li{font-size:12px;text-indent:12px}
+.overlay{
   position:fixed;
   width:100%;
   height:100%;
   background:rgba(0,0,0,.5);
   top:0;
   left:0;
-  z-index:99999
-}
+  z-index:99999}
+  
 .overlay-content {
   position:absolute;
   transform:translate(-50%,-50%);
