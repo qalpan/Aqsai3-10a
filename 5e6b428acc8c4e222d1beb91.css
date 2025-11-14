@@ -851,127 +851,64 @@ li[data-type=control_head] {
 }
 .form-header-group{border-bottom:1px solid;padding:14px;margin-top:1.25em;}
 
-div.header-large {
-  margin:0 -38px;
-  padding:2.5em 52px
-}
-.header-large .form-header {
-  font-size:2em
-}
-.header-large .form-subHeader {
-  font-size:1em
-}
-.header-default .form-header {
-  font-size:1.25em;
-  margin-bottom:4px
-}
-.header-default .form-subHeader {
-  font-size:.875em;
-  margin-bottom:4px
-}
-.header-small .form-header {
-  font-size:1.125em
-}
-.header-small .form-subHeader {
-  font-size:.75em
-}
-.header-logo {
-  display:-ms-flexbox;
-  display:flex
-}
-.header-logo img {
-  max-width:none
-}
+div.header-large{margin:0 -38px;padding:2.5em 52px}
+.header-large .form-header{font-size:1.2em}
+.header-large .form-subHeader{font-size:1em}
+.header-default .form-header{font-size:1.25em;margin-bottom:4px}
+.header-default .form-subHeader{font-size:.875em;margin-bottom:4px}
+.header-small .form-header{font-size:1.125em}
+.header-small .form-subHeader{font-size:.75em}
+.header-logo{display:-ms-flexbox;display:flex}
+.header-logo img{max-width:none}
 .form-header-group[data-imagealign] {
   display:-ms-flexbox;
   display:flex;
   -ms-flex-align:center;
-  align-items:center
-}
-.form-header-group[data-imagealign=Right] .header-logo {
-  margin-left:auto
-}
-.form-header-group[data-imagealign=Right] .header-text {
-  margin-right:1.25em
-}
-.form-header-group[data-imagealign=Left] .header-text {
-  margin-left:1.25em
-}
-.form-header-group[data-imagealign=Top] {
-  -ms-flex-direction:column;
-  flex-direction:column
-}
-.form-header-group[data-imagealign=Top] .header-text {
-  margin-top:1.25em;
-  width:100%
-}
+  align-items:center}
+.form-header-group[data-imagealign=Right] .header-logo{margin-left:auto}
+.form-header-group[data-imagealign=Right] .header-text{margin-right:1.25em}
+.form-header-group[data-imagealign=Left] .header-text{margin-left:1.25em}
+.form-header-group[data-imagealign=Top]{-ms-flex-direction:column;flex-direction:column}
+.form-header-group[data-imagealign=Top] .header-text{margin-top:1.25em;width:100%}
 body.JotFormBuilder .appContainer #app li.form-line[data-type=control_matrix].isSelected .form-matrix-column-headers,
-body.JotFormBuilder .appContainer #app li.form-line[data-type=control_matrix].isSelected .form-matrix-row-headers {
-  padding:12px 22px 12px 12px
-}
-li[data-type=control_matrix] .form-input-wide {
-  overflow-x:auto
-}
-.form-matrix-values label.matrix-choice-label {
-  padding-left:20px;
-  vertical-align:text-bottom;
-  display:inline-block
-}
+body.JotFormBuilder .appContainer #app li.form-line[data-type=control_matrix].isSelected .form-matrix-row-headers{padding:12px 22px 12px 12px}
+li[data-type=control_matrix] .form-input-wide{overflow-x:auto}
+.form-matrix-values label.matrix-choice-label{padding-left:20px;vertical-align:text-bottom;display:inline-block}
 li[data-type=control_matrix] .form-dropdown,
-li[data-type=control_matrix] .form-textbox {
-  font-size:.875em;
-  border-radius:0;
-  border-color:transparent
-}
+li[data-type=control_matrix] .form-textbox{font-size:.875em;border-radius:0;border-color:transparent}
 li[data-type=control_matrix] .form-dropdown:focus,
 li[data-type=control_matrix] .form-dropdown:hover,
 li[data-type=control_matrix] .form-textbox:focus,
-li[data-type=control_matrix] .form-textbox:hover {
-  position:relative;
-  z-index:1
-}
-.form-matrix-table {
-  width:100%;
-  border-spacing:0;
-  text-align:left
-}
-.form-matrix-headers {
+li[data-type=control_matrix] .form-textbox:hover{position:relative;z-index:1}
+.form-matrix-table{width:100%;border-spacing:0;text-align:left}
+.form-matrix-headers{
   position:relative;
   font-size:.75em;
   font-weight:500;
-  padding:12px
-}
-.form-matrix-headers.form-matrix-column-headers {
+  padding:12px}
+.form-matrix-headers.form-matrix-column-headers{
   text-align:center;
-  border-top:1px solid #c3cad8
-}
-.form-matrix-values {
+  border-top:1px solid #c3cad8}
+.form-matrix-values{
   text-align:center;
   padding:0;
-  position:relative
-}
-.JotFormBuilder #stage .form-matrix-values {
-  pointer-events:none
-}
+  position:relative}
+.JotFormBuilder #stage .form-matrix-values{
+  pointer-events:none}
 .form-matrix-headers,
-.form-matrix-values {
+.form-matrix-values{
   border-left:1px solid;
-  border-bottom:1px solid
-}
-.form-matrix-column-headers:last-child {
-  border-radius:0 4px 0 0
-}
-.isSelected .form-matrix-column-headers:nth-last-of-type(2) {
+  border-bottom:1px solid}
+.form-matrix-column-headers:last-child{
+  border-radius:0 4px 0 0}
+.isSelected .form-matrix-column-headers:nth-last-of-type(2){
   border-right:1px solid #c3cad8;
-  border-radius:0 4px 0 0
-}
-.form-matrix-value-tr:nth-child(2) .form-matrix-row-headers {
+  border-radius:0 4px 0 0}
+.form-matrix-value-tr:nth-child(2) .form-matrix-row-headers{
   border-top:1px solid #c3cad8;
-  border-radius:4px 0 0 0
-}
-.form-matrix-column_0 {
-  border-radius:4px 0 0
-}
+  border-radius:4px 0 0 0}
+.form-matrix-column_0{
+  border-radius:4px 0 0}
 .form-matrix-column_0:last-child {
   border-radius:4px 4px 0 0
 }
