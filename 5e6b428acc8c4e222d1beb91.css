@@ -12232,7 +12232,7 @@ li[data-type=control_head].isSelected .question-wrapper {
 }
 .form-line-column[data-type=control_image] .form-image {
   height:auto!important}
-.signature-pad-wrapper{height:100%;padding-left:32%;}
+.signature-pad-wrapper{height:100%;}
 li[data-type=control_textarea] .form-input-wide>div,
 li[data-type=control_textarea] .nicEdit-main{width:100%!important}
 li[data-type=control_inline] input[type=text]:not(#productSearch-input){border-width:0 0 1px!important}
