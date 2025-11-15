@@ -4980,25 +4980,21 @@ body:has(.wfFormHeader) {
 .branding21.formFooter .formFooter-logo {
   height:44px
 }
-.branding21.formFooter .formFooter-text {
-  color:#f3f3fe
-}
-.branding21.formFooter .formFooter-button {
+.branding21.formFooter .formFooter-text{color:#f3f3fe}
+.branding21.formFooter .formFooter-button{
   background-color:#78bb07;
-  border-color:#78bb07
-}
+  border-color:#78bb07}
+
 .branding21.formFooter.isAccessible .formFooter-button{background-color:#0075e3;border-color:#0075e3}
 
 .branding21.formFooter.isAccessible .formFooter-button:hover{background-color:#0066c6;border-color:#0066c6}
 
 body{font-family:Inter,sans-serif;font-size:16px;background-color:;color:#2c3345;margin:6px;}
 
-.form-all{border-radius:3px;box-shadow:0 4px 4px rgba(87,100,126,.21);background-color:#fff;max-width:752px}
-
 .form-line{margin-top:12px;margin-bottom:12px}
 
 .appointmentCalendarContainer .monthYearPicker .pickerArrow:after,
-.calendar-new-header .button {
+.calendar-new-header .button{
   -webkit-mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='10' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2357647E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='10' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2357647E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-image:none;
@@ -5006,23 +5002,12 @@ body{font-family:Inter,sans-serif;font-size:16px;background-color:;color:#2c3345
   mask-position:center;
   -webkit-mask-repeat:no-repeat;
   mask-repeat:no-repeat;
-  background-color:#56647e
-}
-.form-line-active {
-  background-color:#f1f5ff
-}
-.form-line-error {
-  background-color:#ffeded
-}
-.form-label {
-  color:#2c3345
-}
-.form-required {
-  color:#dc2626
-}
-.form-sub-label {
-  color:#57647e
-}
+  background-color:#56647e}
+.form-line-active{background-color:#f1f5ff}
+.form-line-error{background-color:#ffeded}
+.form-label{color:#2c3345}
+.form-required{color:#dc2626}
+.form-sub-label{color:#57647e}
 .form-dropdown,
 .form-textarea,
 .form-textbox,
@@ -5030,8 +5015,7 @@ body{font-family:Inter,sans-serif;font-size:16px;background-color:;color:#2c3345
 .signature-wrapper {
   background-color:#fff;
   border-color:#b8bdc9;
-  color:#2c3345
-}
+  color:#2c3345}
 .form-dropdown:hover,
 .form-textarea:hover,
 .form-textbox:hover,
