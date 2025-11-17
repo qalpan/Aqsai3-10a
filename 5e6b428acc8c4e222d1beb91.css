@@ -804,7 +804,7 @@ div.header-large{margin:0 -38px;padding:2.5em 52px}
 .header-large .form-header{font-size:1.2em}
 .header-large .form-subHeader{font-size:1em}
 .header-default .form-header{font-size:1.25em;margin-bottom:4px}
-.header-default .form-subHeader{font-size:.875em;margin-bottom:4px}
+.header-default .form-subHeader{font-size:.875em;}
 .header-small .form-header{font-size:1.125em}
 .header-small .form-subHeader{font-size:.75em}
 .header-logo{display:-ms-flexbox;display:flex}
