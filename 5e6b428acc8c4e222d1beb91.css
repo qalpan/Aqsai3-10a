@@ -110,7 +110,7 @@ html.supernova.isEmbeded.canvaEmbeded .form-all {
 }
 li.form-line:not([data-payment=true]) [data-wrapper-react=true] {
   display:-ms-flexbox;
-  display:flex;
+  display:;
   -ms-flex-align:start;
   align-items:flex-start
 }
