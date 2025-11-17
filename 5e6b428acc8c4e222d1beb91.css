@@ -78,46 +78,35 @@ button {
   -ms-flex-direction:column;
   flex-direction:column;
   margin:25px auto;
-  width:100%
-}
-.hasFormUserAvatar {
-  margin:0
-}
-.hasFormUserAvatar .form-all {
+  width:100%}
+.hasFormUserAvatar{margin:0}
+.hasFormUserAvatar .form-all{
   position:relative;
-  top:40px
-}
-.isEmbeddedInPortal body {
+  top:40px}
+.isEmbeddedInPortal body{
   margin:0;
-  background-color:transparent
-}
+  background-color:transparent}
 .isEmbeddedInPortal .form-all {
   background-color:transparent;
-  max-width:100%
-}
-.isEmbeddedInPortal.supernova .form-all {
+  max-width:100%}
+.isEmbeddedInPortal.supernova .form-all{
   border:none;
   margin:0;
-  border-radius:0
-}
-html.supernova.isEmbeded.canvaEmbeded body {
-  margin:0
-}
-html.supernova.isEmbeded.canvaEmbeded .form-all {
+  border-radius:0}
+html.supernova.isEmbeded.canvaEmbeded body{margin:0}
+html.supernova.isEmbeded.canvaEmbeded .form-all{
   max-width:100%;
   width:100%;
-  border-radius:0
-}
+  border-radius:0}
 li.form-line:not([data-payment=true]) [data-wrapper-react=true] {
   display:-ms-flexbox;
   display:;
   -ms-flex-align:start;
   align-items:flex-start
-}
+  padding: 0 0 0 3px;}
 li.form-line:not([data-payment=true]) [data-wrapper-react=true].useJotformSign-signature {
   -ms-flex-direction:column;
-  flex-direction:column
-}
+  flex-direction:column}
 .form-line {
   padding:12px 10px;
   margin:12px 4px;
