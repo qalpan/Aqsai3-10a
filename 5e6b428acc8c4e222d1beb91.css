@@ -77,7 +77,7 @@ button {
   display:flex;
   -ms-flex-direction:column;
   flex-direction:column;
-  margin:25px auto;
+  margin:0px auto;
   width:100%}
 .hasFormUserAvatar{margin:0}
 .hasFormUserAvatar .form-all{
