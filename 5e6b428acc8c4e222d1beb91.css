@@ -102,8 +102,7 @@ li.form-line:not([data-payment=true]) [data-wrapper-react=true] {
   display:-ms-flexbox;
   display:;
   -ms-flex-align:start;
-  align-items:flex-start
-  padding: 0 0 0 3px;}
+  align-items:flex-start}
 li.form-line:not([data-payment=true]) [data-wrapper-react=true].useJotformSign-signature {
   -ms-flex-direction:column;
   flex-direction:column}
