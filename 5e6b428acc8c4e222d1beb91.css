@@ -148,109 +148,71 @@ ul.page-section {
 li.form-line-column.form-line-error.fixed-width {
   white-space:;
   -ms-flex-preferred-size:auto;
-  flex-basis:auto
-}
-.form-line-column.form-line-column-clear {
-  width:calc(50% - 7px)
-}
-.form-input {
-  width:calc(100% - 240px)
-}
-.always-hidden {
-  display:none!important
-}
+  flex-basis:auto}
+.form-line-column.form-line-column-clear{width:calc(50% - 7px)}
+.form-input{width:34%;}
+.always-hidden{display:none!important}
 .page-section>li:first-child:not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]),
 .page-section>li:nth-child(2):not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]) {
   margin-top:28px
 }
 .page-section>li:first-child:not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse])+li:nth-child(2):not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]) {
-  margin-top:12px
-}
+  margin-top:12px}
 .form-label {
   display:inline-block;
   font-weight:0;
-  word-break:break-word
-}
-.form-required {
-  margin-left:4px
-}
+  word-break:break-word}
+.form-required{margin-left:4px}
 .form-sub-label {
   font-size:.75em;
   margin-top:11px;
   margin-left:2px;
   display:block;
-  word-break:break-word
-}
+  word-break:break-word}
 .form-sub-label b {
   color:#57647e;
-  font-weight:500
-}
+  font-weight:500}
 label[for$=_dummy] {
   white-space:nowrap;
   color:#57647e;
-  font-size:14px
-}
+  font-size:14px}
 .form-sub-label:empty {
-  display:none
-}
-.form-label-top {
+  display:none}
+.form-label-top{
   width:100%;
   margin-left:2px;
-  margin-bottom:14px
-}
+  margin-bottom:14px}
 .form-label-right {
   -ms-flex-pack:end;
   justify-content:flex-end;
-  text-align:right
-}
+  text-align:right}
 .form-sub-label-container {
   -ms-flex:1 1 100%;
-  flex:1 1 100%
-}
-.form-sub-label-container+.form-sub-label-container {
-  margin-left:8px
-}
+  flex:1 1 100%}
+.form-sub-label-container+.form-sub-label-container{margin-left:8px}
 .form-label:not(.form-label-top) {
   width:230px;
   margin-right:10px;
   margin-top:.625em;
-  margin-bottom:.625em
-}
+  margin-bottom:.625em}
 li[data-type=control_checkbox] .form-label:not(.form-label-top),
-li[data-type=control_radio] .form-label:not(.form-label-top) {
-  margin-top:0
-}
-.stripe-payment-wrapper .overlay-content+.form-sub-label-container {
-  width:calc(50% - 14px)
-}
+li[data-type=control_radio] .form-label:not(.form-label-top) {margin-top:0}
+.stripe-payment-wrapper .overlay-content+.form-sub-label-container {width:calc(50% - 14px)}
 li.form-line:not(.form-line-column)[data-type=control_fullname] .form-input-wide [data-wrapper-react]:not(.extended) .form-sub-label-container+.form-sub-label-container {
-  margin-left:24px
-}
-.form-input-wide {
-  width:100%
-}
-li.form-line:not(.form-line-column) .form-input-wide[data-layout=half] {
-  width:calc(50% - 14px)
-}
-.fixed-width.form-line:not(.form-line-column) .form-input-wide[data-layout=half] {
-  width:100%
-}
-li.form-line[data-type=control_signature]:not(.form-line-column):not(.fixed-width) .form-input-wide {
-  width:calc(50% - 14px)
-}
+  margin-left:24px}
+.form-input-wide{width:100%}
+li.form-line:not(.form-line-column) .form-input-wide[data-layout=half] {width:calc(50% - 14px)}
+.fixed-width.form-line:not(.form-line-column) .form-input-wide[data-layout=half] {width:100%}
+li.form-line[data-type=control_signature]:not(.form-line-column):not(.fixed-width) .form-input-wide {width:calc(50% - 14px)}
 .form-line:not(.fixed-width) .form-dropdown,
 .form-line:not(.fixed-width) .form-spinner,
 .form-line:not(.fixed-width) .form-textarea,
 .form-line:not(.fixed-width) .form-textbox:not(.time-dropdown):not(#productSearch-input),
 .form-line:not(.fixed-width) .signature-pad-passive {
   min-width:100%;
-  max-width:100%
-}
-.form-description .form-description-content {
-  word-break:break-word
-}
-.form-error-message {
-  color:#fff;
+  max-width:100%}
+.form-description .form-description-content{word-break:break-word}
+.form-error-message{color:#fff;
   background-color:#dc2626;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg width='14' height='15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 14.515a7 7 0 110-14 7 7 0 010 14zm-.814-5.86h1.628v-5.21H6.186v5.21zM7 11.259a.82.82 0 00.814-.824A.816.816 0 007 9.631a.813.813 0 100 1.628z' fill='%23fff'/%3E%3C/svg%3E");
   font-size:.75em;
@@ -261,8 +223,7 @@ li.form-line[data-type=control_signature]:not(.form-line-column):not(.fixed-widt
   background-repeat:no-repeat;
   display:inline-block;
   width:auto;
-  padding:.25em .5em .25em 1.625em
-}
+  padding:.25em .5em .25em 1.625em}
 .form-error-message img {
   display:none
 }
