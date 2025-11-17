@@ -61,22 +61,23 @@ button {
 }
 @supports (-webkit-overflow-scrolling:touch) {
   input,
-  textarea {
+  textarea{
     -webkit-appearance:none;
     appearance:none
   }
 }
 @media (-webkit-min-device-pixel-ratio:1.25),(min-resolution:120dpi),not all {
-  body {
+  body{
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility
   }
 }
-.form-all {
+.form-all{
   display:-ms-flexbox;
   display:flex;
   -ms-flex-direction:column;
   flex-direction:column;
+  margin:25px auto;
   width:100%}
 .hasFormUserAvatar{margin:0}
 .hasFormUserAvatar .form-all{
