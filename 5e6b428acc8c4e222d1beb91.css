@@ -142,9 +142,7 @@ ul.page-section {
   width:auto;
   max-width:100%;
   -ms-flex-preferred-size:0;
-  flex-basis:0;
-  white-space:nowrap
-}
+  white-space:nowrap}
 li.form-line-column.form-line-error.fixed-width {
   white-space:;
   -ms-flex-preferred-size:auto;
