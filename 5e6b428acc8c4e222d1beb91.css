@@ -12878,9 +12878,7 @@ li[data-type=control_inline] .FITB-inptCont input{border-width:0 0 1px!important
   .form-line-column,
   .form-line:not(.form-line-column) .form-input-wide[data-layout=half],
   .form-textarea,
-  .form-textbox {
-    width:100%!important
-  }
+  .form-textbox{width:}
   .jf-form-buttons {
     min-width:72px;
     width:auto
