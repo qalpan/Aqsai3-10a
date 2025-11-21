@@ -148,7 +148,6 @@ li.form-line-column.form-line-error.fixed-width {
   -ms-flex-preferred-size:auto;
   flex-basis:auto}
 .form-line-column.form-line-column-clear{width:calc(50% - 7px)}
-.form-input{width:34%;}
 .always-hidden{display:none!important}
 .page-section>li:first-child:not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]),
 .page-section>li:nth-child(2):not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]) {
