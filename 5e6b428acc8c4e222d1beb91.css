@@ -155,6 +155,7 @@ li.form-line-column.form-line-error.fixed-width {
 }
 .page-section>li:first-child:not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse])+li:nth-child(2):not(.form-line-column):not([data-type=control_head]):not([data-type=control_payment]):not([data-type=control_text]):not([data-type=control_button]):not([data-type=control_collapse]) {
   margin-top:12px}
+.form-input{width:62%;}
 .form-label {
   display:inline-block;
   font-weight:0;
