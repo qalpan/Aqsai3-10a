@@ -139,7 +139,7 @@ ul.page-section {
   flex-basis:auto
 }
 .form-line-column:not(.form-line-column-clear).fixed-width {
-  width:auto;
+  width:20%;
   max-width:100%;
   -ms-flex-preferred-size:0;
   white-space:nowrap}
