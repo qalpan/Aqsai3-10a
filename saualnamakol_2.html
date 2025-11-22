@@ -323,41 +323,61 @@
         'q3': ['Серікжан Төлеуғалиұлы Көкебай']
     };
 
+   // ... (басқа кодтар)
+
     /**
-     * Canvas-қа қол қою функциясын орнатады.
+     * Canvas-қа қол қою функциясын орнатады. (Жоғары DPI қолдауымен)
      */
     function setupCanvas(canvas, clearBtn) {
-        // HTML-дағы width/height атрибуттарына сәйкес келтіру
-        canvas.width = 200; 
-        canvas.height = 75;
+        // *** 1. DPI масштабтау коэффициентін анықтау (Retina) ***
+        const scale = window.devicePixelRatio || 1; 
+
+        // Нақты ішкі өлшемдер (2x DPI үшін)
+        const displayWidth = 200;
+        const displayHeight = 75;
+
+        // *** 2. Canvas-тың нақты ішкі (buffer) өлшемдерін орнату ***
+        // Бұл Canvas-тағы пикселдер санын 2 есе арттырады (сапаны арттырады)
+        canvas.width = displayWidth * scale;
+        canvas.height = displayHeight * scale;
+
+        // *** 3. Canvas-тың көрінетін (CSS) өлшемдерін орнату ***
+        // Бұл Canvas-тың көрініс аймағын бұрынғыдай қалдырады
+        canvas.style.width = displayWidth + 'px';
+        canvas.style.height = displayHeight + 'px';
+        // Ескерту: CSS-те width: 100%; болғандықтан, style.width-ті қолданбаймыз.
+        // Біз CSS-тегі 100% енді сақтау үшін, тек нақты пиксельдерді ғана масштабтаймыз.
 
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
         
-        ctx.lineWidth = 1; 
+        // *** 4. Контекстті масштабтау ***
+        // Қолтаңбаның да, мәтіннің де дұрыс масштабталуы үшін қажет
+        ctx.scale(scale, scale);
+
+        // Қаламның қалыңдығын өзгерту (Масштабтаудан кейін дұрыс көрінуі үшін)
+        // Енді 2 пиксель екі еселенген Canvas-та да анық болады
+        ctx.lineWidth = 2; 
         ctx.lineCap = "round"; 
         ctx.lineJoin = "round"; 
-        ctx.strokeStyle = "#1E90FF"; 
+        ctx.strokeStyle = "#1E90FF"; // Көк түс
 
-        // *** ЖАҢА МӘТІН САЛУ ЛОГИКАСЫ ***
-    function drawPlaceholderText() {
-    // Егер Canvas бос болса, мәтінді саламыз
-    if (isCanvasBlank(canvas)) {
-        // Canvas-тың ішін тазалау
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        
-        // 👇 Бұл жолды өзгертіңіз: data-label орнына тікелей мәтін қойыңыз.
-        const label = "Қол қоиыу - Подписать";
-        
-        ctx.font = '12px Arial'; 
-        ctx.fillStyle = '#a4b0be'; // Сұрғылт түс
-        ctx.textAlign = 'center'; 
-        ctx.textBaseline = 'middle'; 
+        // ТҮЗЕТІЛГЕН МӘТІН САЛУ ЛОГИКАСЫ
+        function drawPlaceholderText() {
+            if (isCanvasBlank(canvas, scale)) { // isCanvasBlank-ты да масштабтау керек
+                ctx.clearRect(0, 0, displayWidth, displayHeight); // Енді тазалауды дисплей өлшемімен жасаймыз
+                
+                const label = "Қол қоиыу - Подписать";
+                
+                ctx.font = '12px Arial'; 
+                ctx.fillStyle = '#a4b0be'; 
+                ctx.textAlign = 'center'; 
+                ctx.textBaseline = 'middle'; 
 
-        // Мәтінді Canvas ортасына салу
-        ctx.fillText(label, canvas.width / 2, canvas.height / 2);
-    }
-}
+                // Мәтінді дисплей өлшеміне сәйкес ортаға салу
+                ctx.fillText(label, displayWidth / 2, displayHeight / 2);
+            }
+        }
         
         // Бастапқы мәтінді салу
         drawPlaceholderText();
@@ -365,22 +385,21 @@
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect(); 
-            const scaleX = canvas.width / rect.width; 
-            const scaleY = canvas.height / rect.height;
 
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
+            // Енді scaledCanvas-тың позициясы қажет емес, себебі scale(scale, scale) қолданылды
             return {
-                x: (clientX - rect.left) * scaleX,
-                y: (clientY - rect.top) * scaleY
+                x: (clientX - rect.left) / (rect.width / displayWidth),
+                y: (clientY - rect.top) / (rect.height / displayHeight)
             };
         }
 
         const startDraw = (e) => {
             isDrawing = true;
-            // Қол қою басталғанда, placeholder мәтінін өшіреміз
-            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            // Тазалауды дисплей өлшемімен жасаймыз
+            ctx.clearRect(0, 0, displayWidth, displayHeight); 
 
             ctx.beginPath();
             const pos = getPos(e);
@@ -398,7 +417,7 @@
 
         const endDraw = () => { isDrawing = false; };
 
-        // Оқиғаларды тіркеу
+        // ... (қалған оқиғаларды тіркеу логикасы бұрынғыдай)
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', endDraw);
@@ -408,14 +427,23 @@
         canvas.addEventListener('touchend', endDraw);
 
         clearBtn.addEventListener('click', () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, displayWidth, displayHeight);
             drawPlaceholderText(); // Тазалағаннан кейін placeholder мәтінін қайта саламыз
         });
         
-        // Бір сұрақ ішінде тек бір қолтаңбаға рұқсат беру
         canvas.addEventListener('mouseup', handleVoteSelection);
         canvas.addEventListener('touchend', handleVoteSelection);
     }
+    
+    // *** isCanvasBlank функциясын DPI-ді ескеру үшін өзгерту ***
+    function isCanvasBlank(canvas, scale = 1) {
+        const blank = document.createElement('canvas');
+        blank.width = canvas.width; // Нақты өлшемді пайдалану
+        blank.height = canvas.height;
+        return canvas.toDataURL() === blank.toDataURL();
+    }
+    
+    // ... (қалған код өзгеріссіз қалады)
     
     /**
      * Қол қойылғаннан кейін басқа опцияларды тазартады.
