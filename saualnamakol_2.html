@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Түзетілген Дауыс Беру Парағы - Қолтаңба</title>
+    <title>Дауыс беріу парағы</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         /* Жалпы стильдер */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #eef1f5; 
-            padding: 20px; 
             margin: 0;
             display: flex;
             justify-content: center;
@@ -19,7 +18,7 @@
             background: white; 
             width: 100%;
             max-width: 900px; /* Көбірек сұрақтарға орын беру үшін енін ұлғайттық */
-            padding: 30px; 
+            padding: 8px; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
@@ -28,35 +27,34 @@
         h1 {
             font-size: 18px;
             color: #2c3e50;
-            font-weight: bold;
+            font-weight: normal;
             text-align: center;
-            margin-bottom: 25px;
-            line-height: 1.4;
+            line-height: 1.1;
         }
         h2 {
             font-size: 14px;
             color: #34495e;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-weight: normal;
+            margin: 4px;
         }
 
         /* Кіріс өрісі */
         #full-name { 
             width: calc(100% - 20px); 
-            padding: 15px 10px; 
-            margin-bottom: 25px;
+            padding: 8px 8px; 
+            margin-bottom: 8px;
             border: 1px solid #bdc3c7;
             border-radius: 8px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         /* Сұрақ блогының контейнері (жалпы сұрақ) */
         .vote-section {
             border: 1px solid #dfe6e9;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 8px;
+            margin-bottom: 8px;
             background-color: #f8f9fa;
         }
 
@@ -64,15 +62,12 @@
         .options-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ыңғайлы, бейімделетін тор */
-            gap: 15px;
-            margin-top: 15px;
+            gap: 8px;
         }
 
         /* Әрбір нұсқа блогы (мысалы, "қолдаимын") */
         .option-block {
             background: #ffffff;
-            border: 1px solid #dcdde1;
-            padding: 15px;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -81,10 +76,10 @@
         }
         
         .option-text {
-            font-size: 14px;
-            color: #2c3e50;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 12px;
+            color: #5e6062;
+            font-weight: normal;
+            margin-bottom: 2px;
             text-align: center;
         }
 
@@ -101,35 +96,35 @@
         }
         
         /* Тазалау батырмасы */
-        .btn-clear { 
-            width: 100%; 
-            padding: 8px; 
-            background: #e74c3c; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            margin-top: 10px;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-        .btn-clear:hover { background: #c0392b; }
+         .btn-clear {
+  width: 100%;
+  padding: 8px;
+  background: #848180;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: background 0.3s;
+}
+        .btn-clear:hover { background: #e7c50d; }
 
         /* Жіберу батырмасы */
-        .submit-btn { 
-            width: 100%; 
-            padding: 18px; 
-            background: #27ae60; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            margin-top: 30px; 
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .submit-btn:hover { background: #2ecc71; }
+       .submit-btn {
+  width: 100%;
+  padding: 10px;
+  background: #878678;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 2px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: normal;
+  transition: background 0.3s;
+}
+        .submit-btn:hover { background: #e7c50d; }
         
         /* Хабарлама мәртебесі */
         #status {
@@ -152,13 +147,13 @@
     <h1>📋 №<br>Пәтерлердің, тұрғын емес үй-жәй меншік іиелерінің Сырттай дауыс беру парағы<br>
         Лист в заочном голосований собственников квартир, нежилых помещений</h1>
     
-    <input type="text" id="full-name" placeholder="Аты-жөніңіз (Ф.И.О.)" required>
+    <input type="text" id="full-name" placeholder="Аты-жөніңіз, пәтер, телепон№, email - Фио, № квартиры, телофон, email" required>
 
     <div class="vote-section" data-question-id="q1">
         <h2>1. Үи кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h2>
         
         <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Aijan**</div>
+            <div class="option-text" style="font-size:14px;">Aijan</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q1_aijan_za">
@@ -182,7 +177,7 @@
         </div>
         
         <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Jangyl**</div>
+            <div class="option-text" style="font-size:14px;">Jangyl</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q1_jangyl_za">
@@ -206,7 +201,7 @@
         </div>
 
         <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Gylnar**</div>
+            <div class="option-text" style="font-size:14px;">Gylnar</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q1_gylnar_za">
@@ -230,7 +225,7 @@
         </div>
 
         <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Alia**</div>
+            <div class="option-text" style="font-size:14px;">Alia</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q1_alia_za">
@@ -258,7 +253,7 @@
     <div class="vote-section" data-question-id="q2">
         <h2>2. Бақылаушы ребизор саилау - Выбрать проверяющего ревизора:</h2>
             <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Marat**</div>
+            <div class="option-text" style="font-size:14px;">Marat</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q2_marat_za">
@@ -285,7 +280,7 @@
     <div class="vote-section" data-question-id="q3"> 
         <h2>3. МІБ төрағасын саилау - Выбрать председателя ОСИ:</h2>
             <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
-            <div class="option-text" style="font-size:16px;">Кандидат: **Серікжан Төлеуғалиұлы Көкебай**</div>
+            <div class="option-text" style="font-size:14px;">Серікжан Төлеуғалиұлы Көкебай</div>
             <div class="options-grid">
                 
                 <div class="option-block" data-option-id="q3_serikjan_za"> 
@@ -328,7 +323,7 @@
         'q3': ['Серікжан Төлеуғалиұлы Көкебай']
     };
 
-    /**
+    /
      * Canvas-қа қол қою функциясын орнатады.
      */
     function setupCanvas(canvas, clearBtn) {
@@ -393,7 +388,7 @@
         canvas.addEventListener('touchend', handleVoteSelection);
     }
     
-    /**
+    /
      * Қол қойылғаннан кейін басқа опцияларды тазартады.
      */
     function handleVoteSelection(e) {
@@ -418,7 +413,7 @@
     }
 
 
-    /**
+    /
      * Canvas-тың бос екенін тексереді.
      */
     function isCanvasBlank(canvas) {
