@@ -7,42 +7,137 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         /* Жалпы стильдер */
-        body { font-family: 'Inter', sans-serif; background-color: #eef1f5; margin: 0; display: flex; justify-content: center; }
-        .container { background: white; width: 100%; max-width: 900px; padding: 8px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #eef1f5; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container { 
+            background: white; 
+            width: 100%;
+            max-width: 900px; 
+            padding: 8px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
         /* Тақырыптар */
-        h1 { font-size: 18px; color: #2c3e50; font-weight: normal; text-align: center; line-height: 1.1; }
-        h2 { font-size: 14px; color: #34495e; font-weight: normal; margin: 4px; }
+        h1 {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: normal;
+            text-align: center;
+            line-height: 1.1;
+        }
+        h2 {
+            font-size: 14px;
+            color: #34495e;
+            font-weight: normal;
+            margin: 4px;
+        }
+
         /* Кіріс өрісі */
-        #full-name { width: calc(100% - 20px); padding: 8px 8px; margin-bottom: 8px; border: 1px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        #full-name { 
+            width: calc(100% - 20px); 
+            padding: 8px 8px; 
+            margin-bottom: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
         /* Сұрақ блогының контейнері (жалпы сұрақ) */
-        .vote-section { border: 1px solid #dfe6e9; border-radius: 8px; padding: 8px; margin-bottom: 8px; background-color: #f8f9fa; }
+        .vote-section {
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+        }
+
         /* Нұсқаларды ұстайтын контейнер (қолдау, қарсы, қалыс) */
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 300px-ке өзгертілді */ gap: 8px; }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 8px;
+        }
+
         /* Әрбір нұсқа блогы (мысалы, "қолдаимын") */
-        .option-block { background: #ffffff; border-radius: 8px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
-        .option-text { font-size: 11px; /* Кішірейтілді */ color: #5e6062; font-weight: normal; margin-bottom: 2px; text-align: center; }
+        .option-block {
+            background: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .option-text {
+            font-size: 12px;
+            color: #5e6062;
+            font-weight: normal;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
         /* Canvas - қол қою алаңы */
         canvas {
             border: 1px dashed #a4b0be;
             background-color: #fff;
             cursor: crosshair;
-            width: 300px; /* Одан әрі кішірейтілді */
-            height: 100px; /* Одан әрі кішірейтілді */
+            width: 100%; 
+            height: 104px; 
             display: block;
-            touch-action: none;
+            touch-action: none; 
             border-radius: 4px;
         }
+        
         /* Тазалау батырмасы */
-        .btn-clear { width: 300px; padding: 4px 8px; background: #848180; color: white; border: none; cursor: pointer; margin-top: 4px; border-radius: 4px; font-size: 10px; transition: background 0.3s; }
+         .btn-clear {
+            width: 200px;
+            padding: 8px;
+            background: #848180;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
         .btn-clear:hover { background: #e7c50d; }
+
         /* Жіберу батырмасы */
-        .submit-btn { width: 100%; padding: 10px; background: #878678; color: white; border: none; cursor: pointer; margin-top: 2px; border-radius: 8px; font-size: 14px; font-weight: normal; transition: background 0.3s; }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: #878678;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 2px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: normal;
+            transition: background 0.3s;
+        }
         .submit-btn:hover { background: #e7c50d; }
+        
         /* Хабарлама мәртебесі */
-        #status { text-align: center; margin-top: 15px; font-weight: 600; }
-        /* Мобильді құрылғыларға бейімделу */
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Мобильді құрылғыларға бейімделу (егер тор бір қатарда тұрмаса) */
         @media (max-width: 650px) {
-            .options-grid { grid-template-columns: 1fr; }
+            .options-grid {
+                grid-template-columns: 1fr; 
+            }
         }
     </style>
 </head>
@@ -52,7 +147,7 @@
     <h1>📋 №<br>Пәтерлердің, тұрғын емес үй-жәй меншік іиелерінің Сырттай дауыс беру парағы<br>
         Лист в заочном голосований собственников квартир, нежилых помещений</h1>
     
-    <input type="text" id="full-name" placeholder="Аты-жөніңіз, пәтер, телепон№, email - Фио, № квартиры, телофон, email" required="">
+    <input type="text" id="full-name" placeholder="Аты-жөніңіз, пәтер, телепон№, email - Фио, № квартиры, телофон, email" required>
 
     <div class="vote-section" data-question-id="q1">
         <h2>1. Үи кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h2>
@@ -63,19 +158,19 @@
                 
                 <div class="option-block" data-option-id="q1_aijan_za">
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="1.1. Aijan - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="1.1. Aijan - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q1_aijan_protiv">
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="1.2. Aijan - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="1.2. Aijan - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q1_aijan_vozderzhu">
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="1.3. Aijan - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="1.3. Aijan - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -87,19 +182,19 @@
                 
                 <div class="option-block" data-option-id="q1_jangyl_za">
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="1.4. Jangyl - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="1.4. Jangyl - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q1_jangyl_protiv">
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="1.5. Jangyl - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="1.5. Jangyl - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q1_jangyl_vozderzhu">
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="1.6. Jangyl - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="1.6. Jangyl - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -111,19 +206,19 @@
                 
                 <div class="option-block" data-option-id="q1_gylnar_za">
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="1.7. Gylnar - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="1.7. Gylnar - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q1_gylnar_protiv">
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="1.8. Gylnar - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="1.8. Gylnar - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q1_gylnar_vozderzhu">
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="1.9. Gylnar - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="1.9. Gylnar - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -135,19 +230,19 @@
                 
                 <div class="option-block" data-option-id="q1_alia_za">
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="1.10. Alia - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="1.10. Alia - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q1_alia_protiv">
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="1.11. Alia - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="1.11. Alia - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q1_alia_vozderzhu">
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="1.12. Alia - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="1.12. Alia - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -163,19 +258,19 @@
                 
                 <div class="option-block" data-option-id="q2_marat_za">
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="2.1. Marat - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="2.1. Marat - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q2_marat_protiv">
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="2.2. Marat - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="2.2. Marat - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q2_marat_vozderzhu">
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="2.3. Marat - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="2.3. Marat - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -190,19 +285,19 @@
                 
                 <div class="option-block" data-option-id="q3_serikjan_za"> 
                     <div class="option-text">қолдаимын - за</div>
-                    <canvas data-label="3.1. Serikjan - қолдаимын"></canvas>
+                    <canvas width="200" height="75" data-label="3.1. Serikjan - қолдаимын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
 
                 <div class="option-block" data-option-id="q3_serikjan_protiv"> 
                     <div class="option-text">қарсымын - против</div>
-                    <canvas data-label="3.2. Serikjan - қарсымын"></canvas>
+                    <canvas width="200" height="75" data-label="3.2. Serikjan - қарсымын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
                 
                 <div class="option-block" data-option-id="q3_serikjan_vozderzhu"> 
                     <div class="option-text">қалыспын - воздержусь</div>
-                    <canvas data-label="3.3. Serikjan - қалыспын"></canvas>
+                    <canvas width="200" height="75" data-label="3.3. Serikjan - қалыспын"></canvas> 
                     <button class="btn-clear">Тазалау</button>
                 </div>
             </div>
@@ -215,15 +310,15 @@
 </div>
 
 <script>
-    // EMAILJS БАПТАУЫ (ID-іңізді пайдаланыңыз)
+    // EMAILJS БАПТАУЫ (Сіздің ID-іңізді пайдаланамыз)
     emailjs.init("HySfhPitSDqpVM31p"); 
 
     const statusMsg = document.getElementById('status');
     const canvases = document.querySelectorAll('canvas');
 
-    // ОДАН ӘРІ КІШІРЕЙТІЛГЕН ӨЛШЕМДЕР
-    const DISPLAY_WIDTH = 300; 
-    const DISPLAY_HEIGHT = 100; 
+    // Көрсету үшін статикалық өлшемдер
+    const DISPLAY_WIDTH = 200;
+    const DISPLAY_HEIGHT = 75;
 
     /**
      * Canvas-тың бос екенін тексереді.
@@ -232,6 +327,7 @@
         const blank = document.createElement('canvas');
         blank.width = canvas.width;
         blank.height = canvas.height;
+        // toDataURL-ді шақыру DPI-ға байланысты дұрыс жұмыс істеуі үшін canvas.width және height қолданылады
         return canvas.toDataURL() === blank.toDataURL();
     }
     
@@ -247,26 +343,29 @@
         canvas.width = DISPLAY_WIDTH * scale;
         canvas.height = DISPLAY_HEIGHT * scale;
 
-        // 2. Көрінетін (CSS) өлшемдерін орнату
+        // 2. Көрінетін (CSS) өлшемдерін орнату (Кейбір браузерлерде қажет)
         canvas.style.width = DISPLAY_WIDTH + 'px';
         canvas.style.height = DISPLAY_HEIGHT + 'px';
 
         // 3. Контекстті масштабтау (Сызуды DPI-мен сәйкестендіру)
         ctx.scale(scale, scale);
 
-        ctx.lineWidth = 1.5; /* Сызықтың қалыңдығы кішірейтілді */
+        ctx.lineWidth = 2; 
         ctx.lineCap = "round"; 
         ctx.lineJoin = "round"; 
         ctx.strokeStyle = "#1E90FF"; 
 
         // МӘТІН САЛУ
         function drawPlaceholderText() {
+            // Енді isCanvasBlank-ты қолданамыз, себебі ені мен биіктігі DPI-ға байланысты.
+            // isCanvasBlank-тағы toDataURL барлық пикселдерді ескереді.
             if (isCanvasBlank(canvas)) { 
+                // ctx.scale қолданылғандықтан, тазалауды DISPLAY_WIDTH/HEIGHT арқылы жасаймыз
                 ctx.clearRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT); 
                 
                 const label = "Қол қоиыу - Подписать";
                 
-                ctx.font = '9px Arial'; /* Қаріп өлшемі кішірейтілді */
+                ctx.font = '12px Arial'; 
                 ctx.fillStyle = '#a4b0be'; 
                 ctx.textAlign = 'center'; 
                 ctx.textBaseline = 'middle'; 
@@ -285,6 +384,8 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
+            // Сызу координаталарын контекстік масштабты ескере отырып есептейміз
+            // Бұл ctx.scale(scale, scale) болғандықтан, тек қана CSS өлшеміне қатысты ғана есептейміз
             return {
                 x: (clientX - rect.left) / rect.width * DISPLAY_WIDTH,
                 y: (clientY - rect.top) / rect.height * DISPLAY_HEIGHT
@@ -293,6 +394,7 @@
 
         const startDraw = (e) => {
             isDrawing = true;
+            // Жаңа қол қоюды бастағанда, placeholder-ді тазалау
             ctx.clearRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT); 
 
             ctx.beginPath();
@@ -334,18 +436,23 @@
      * Қол қойылғаннан кейін басқа опцияларды тазартады (бір сұрақ үшін бір ғана дауыс).
      */
     function handleVoteSelection(e) {
+        // Ең жақын кандидат блогын табамыз (candidate-block)
         const candidateBlock = e.currentTarget.closest('.candidate-block');
         
         if (!candidateBlock) return; 
 
+        // Бұл кандидаттың барлық canvasses-ін табамыз
         const siblingCanvases = candidateBlock.querySelectorAll('canvas');
         
         const currentCanvas = e.currentTarget;
         
+        // Егер бұл canvas-та сурет салынған болса (қол қойылған болса)
         if (!isCanvasBlank(currentCanvas)) {
             siblingCanvases.forEach(cvs => {
                 if (cvs !== currentCanvas) {
+                    // Басқа canvasses-ті тазартамыз
                     const clearBtn = cvs.parentNode.querySelector('.btn-clear');
+                    // setupCanvas арқылы тазарту және placeholder-ді қайта салу
                     setupCanvas(cvs, clearBtn); 
                 }
             });
@@ -405,8 +512,9 @@
                 const questionNumber = label.charAt(0);
 
                 if (!isCanvasBlank(cvs)) {
-                    // *** JPEG-ге ауыстыру және сапаны одан әрі төмендету (0.2-ге) ***
-                    const dataURL = cvs.toDataURL('image/jpeg', 0.2); 
+                    // *** JPEG-ге ауыстыру және сапаны төмендету (Көлемін азайту үшін) ***
+                    // JPEG/0.5 (50% сапа) әдетте emailJS лимитіне сәйкес келеді
+                    const dataURL = cvs.toDataURL('image/jpeg', 0.5); 
                     
                     signedVotes.push({
                         qNum: questionNumber,
@@ -430,7 +538,7 @@
                         emailBody += `
                             <li>
                                 <strong>Дауыс:</strong> ${vote.label}<br>
-                                <strong>Қолтаңба:</strong> <img src="${vote.dataURL}" alt="Қолтаңба" style="max-width:300px; height:auto; border:1px solid #ccc;"><br><br>
+                                <strong>Қолтаңба:</strong> <img src="${vote.dataURL}" alt="Қолтаңба" style="max-width:200px; height:auto; border:1px solid #ccc;"><br><br>
                             </li>
                         `;
                     });
@@ -466,7 +574,5 @@
         await attemptSend();
     });
 </script>
-
-
 </body>
 </html>
