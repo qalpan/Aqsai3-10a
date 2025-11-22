@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="kz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Түзетілген Дауыс Беру Парағы - Қолтаңба</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        /* Жалпы стильдер */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #eef1f5; 
+            padding: 20px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container { 
+            background: white; 
+            width: 100%;
+            max-width: 900px; /* Көбірек сұрақтарға орын беру үшін енін ұлғайттық */
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Тақырыптар */
+        h1 {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        h2 {
+            font-size: 14px;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Кіріс өрісі */
+        #full-name { 
+            width: calc(100% - 20px); 
+            padding: 15px 10px; 
+            margin-bottom: 25px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* Сұрақ блогының контейнері (жалпы сұрақ) */
+        .vote-section {
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* Нұсқаларды ұстайтын контейнер (қолдау, қарсы, қалыс) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ыңғайлы, бейімделетін тор */
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Әрбір нұсқа блогы (мысалы, "қолдаимын") */
+        .option-block {
+            background: #ffffff;
+            border: 1px solid #dcdde1;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .option-text {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Canvas - қол қою алаңы */
+        canvas {
+            border: 1px dashed #a4b0be;
+            background-color: #fff;
+            cursor: crosshair;
+            width: 100%; /* Бейімделу үшін ені 100% */
+            height: 104px; /* Тұрақты биіктік */
+            display: block;
+            touch-action: none; /* Сенсорлы экранда сырғытуды өшіреді */
+            border-radius: 4px;
+        }
+        
+        /* Тазалау батырмасы */
+        .btn-clear { 
+            width: 100%; 
+            padding: 8px; 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn-clear:hover { background: #c0392b; }
+
+        /* Жіберу батырмасы */
+        .submit-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: #27ae60; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 30px; 
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover { background: #2ecc71; }
+        
+        /* Хабарлама мәртебесі */
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Мобильді құрылғыларға бейімделу (егер тор бір қатарда тұрмаса) */
+        @media (max-width: 650px) {
+            .options-grid {
+                grid-template-columns: 1fr; /* 650px төмен болса, нұсқалар бір-бірінің астында орналасады */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📋 №<br>Пәтерлердің, тұрғын емес үй-жәй меншік іиелерінің Сырттай дауыс беру парағы<br>
+        Лист в заочном голосований собственников квартир, нежилых помещений</h1>
+    
+    <input type="text" id="full-name" placeholder="Аты-жөніңіз (Ф.И.О.)" required>
+
+    <div class="vote-section" data-question-id="q1">
+        <h2>1. Үи кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h2>
+        
+        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Aijan**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q1_aijan_za">
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="1.1. Aijan - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q1_aijan_protiv">
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="1.2. Aijan - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q1_aijan_vozderzhu">
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="1.3. Aijan - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Jangyl**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q1_jangyl_za">
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="1.4. Jangyl - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q1_jangyl_protiv">
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="1.5. Jangyl - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q1_jangyl_vozderzhu">
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="1.6. Jangyl - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Gylnar**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q1_gylnar_za">
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="1.7. Gylnar - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q1_gylnar_protiv">
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="1.8. Gylnar - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q1_gylnar_vozderzhu">
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="1.9. Gylnar - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1; margin-top:15px;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Alia**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q1_alia_za">
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="1.10. Alia - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q1_alia_protiv">
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="1.11. Alia - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q1_alia_vozderzhu">
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="1.12. Alia - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="vote-section" data-question-id="q2">
+        <h2>2. Бақылаушы ребизор саилау - Выбрать проверяющего ревизора:</h2>
+            <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Marat**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q2_marat_za">
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="2.1. Marat - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q2_marat_protiv">
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="2.2. Marat - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q2_marat_vozderzhu">
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="2.3. Marat - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vote-section" data-question-id="q3"> 
+        <h2>3. МІБ төрағасын саилау - Выбрать председателя ОСИ:</h2>
+            <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+            <div class="option-text" style="font-size:16px;">Кандидат: **Серікжан Төлеуғалиұлы Көкебай**</div>
+            <div class="options-grid">
+                
+                <div class="option-block" data-option-id="q3_serikjan_za"> 
+                    <div class="option-text">қолдаимын - за</div>
+                    <canvas width="400" height="150" data-label="3.1. Serikjan - қолдаимын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+
+                <div class="option-block" data-option-id="q3_serikjan_protiv"> 
+                    <div class="option-text">қарсымын - против</div>
+                    <canvas width="400" height="150" data-label="3.2. Serikjan - қарсымын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+                
+                <div class="option-block" data-option-id="q3_serikjan_vozderzhu"> 
+                    <div class="option-text">қалыспын - воздержусь</div>
+                    <canvas width="400" height="150" data-label="3.3. Serikjan - қалыспын"></canvas> 
+                    <button class="btn-clear">Тазалау</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <button class="submit-btn" id="send-btn">Жіберу</button>
+    <p id="status"></p>
+</div>
+
+<script>
+    // EMAILJS БАПТАУЫ (Сіздің ID-іңізді пайдаланамыз)
+    emailjs.init("HySfhPitSDqpVM31p"); 
+
+    const statusMsg = document.getElementById('status');
+
+    // Canvas элементтерін табу
+    const canvases = document.querySelectorAll('canvas');
+
+    // Canvas функционалын орнату
+    canvases.forEach(canvas => {
+        const clearBtn = canvas.parentNode.querySelector('.btn-clear');
+        setupCanvas(canvas, clearBtn);
+    });
+
+    /**
+     * Canvas-қа қол қою функциясын орнатады.
+     * @param {HTMLCanvasElement} canvas Қол қою алаңы
+     * @param {HTMLButtonElement} clearBtn Тазалау батырмасы
+     */
+    function setupCanvas(canvas, clearBtn) {
+        // HTML canvas элементтеріне сәйкес келу үшін canvas.width және canvas.height 
+        // атрибуттарын HTML ішінде немесе осы жерде орнату керек.
+        // Стильдегі width: 100% болғандықтан, сызықтар дұрыс шығуы үшін
+        // canvas.width/height нақты пиксельдерін орнату маңызды.
+        // 400x150 пиксель ретінде стандарттаймыз.
+        canvas.width = 400;
+        canvas.height = 150;
+
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        // Қалам стильдері
+        ctx.lineWidth = 3; 
+        ctx.lineCap = "round"; 
+        ctx.lineJoin = "round"; 
+        ctx.strokeStyle = "#1E90FF"; 
+
+        /**
+         * Экрандағы тышқан/саусақ координаталарын Canvas-тың ішкі координаталарына түрлендіреді.
+         */
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect(); // Canvas-тың экрандағы нақты өлшемі
+            
+            // Масштаб коэффициентін есептеу
+            const scaleX = canvas.width / rect.width; 
+            const scaleY = canvas.height / rect.height;
+
+            // Сенсорлы немесе тышқан оқиғасын анықтау
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        const startDraw = (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            const pos = getPos(e);
+            ctx.moveTo(pos.x, pos.y);
+            e.preventDefault(); // Экран жылжымауы үшін
+        };
+
+        const draw = (e) => {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            e.preventDefault();
+        };
+
+        const endDraw = () => { isDrawing = false; };
+
+        // Тышқан оқиғалары
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', endDraw);
+        canvas.addEventListener('mouseout', endDraw);
+
+        // Сенсорлық (Touch) оқиғалары
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', endDraw);
+
+        // Тазалау батырмасы
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    }
+
+    /**
+     * Canvas-тың бос екенін тексереді.
+     * @param {HTMLCanvasElement} canvas Тексерілетін Canvas
+     * @returns {boolean} Бос болса true, әйтпесе false
+     */
+    function isCanvasBlank(canvas) {
+        const blank = document.createElement('canvas');
+        blank.width = canvas.width;
+        blank.height = canvas.height;
+        return canvas.toDataURL() === blank.toDataURL();
+    }
+
+
+// ... (басқа код бұрынғыдай қалады)
+
+// Жіберу батырмасы
+document.getElementById('send-btn').addEventListener('click', async () => {
+    // ... (Аты-жөнді тексеру коды)
+
+    async function attemptSend() {
+        statusMsg.style.color = "#3498db";
+        statusMsg.innerText = "⏳ Жіберілуде...";
+
+        const dataByQuestion = {
+            '1': 'Үи кеңесі мүшелерін саилау:',
+            '2': 'Бақылаушы ревизор саилау:',
+            '3': 'МІБ төрағасын саилау:'
+        };
+        
+        // Дауыс беру нәтижелерін сұрақ нөмірі бойынша топтастыруға арналған объект
+        const results = {
+            '1': [],
+            '2': [],
+            '3': []
+        };
+        
+        // --- Деректерді жинау және топтастыру ---
+        canvases.forEach(cvs => {
+            const label = cvs.getAttribute('data-label'); 
+            const questionNumber = label.charAt(0); // Сұрақ нөмірін алу (1, 2 немесе 3)
+            let resultHTML = '';
+            
+            if(isCanvasBlank(cvs)) {
+                // Қол қойылмаған жағдай
+                resultHTML = `<p style="margin: 5px 0 5px 20px;">
+                                <strong>${label}</strong>: ❌ Қол қойылмады
+                              </p>`;
+            } else {
+                // Қол қойылған жағдай (Суретті Base64 арқылы жібереміз)
+                resultHTML = `<div style="margin: 5px 0 5px 20px; border: 1px solid #eee; padding: 10px; border-radius: 4px;">
+                                <p style="font-weight: bold; margin-bottom: 5px;">${label}:</p>
+                                <img src="${cvs.toDataURL('image/png')}" 
+                                     style="max-width:300px; height: auto; border:1px solid #ccc; background-color: #f0f0f0; border-radius: 4px; display: block;"/>
+                             </div>`;
+            }
+            
+            if (results[questionNumber]) {
+                results[questionNumber].push(resultHTML);
+            }
+        });
+
+        // --- Электрондық поштаның негізгі мәтінін құру ---
+        let emailBody = `<h3>Қатысушы: ${fullName}</h3><hr>`;
+
+        for (const qNum in dataByQuestion) {
+            // Ең алдымен сұрақ тақырыбын қосамыз
+            emailBody += `<h2 style="color: #2c3e50; border-left: 5px solid #3498db; padding-left: 10px;">
+                            ${qNum}. ${dataByQuestion[qNum]}
+                          </h2>`;
+            
+            // Содан кейін осы сұраққа қатысты барлық нәтижелерді қосамыз
+            if (results[qNum].length > 0) {
+                emailBody += results[qNum].join('');
+            } else {
+                emailBody += `<p style="margin: 5px 0 5px 20px; color: #e74c3c;">Осы сұрақ бойынша дауыс тіркелмеді.</p>`;
+            }
+            emailBody += '<hr>';
+        }
+
+
+        const templateParams = {
+            my_data: emailBody, // Email Body (HTML форматында)
+            full_name: fullName // Тақырыпқа қосу үшін
+        };
+
+        // ... (қайта жіберу (retry) логикасы және try/catch блоктары бұрынғыдай қалады)
+        
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                // EmailJS жіберу функциясы
+                await emailjs.send('service_0mczhxj', 'template_t4xdvyl', templateParams);
+                statusMsg.style.color = "#27ae60";
+                statusMsg.innerText = "✅ Сәтті жіберілді! Рахмет.";
+                return true; 
+            } catch (err) {
+                // ... (Қате өңдеу логикасы бұрынғыдай қалады)
+            }
+        }
+        return false;
+    }
+
+    await attemptSend();
+});
+</script>
+</body>
+</html>
