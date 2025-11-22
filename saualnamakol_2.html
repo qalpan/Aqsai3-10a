@@ -327,16 +327,41 @@
      * Canvas-қа қол қою функциясын орнатады.
      */
     function setupCanvas(canvas, clearBtn) {
-        canvas.width = 200;
+        // HTML-дағы width/height атрибуттарына сәйкес келтіру
+        canvas.width = 200; 
         canvas.height = 75;
 
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
         
-        ctx.lineWidth = 3; 
+        ctx.lineWidth = 1; 
         ctx.lineCap = "round"; 
         ctx.lineJoin = "round"; 
         ctx.strokeStyle = "#1E90FF"; 
+
+        // *** ЖАҢА МӘТІН САЛУ ЛОГИКАСЫ ***
+    function drawPlaceholderText() {
+    // Егер Canvas бос болса, мәтінді саламыз
+    if (isCanvasBlank(canvas)) {
+        // Canvas-тың ішін тазалау
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        
+        // 👇 Бұл жолды өзгертіңіз: data-label орнына тікелей мәтін қойыңыз.
+        const label = "Қол қоиыу - Подписать";
+        
+        ctx.font = '12px Arial'; 
+        ctx.fillStyle = '#a4b0be'; // Сұрғылт түс
+        ctx.textAlign = 'center'; 
+        ctx.textBaseline = 'middle'; 
+
+        // Мәтінді Canvas ортасына салу
+        ctx.fillText(label, canvas.width / 2, canvas.height / 2);
+    }
+}
+        
+        // Бастапқы мәтінді салу
+        drawPlaceholderText();
+
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect(); 
@@ -354,6 +379,9 @@
 
         const startDraw = (e) => {
             isDrawing = true;
+            // Қол қою басталғанда, placeholder мәтінін өшіреміз
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
             ctx.beginPath();
             const pos = getPos(e);
             ctx.moveTo(pos.x, pos.y);
@@ -381,9 +409,10 @@
 
         clearBtn.addEventListener('click', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlaceholderText(); // Тазалағаннан кейін placeholder мәтінін қайта саламыз
         });
         
-        // --- ЖАҢА ЛОГИКА: Бір сұрақ ішінде тек бір қолтаңбаға рұқсат беру ---
+        // Бір сұрақ ішінде тек бір қолтаңбаға рұқсат беру
         canvas.addEventListener('mouseup', handleVoteSelection);
         canvas.addEventListener('touchend', handleVoteSelection);
     }
@@ -392,12 +421,14 @@
      * Қол қойылғаннан кейін басқа опцияларды тазартады.
      */
     function handleVoteSelection(e) {
-        // Қолтаңбаны қамтитын ең үлкен "vote-section" блогын табамыз
-        const parentSection = e.currentTarget.closest('.vote-section');
-        if (!parentSection) return;
+        // Қолтаңбаны қамтитын ең жақын "option-block" блогын табамыз.
+        // Бұл бір кандидаттың 3 опциясын (қолдау/қарсы/қалыс) қамтиды.
+        const candidateBlock = e.currentTarget.closest('.vote-section').parentNode;
+        
+        if (!candidateBlock) return;
 
         // Бұл кандидаттың немесе сұрақтың барлық canvasses-ін табамыз
-        const siblingCanvases = parentSection.querySelectorAll('canvas');
+        const siblingCanvases = candidateBlock.querySelectorAll('canvas');
         
         const currentCanvas = e.currentTarget;
         
@@ -406,7 +437,11 @@
             siblingCanvases.forEach(cvs => {
                 if (cvs !== currentCanvas) {
                     // Басқа canvasses-ті тазартамыз
-                    cvs.getContext('2d').clearRect(0, 0, cvs.width, cvs.height);
+                    const ctx = cvs.getContext('2d');
+                    ctx.clearRect(0, 0, cvs.width, cvs.height);
+                    
+                    // Тазаланған Canvas-қа placeholder мәтінін қайта саламыз
+                    setupCanvas(cvs, cvs.parentNode.querySelector('.btn-clear')); 
                 }
             });
         }
@@ -440,6 +475,14 @@
             statusMsg.style.color = "#e74c3c";
             statusMsg.innerText = "🚨 Аты-жөніңізді (Ф.И.О.) толтырыңыз!";
             fullNameInput.focus();
+            return;
+        }
+
+        // Дауыс берілгенін тексеру (кем дегенде бір қолтаңба)
+        const hasSigned = Array.from(canvases).some(cvs => !isCanvasBlank(cvs));
+        if (!hasSigned) {
+            statusMsg.style.color = "#e74c3c";
+            statusMsg.innerText = "🚨 Дауыс беру үшін кем дегенде бір жерге қол қойыңыз!";
             return;
         }
 
@@ -479,8 +522,8 @@
             for (const qNum in dataByQuestion) {
                 // Сұрақ тақырыбы
                 emailBody += `<h2 style="color: #2c3e50; border-left: 5px solid #3498db; padding-left: 10px;">
-                                ${qNum}. ${dataByQuestion[qNum]}
-                              </h2>`;
+                                    ${qNum}. ${dataByQuestion[qNum]}
+                                  </h2>`;
                 
                 // Осы сұраққа қатысты қол қойылған дауыстарды сүзу
                 const qVotes = signedVotes.filter(vote => vote.qNum === qNum);
@@ -488,10 +531,10 @@
                 if (qVotes.length > 0) {
                     qVotes.forEach(vote => {
                         emailBody += `<div style="margin: 5px 0 5px 20px; border: 1px solid #eee; padding: 10px; border-radius: 4px;">
-                                        <p style="font-weight: bold; margin-bottom: 5px;">${vote.label}:</p>
-                                        <img src="${vote.dataURL}" 
-                                             style="max-width:300px; height: auto; border:1px solid #ccc; background-color: #f0f0f0; border-radius: 4px; display: block;"/>
-                                     </div>`;
+                                            <p style="font-weight: bold; margin-bottom: 5px;">${vote.label}:</p>
+                                            <img src="${vote.dataURL}" 
+                                                style="max-width:300px; height: auto; border:1px solid #ccc; background-color: #f0f0f0; border-radius: 4px; display: block;"/>
+                                           </div>`;
                     });
                 } else {
                     emailBody += `<p style="margin: 5px 0 5px 20px; color: #e74c3c;">Осы сұрақ бойынша дауыс (қолтаңба) тіркелмеді.</p>`;
