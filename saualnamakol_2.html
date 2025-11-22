@@ -17,7 +17,7 @@
         .container { 
             background: white; 
             width: 100%;
-            max-width: 900px; /* Көбірек сұрақтарға орын беру үшін енін ұлғайттық */
+            max-width: 900px; 
             padding: 8px; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -61,7 +61,7 @@
         /* Нұсқаларды ұстайтын контейнер (қолдау, қарсы, қалыс) */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ыңғайлы, бейімделетін тор */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
             gap: 8px;
         }
 
@@ -88,42 +88,42 @@
             border: 1px dashed #a4b0be;
             background-color: #fff;
             cursor: crosshair;
-            width: 100%; /* Бейімделу үшін ені 100% */
-            height: 104px; /* Тұрақты биіктік */
+            width: 100%; 
+            height: 104px; 
             display: block;
-            touch-action: none; /* Сенсорлы экранда сырғытуды өшіреді */
+            touch-action: none; 
             border-radius: 4px;
         }
         
         /* Тазалау батырмасы */
          .btn-clear {
-  width: 100%;
-  padding: 8px;
-  background: #848180;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 4px;
-  border-radius: 4px;
-  font-size: 12px;
-  transition: background 0.3s;
-}
+            width: 100%;
+            padding: 8px;
+            background: #848180;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
         .btn-clear:hover { background: #e7c50d; }
 
         /* Жіберу батырмасы */
-       .submit-btn {
-  width: 100%;
-  padding: 10px;
-  background: #878678;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 2px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: normal;
-  transition: background 0.3s;
-}
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: #878678;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 2px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: normal;
+            transition: background 0.3s;
+        }
         .submit-btn:hover { background: #e7c50d; }
         
         /* Хабарлама мәртебесі */
@@ -136,7 +136,7 @@
         /* Мобильді құрылғыларға бейімделу (егер тор бір қатарда тұрмаса) */
         @media (max-width: 650px) {
             .options-grid {
-                grid-template-columns: 1fr; /* 650px төмен болса, нұсқалар бір-бірінің астында орналасады */
+                grid-template-columns: 1fr; 
             }
         }
     </style>
@@ -152,7 +152,7 @@
     <div class="vote-section" data-question-id="q1">
         <h2>1. Үи кеңесі мүшелерін саилау - Выбрать членов Совета дома:</h2>
         
-        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+        <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Aijan</div>
             <div class="options-grid">
                 
@@ -176,7 +176,7 @@
             </div>
         </div>
         
-        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+        <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Jangyl</div>
             <div class="options-grid">
                 
@@ -200,7 +200,7 @@
             </div>
         </div>
 
-        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+        <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Gylnar</div>
             <div class="options-grid">
                 
@@ -224,7 +224,7 @@
             </div>
         </div>
 
-        <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+        <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Alia</div>
             <div class="options-grid">
                 
@@ -252,7 +252,7 @@
     
     <div class="vote-section" data-question-id="q2">
         <h2>2. Бақылаушы ребизор саилау - Выбрать проверяющего ревизора:</h2>
-            <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+            <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Marat</div>
             <div class="options-grid">
                 
@@ -279,7 +279,7 @@
 
     <div class="vote-section" data-question-id="q3"> 
         <h2>3. МІБ төрағасын саилау - Выбрать председателя ОСИ:</h2>
-            <div class="vote-section" style="background:#fff; border:1px solid #dcdde1;">
+            <div class="candidate-block" style="background:#fff; border:1px solid #dcdde1; margin-bottom: 8px; padding: 4px;">
             <div class="option-text" style="font-size:14px;">Серікжан Төлеуғалиұлы Көкебай</div>
             <div class="options-grid">
                 
@@ -316,56 +316,52 @@
     const statusMsg = document.getElementById('status');
     const canvases = document.querySelectorAll('canvas');
 
-    // Кандидаттардың атаулары (Дауыс беру логикасын жеңілдету үшін)
-    const candidates = {
-        'q1': ['Aijan', 'Jangyl', 'Gylnar', 'Alia'],
-        'q2': ['Marat'],
-        'q3': ['Серікжан Төлеуғалиұлы Көкебай']
-    };
+    // Көрсету үшін статикалық өлшемдер
+    const DISPLAY_WIDTH = 200;
+    const DISPLAY_HEIGHT = 75;
 
-   // ... (басқа кодтар)
-
+    /**
+     * Canvas-тың бос екенін тексереді.
+     */
+    function isCanvasBlank(canvas) {
+        const blank = document.createElement('canvas');
+        blank.width = canvas.width;
+        blank.height = canvas.height;
+        // toDataURL-ді шақыру DPI-ға байланысты дұрыс жұмыс істеуі үшін canvas.width және height қолданылады
+        return canvas.toDataURL() === blank.toDataURL();
+    }
+    
     /**
      * Canvas-қа қол қою функциясын орнатады. (Жоғары DPI қолдауымен)
      */
     function setupCanvas(canvas, clearBtn) {
-        // *** 1. DPI масштабтау коэффициентін анықтау (Retina) ***
         const scale = window.devicePixelRatio || 1; 
-
-        // Нақты ішкі өлшемдер (2x DPI үшін)
-        const displayWidth = 200;
-        const displayHeight = 75;
-
-        // *** 2. Canvas-тың нақты ішкі (buffer) өлшемдерін орнату ***
-        // Бұл Canvas-тағы пикселдер санын 2 есе арттырады (сапаны арттырады)
-        canvas.width = displayWidth * scale;
-        canvas.height = displayHeight * scale;
-
-        // *** 3. Canvas-тың көрінетін (CSS) өлшемдерін орнату ***
-        // Бұл Canvas-тың көрініс аймағын бұрынғыдай қалдырады
-        canvas.style.width = displayWidth + 'px';
-        canvas.style.height = displayHeight + 'px';
-        // Ескерту: CSS-те width: 100%; болғандықтан, style.width-ті қолданбаймыз.
-        // Біз CSS-тегі 100% енді сақтау үшін, тек нақты пиксельдерді ғана масштабтаймыз.
-
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
         
-        // *** 4. Контекстті масштабтау ***
-        // Қолтаңбаның да, мәтіннің де дұрыс масштабталуы үшін қажет
+        // 1. Нақты ішкі (buffer) өлшемдерін орнату (DPI үшін)
+        canvas.width = DISPLAY_WIDTH * scale;
+        canvas.height = DISPLAY_HEIGHT * scale;
+
+        // 2. Көрінетін (CSS) өлшемдерін орнату (Кейбір браузерлерде қажет)
+        canvas.style.width = DISPLAY_WIDTH + 'px';
+        canvas.style.height = DISPLAY_HEIGHT + 'px';
+
+        // 3. Контекстті масштабтау (Сызуды DPI-мен сәйкестендіру)
         ctx.scale(scale, scale);
 
-        // Қаламның қалыңдығын өзгерту (Масштабтаудан кейін дұрыс көрінуі үшін)
-        // Енді 2 пиксель екі еселенген Canvas-та да анық болады
         ctx.lineWidth = 2; 
         ctx.lineCap = "round"; 
         ctx.lineJoin = "round"; 
-        ctx.strokeStyle = "#1E90FF"; // Көк түс
+        ctx.strokeStyle = "#1E90FF"; 
 
-        // ТҮЗЕТІЛГЕН МӘТІН САЛУ ЛОГИКАСЫ
+        // МӘТІН САЛУ
         function drawPlaceholderText() {
-            if (isCanvasBlank(canvas, scale)) { // isCanvasBlank-ты да масштабтау керек
-                ctx.clearRect(0, 0, displayWidth, displayHeight); // Енді тазалауды дисплей өлшемімен жасаймыз
+            // Енді isCanvasBlank-ты қолданамыз, себебі ені мен биіктігі DPI-ға байланысты.
+            // isCanvasBlank-тағы toDataURL барлық пикселдерді ескереді.
+            if (isCanvasBlank(canvas)) { 
+                // ctx.scale қолданылғандықтан, тазалауды DISPLAY_WIDTH/HEIGHT арқылы жасаймыз
+                ctx.clearRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT); 
                 
                 const label = "Қол қоиыу - Подписать";
                 
@@ -374,14 +370,13 @@
                 ctx.textAlign = 'center'; 
                 ctx.textBaseline = 'middle'; 
 
-                // Мәтінді дисплей өлшеміне сәйкес ортаға салу
-                ctx.fillText(label, displayWidth / 2, displayHeight / 2);
+                // Мәтінді ортаға салу
+                ctx.fillText(label, DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2);
             }
         }
         
         // Бастапқы мәтінді салу
         drawPlaceholderText();
-
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect(); 
@@ -389,17 +384,18 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Енді scaledCanvas-тың позициясы қажет емес, себебі scale(scale, scale) қолданылды
+            // Сызу координаталарын контекстік масштабты ескере отырып есептейміз
+            // Бұл ctx.scale(scale, scale) болғандықтан, тек қана CSS өлшеміне қатысты ғана есептейміз
             return {
-                x: (clientX - rect.left) / (rect.width / displayWidth),
-                y: (clientY - rect.top) / (rect.height / displayHeight)
+                x: (clientX - rect.left) / rect.width * DISPLAY_WIDTH,
+                y: (clientY - rect.top) / rect.height * DISPLAY_HEIGHT
             };
         }
 
         const startDraw = (e) => {
             isDrawing = true;
-            // Тазалауды дисплей өлшемімен жасаймыз
-            ctx.clearRect(0, 0, displayWidth, displayHeight); 
+            // Жаңа қол қоюды бастағанда, placeholder-ді тазалау
+            ctx.clearRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT); 
 
             ctx.beginPath();
             const pos = getPos(e);
@@ -417,7 +413,7 @@
 
         const endDraw = () => { isDrawing = false; };
 
-        // ... (қалған оқиғаларды тіркеу логикасы бұрынғыдай)
+        // Оқиғаларды тіркеу
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', endDraw);
@@ -427,65 +423,43 @@
         canvas.addEventListener('touchend', endDraw);
 
         clearBtn.addEventListener('click', () => {
-            ctx.clearRect(0, 0, displayWidth, displayHeight);
-            drawPlaceholderText(); // Тазалағаннан кейін placeholder мәтінін қайта саламыз
+            ctx.clearRect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+            drawPlaceholderText(); // Тазалағаннан кейін placeholder мәтінін қайта салу
         });
         
+        // Қол қою аяқталғанда дауысты таңдауды өңдеуді қосу
         canvas.addEventListener('mouseup', handleVoteSelection);
         canvas.addEventListener('touchend', handleVoteSelection);
     }
     
-    // *** isCanvasBlank функциясын DPI-ді ескеру үшін өзгерту ***
-    function isCanvasBlank(canvas, scale = 1) {
-        const blank = document.createElement('canvas');
-        blank.width = canvas.width; // Нақты өлшемді пайдалану
-        blank.height = canvas.height;
-        return canvas.toDataURL() === blank.toDataURL();
-    }
-    
-     
-  // ... (қалған код өзгеріссіз)
-
     /**
-     * Қол қойылғаннан кейін басқа опцияларды тазартады.
+     * Қол қойылғаннан кейін басқа опцияларды тазартады (бір сұрақ үшін бір ғана дауыс).
      */
     function handleVoteSelection(e) {
-        // *** ТҮЗЕТУ: Ең жақын кандидат блогын табамыз (Aijan, Jangyl, т.б. үшін) ***
-        // Бұл div class="vote-section" style="background:#fff; border:1px solid #dcdde1;" блогы болуы керек.
-        const candidateBlock = e.currentTarget.closest('.vote-section');
+        // Ең жақын кандидат блогын табамыз (candidate-block)
+        const candidateBlock = e.currentTarget.closest('.candidate-block');
         
-        if (!candidateBlock) return; // Егер табылса
+        if (!candidateBlock) return; 
 
-        // Бұл кандидаттың немесе сұрақтың барлық canvasses-ін табамыз
+        // Бұл кандидаттың барлық canvasses-ін табамыз
         const siblingCanvases = candidateBlock.querySelectorAll('canvas');
         
         const currentCanvas = e.currentTarget;
         
-        // Егер бұл canvas-та сурет салынған болса
+        // Егер бұл canvas-та сурет салынған болса (қол қойылған болса)
         if (!isCanvasBlank(currentCanvas)) {
             siblingCanvases.forEach(cvs => {
                 if (cvs !== currentCanvas) {
                     // Басқа canvasses-ті тазартамыз
-                    // setupCanvas арқылы тазарту және placeholder-ді қайта салу
                     const clearBtn = cvs.parentNode.querySelector('.btn-clear');
+                    // setupCanvas арқылы тазарту және placeholder-ді қайта салу
                     setupCanvas(cvs, clearBtn); 
                 }
             });
         }
     }
-// ... (қалған код өзгеріссіз)
 
 
-    /**
-     * Canvas-тың бос екенін тексереді.
-     */
-    function isCanvasBlank(canvas) {
-        const blank = document.createElement('canvas');
-        blank.width = canvas.width;
-        blank.height = canvas.height;
-        return canvas.toDataURL() === blank.toDataURL();
-    }
-    
     // Барлық canvas-тарды орнату
     canvases.forEach(canvas => {
         const clearBtn = canvas.parentNode.querySelector('.btn-clear');
@@ -493,14 +467,30 @@
     });
 
 // ----------------------------------------------------------------------------------
-// ... (басқа функциялар мен логика)
-
-// ----------------------------------------------------------------------------------
 // --- Жіберу логикасы ---
 
     document.getElementById('send-btn').addEventListener('click', async () => {
-        // ... (ФИО тексеру және hasSigned тексеру өзгеріссіз)
-        // ...
+        const fullNameInput = document.getElementById('full-name');
+        const fullName = fullNameInput.value.trim();
+
+        if (!fullName) {
+            statusMsg.style.color = "#e74c3c";
+            statusMsg.innerText = "❌ Аты-жөніңізді, пәтер №, телефон және email-ді енгізіңіз!";
+            return;
+        }
+
+        let hasSigned = false;
+        canvases.forEach(cvs => {
+            if (!isCanvasBlank(cvs)) {
+                hasSigned = true;
+            }
+        });
+
+        if (!hasSigned) {
+            statusMsg.style.color = "#e74c3c";
+            statusMsg.innerText = "❌ Кем дегенде бір сұраққа қол қою қажет.";
+            return;
+        }
 
         const maxRetries = 3; 
 
@@ -522,8 +512,9 @@
                 const questionNumber = label.charAt(0);
 
                 if (!isCanvasBlank(cvs)) {
-                    // *** 💥 ТҮЗЕТУ: PNG-ден JPEG-ге ауыстыру және сапаны төмендету (50Kb лимитін шешу) ***
-                    const dataURL = cvs.toDataURL('image/webp', 0.7); // 70% сапа
+                    // *** JPEG-ге ауыстыру және сапаны төмендету (Көлемін азайту үшін) ***
+                    // JPEG/0.5 (50% сапа) әдетте emailJS лимитіне сәйкес келеді
+                    const dataURL = cvs.toDataURL('image/jpeg', 0.5); 
                     
                     signedVotes.push({
                         qNum: questionNumber,
@@ -533,19 +524,34 @@
                 }
             });
             
-            // ... (Қалған emailBody және жіберу логикасы өзгеріссіз)
-            // ...
-            
+            // --- 2. Email Body құру ---
             let emailBody = `<h3>Қатысушы: ${fullName}</h3><hr>`;
 
-            // ... (Email Body құру логикасы)
+            // Сұрақтар бойынша дауыстарды топтастыру
+            for (const qNum in dataByQuestion) {
+                const votesForQuestion = signedVotes.filter(vote => vote.qNum === qNum);
+
+                if (votesForQuestion.length > 0) {
+                    emailBody += `<h4>${qNum}. ${dataByQuestion[qNum]}</h4><ul>`;
+                    
+                    votesForQuestion.forEach(vote => {
+                        emailBody += `
+                            <li>
+                                <strong>Дауыс:</strong> ${vote.label}<br>
+                                <strong>Қолтаңба:</strong> <img src="${vote.dataURL}" alt="Қолтаңба" style="max-width:200px; height:auto; border:1px solid #ccc;"><br><br>
+                            </li>
+                        `;
+                    });
+                    emailBody += `</ul>`;
+                }
+            }
             
+            // --- 3. Жіберу ---
             const templateParams = {
                 my_data: emailBody,
                 full_name: fullName
             };
 
-            // ... (Жіберу логикасы)
             for (let attempt = 0; attempt < maxRetries; attempt++) {
                 try {
                     await emailjs.send('service_0mczhxj', 'template_t4xdvyl', templateParams);
