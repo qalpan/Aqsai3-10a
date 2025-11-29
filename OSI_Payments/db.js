@@ -1,4 +1,5 @@
 // db.js - IndexedDB арқылы деректерді басқару
+
 const DB_NAME = 'OSIPaymentsDB';
 const DB_VERSION = 1;
 const STORE_APARTMENTS = 'apartments'; // Пәтерлер туралы ақпарат
@@ -37,7 +38,7 @@ function openDB() {
 
             // 2. Тарифтер (қызмет бағасы)
             if (!db.objectStoreNames.contains(STORE_TARIFFS)) {
-                const tariffStore = db.createObjectStore(STORE_TARIFFS, { keyPath: 'serviceCode' });
+                db.createObjectStore(STORE_TARIFFS, { keyPath: 'serviceCode' });
             }
             
             // 3. Төлемдер (ай сайынғы есеп, төленген сома)
@@ -51,7 +52,7 @@ function openDB() {
             
             // Бастапқы деректерді толтыру үшін функцияны шақыру
             event.target.transaction.oncomplete = () => {
-                 populateInitialData();
+                populateInitialData();
             };
         };
     });
@@ -62,8 +63,8 @@ function openDB() {
  */
 async function populateInitialData() {
     const apartData = [
-        { flatNumber: 1, area: 45.0, owner: "А.Е. Асанов", balance: 0 },
-        { flatNumber: 2, area: 60.5, owner: "Б.К. Беріков", balance: 0 },
+        { flatNumber: 1, area: 45.0, owner: "А.Е. Асанов", balance: 0, flatId: 1 }, // ID қолмен беріледі, кейін indexedDB өзі береді
+        { flatNumber: 2, area: 60.5, owner: "Б.К. Беріков", balance: 0, flatId: 2 },
         // ... қосымша пәтерлерді қосыңыз
     ];
     
@@ -121,17 +122,6 @@ function getAllData(storeName) {
     });
 }
 
-// Сыртқы қолдану үшін экспорттау
-export { openDB, getAllData, STORE_APARTMENTS, STORE_TARIFFS, STORE_PAYMENTS };
-
-
-
-
-
-// db.js - Жаңа функциялар қосылды
-
-// ... (бұрынғы код: DB_NAME, DB_VERSION, STORE_*, openDB, populateInitialData, getAllData)
-
 /**
  * Пәтердің ағымдағы балансын жаңартады (қарыз оң сан, артық төлем теріс сан).
  * @param {number} flatId - Пәтердің DB идентификаторы
@@ -142,18 +132,21 @@ function updateApartmentBalance(flatId, amount) {
         const transaction = db.transaction([STORE_APARTMENTS], 'readwrite');
         const store = transaction.objectStore(STORE_APARTMENTS);
         
-        const getRequest = store.get(flatId);
-        
+        // flatId - Index-ке берілген flatNumber емес, IndexedDB-дегі keyPath (id)
+        // Пәтерді flatNumber арқылы табу үшін, алдымен Index-ті қолдану керек
+        const flatIndex = store.index('flatNumber');
+        const getRequest = flatIndex.get(flatId); // flatId (пәтер нөмірі) бойынша іздеу
+
         getRequest.onsuccess = (event) => {
             const apartment = event.target.result;
             if (!apartment) {
-                return reject(`Пәтер ID ${flatId} табылмады.`);
+                return reject(`Пәтер №${flatId} табылмады.`);
             }
             
             // Балансты жаңарту
             apartment.balance = parseFloat((apartment.balance + amount).toFixed(2));
             
-            const updateRequest = store.put(apartment);
+            const updateRequest = store.put(apartment); // DB-дегі ID арқылы жаңарту
             
             updateRequest.onsuccess = () => resolve(apartment.balance);
             updateRequest.onerror = (event) => reject(event.target.error);
@@ -166,7 +159,7 @@ function updateApartmentBalance(flatId, amount) {
 /**
  * Төленген соманы төлемдер тарихына қосады және пәтер балансын жаңартады.
  * @param {Object} paymentRecord - Төлем деректері (flatId, month, year, paidAmount, datePaid)
- * @param {number} balanceChange - Баланстың өзгеру сомасы (әдетте -paidAmount)
+ * @param {number} balanceChange - Баланстың өзгеру сомасы
  */
 function recordPayment(paymentRecord, balanceChange) {
     return new Promise(async (resolve, reject) => {
@@ -179,10 +172,10 @@ function recordPayment(paymentRecord, balanceChange) {
         addRequest.onsuccess = async () => {
             try {
                 // 2. Пәтер балансын жаңарту
-                const newBalance = await updateApartmentBalance(paymentRecord.flatId, balanceChange);
+                // updateApartmentBalance енді пәтер нөмірін қабылдайды
+                const newBalance = await updateApartmentBalance(paymentRecord.flatNumber, balanceChange); 
                 resolve(newBalance);
             } catch (error) {
-                // Егер балансты жаңарту сәтсіз болса, транзакцияны кері қайтару (қажет болса)
                 reject(error);
             }
         };
@@ -194,6 +187,15 @@ function recordPayment(paymentRecord, balanceChange) {
     });
 }
 
-// Сыртқы қолдану үшін экспорттау
-export { openDB, getAllData, updateApartmentBalance, recordPayment, 
-         STORE_APARTMENTS, STORE_TARIFFS, STORE_PAYMENTS }; // recordPayment экспортталды
+// ***************************************************************
+// ТЕК БІР РЕТ ЭКСПОРТТАУ (Duplicate export қатесін жояды)
+// ***************************************************************
+export { 
+    openDB, 
+    getAllData, 
+    updateApartmentBalance, 
+    recordPayment, 
+    STORE_APARTMENTS, 
+    STORE_TARIFFS, 
+    STORE_PAYMENTS 
+};
