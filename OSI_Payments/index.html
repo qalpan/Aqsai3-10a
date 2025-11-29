@@ -91,7 +91,7 @@
 
     <script type="module">
         // Қажетті функцияларды әр файлдан импорттау
-        import { openDB, initializeTariffs, recordPayment, getApartmentByNumber, STORE_APARTMENTS, STORE_PAYMENTS, STORE_TARIFFS } from './js/db.js';
+        import { openDB, initializeTariffs, recordPayment, getApartmentByNumber, STORE_APARTMENTS, STORE_PAYMENTS, STORE_TARIFFS } from './db.js';
         import { calculateMonthlyCharges } from './calculator.js';
         import { importApartments, exportData } from './data-io.js';
         import { generateReceipt } from './receipt-generator.js';
@@ -346,4 +346,5 @@
     </script>
 </body>
 </html>
+
 
