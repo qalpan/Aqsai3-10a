@@ -96,11 +96,16 @@
 
     <script type="module">
         // Барлық импорттар
-        import { openDB, initializeTariffs, recordPayment, getApartmentByNumber } from './db.js';
-        import { calculateMonthlyCharges } from './calculator.js';
-        import { importApartments, exportData, STORE_APARTMENTS } from './data-io.js';
-        import { generateReceipt } from './receipt-generator.js';
-        import { generateYearlyReport } from './yearly-report.js';
+        <script type="module">
+    import { openDB, initializeTariffs, recordPayment, getApartmentByNumber } from './db.js';
+    import { calculateMonthlyCharges } from './calculator.js';
+    import { importApartments, exportData, STORE_APARTMENTS } from './data-io.js';
+    import { generateReceipt } from './receipt-generator.js';
+    import { generateYearlyReport } from './yearly-report.js';
+
+    // ... қалған код өзгеріссіз ...
+</script>
+
 
         // Элементтерді таңдау
         const calculateBtn = document.getElementById('calculate-btn');
@@ -387,3 +392,4 @@
     </script>
 </body>
 </html>
+
