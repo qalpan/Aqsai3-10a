@@ -1,9 +1,9 @@
 [
   {"apartment": "10", "month": "2025-10", "amount": 15000, "status": "Paid", "receipt_link": "receipts/10..webp"},
   {"apartment": "10", "month": "2025-11", "amount": 15000, "status": "Pending", "receipt_link": "receipts/10.html"}
-  // ... басқа деректер
-
+ 
 ]
+
 
 
 
