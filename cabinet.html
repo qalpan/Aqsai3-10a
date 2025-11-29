@@ -1,3 +1,97 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">        
+<link rel="shortcut icon" href="sůuretter/taꞑba-aqsai3-10a.svg" type="image/svg">
+<title>Жеке Кабинет - Aqsai3-10a ůi býrlestýgý</title>
+<link rel='stylesheet' href='yi.css' type='text/css'/>  
+
+<style>
+/* -------------------------- */
+/* Cabinet арнайы стильдері */
+/* -------------------------- */
+body {
+    background-color: #f4f4f4;
+}
+.content-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.payment-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+.payment-history-table th, .payment-history-table td {
+    border: 1px solid #ddd;
+    padding: 12px 10px;
+    text-align: left;
+}
+.payment-history-table th {
+    background-color: #007bff; /* Басты түс */
+    color: white;
+    text-align: center;
+}
+.payment-history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.status-paid { color: green; font-weight: bold; }
+.status-pending { color: orange; font-weight: bold; }
+#apartment-input {
+    min-width: 100px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<ul class="belgi" href="https://qalpan.github.io/Aqsai3-10a/">
+<img src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" alt="Басты бет" title="Басты бетке - оралыу" data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" data-description="бастау">
+</ul>
+
+<ul class="injener">
+    <a><strong>Инженерлік желілерге қызымет</strong></a>
+    <a href="tel:+7 700 740 0005">+7 700 740 0005 operator</a>
+    <a href="tel:+7 747 921 5140  tel:+7 705 765 1170">+7 747 921 5140  +7 705 765 1170 santex</a>
+</ul>
+
+<div class="content-wrapper">
+    <h2>👤 Тұрғынның Жеке Кабинеті</h2>
+    <hr>
+    
+    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+        <label for="apartment-input" style="font-weight: bold;">Пәтер нөмірін енгізіңіз:</label>
+        <input type="text" id="apartment-input" placeholder="Мысалы: 10" value="" 
+               style="padding: 8px; margin-right: 10px; border: 1px solid #ccc; border-radius: 3px;">
+        <button onclick="loadPaymentData()" 
+                style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+            Деректерді көрсету
+        </button>
+        <p id="data-status" style="margin-top: 10px; font-size: 0.9em;"></p>
+    </div>
+
+    <div id="payment-table-container">
+        <p>Кестені көру үшін пәтер нөмірін енгізіп, батырманы басыңыз.</p>
+    </div>
+
+</div>
+
+<ul class="menu">
+<li class="list">
+<a href="https://qalpan.github.io/Aqsai3-10a/">web - site – Aqsai3-10a</a>
+</li>
+</ul>
+
+<footer>
+<p>Aqsai3-10a yi birlestigi</p>
+</footer>
+
 <script type="text/javascript">
 // --- 1. Бастапқы функциялар (Қорғау) ---
 document.ondragstart = test;
@@ -7,14 +101,14 @@ function test(){return false}
 
 // --- 2. Төлем Деректерін Жүктеу және Көрсету ---
 
-// Файл жолы.
-const paymentDataUrl = 'payments.json'; // Егер қате шықса, '/Aqsai3-10a/payments.json' етіп өзгертіңіз.
+// Файл жолы. 'payments.json' - егер cabinet.html және payments.json бір папкада болса.
+const paymentDataUrl = 'payments.json'; 
 
 const container = document.getElementById('payment-table-container');
 const statusMessage = document.getElementById('data-status');
 const apartmentInput = document.getElementById('apartment-input');
 
-// Enter батырмасын басу арқылы жүктеу
+// Enter батырмасын басу арқылы жүктеуді іске қосу
 apartmentInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         loadPaymentData();
@@ -22,14 +116,12 @@ apartmentInput.addEventListener('keypress', function (e) {
 });
 
 function loadPaymentData() {
-    // 1. Енгізілген мәнді тазалау және string (жол) форматына келтіру
-    // Біз apartment-config.json-дағы мәндерді string деп есептейміз
-    const targetApartment = apartmentInput.value.trim().toString(); 
+    // Енгізілген мәнді тазалау (trim) және string (жол) форматына келтіру
+    const targetApartment = apartmentInput.value.trim(); 
 
-    // 2. Алғашқы қателік тексеру
-    // Егер бос болса немесе 0-ден кіші мән болса ғана қате шығарамыз
-    if (!targetApartment || targetApartment === '0') {
-        statusMessage.innerHTML = '<span style="color: red; font-weight: bold;">Пәтер нөмірін дұрыс енгізіңіз.</span>';
+    // Алғашқы қателік тексеру
+    if (!targetApartment) {
+        statusMessage.innerHTML = '<span style="color: red; font-weight: bold;">Пәтер нөмірін енгізіңіз.</span>';
         container.innerHTML = '<p>Кестені көру үшін пәтер нөмірін енгізіңіз.</p>';
         return;
     }
@@ -39,20 +131,18 @@ function loadPaymentData() {
 
     fetch(paymentDataUrl) 
         .then(response => {
-            // 🛑 МАҢЫЗДЫ ТҮЗЕТУ: response.status тексерудегі логикалық қатені түзетеміз.
-            if (!response.ok) { // response.ok == true, егер статус 200-299 аралығында болса.
-                // HTTP қатесі (мысалы 404, 500)
+            // response.ok == true, егер статус 200-299 аралығында болса. Бұл fetch-тегі ең дұрыс тексеру.
+            if (!response.ok) { 
+                // HTTP қатесі (мысалы 404 - файл табылмады)
                 throw new Error(`HTTP қатесі! Статус: ${response.status}. JSON файлын жүктеу мүмкін болмады.`);
             }
             return response.json();
         })
         .then(data => {
-            // Деректерді сүзу
-            // Пәтер нөмірі толығымен сәйкес келуі керек
-            const filteredData = data.filter(p => p.apartment === targetApartment).reverse(); 
-            
+            // Деректерді сүзу (apartment өрісі targetApartment-ке тең болса)
+            const filteredData = data.filter(p => p.apartment === targetApartment).reverse(); // Соңғы айлар жоғарыда
+
             if (filteredData.length === 0) {
-                 // Егер payments.json ішінде сәйкес деректер болмаса
                  statusMessage.innerHTML = `<span style="color: blue; font-weight: bold;">Пәтер ${targetApartment} үшін төлем тарихы табылмады.</span>`;
                  container.innerHTML = `<p><strong>${targetApartment}</strong> пәтері бойынша табылған жазбалар жоқ. Енгізген нөміріңізді тексеріңіз.</p>`;
                  return;
@@ -85,7 +175,7 @@ function loadPaymentData() {
                         <td>${payment.month}</td>
                         <td style="text-align: right;">${amountFormatted}</td>
                         <td class="${statusClass}">${statusText}</td>
-                        <td style="text-align: center;">${payment.receipt_link ? '<a href="' + payment.receipt_link + '" target="_blank">Түбіртек көру</a>' : '—'}</td>
+                        <td class="text-center">${payment.receipt_link ? '<a href="' + payment.receipt_link + '" target="_blank">Түбіртек көру</a>' : '—'}</td>
                     </tr>
                 `;
             });
@@ -96,11 +186,14 @@ function loadPaymentData() {
         .catch(error => {
             console.error('Төлем деректерін жүктеу қатесі:', error);
             statusMessage.innerHTML = '<span style="color: red; font-weight: bold;">Деректерді жүктеу кезінде қате шықты.</span>';
-            container.innerHTML = `<p style="color: red;">Деректерді жүктеу мүмкін болмады. Консольді тексеріңіз. Қате: ${error.message}</p>`;
+            container.innerHTML = `<p style="color: red;">Деректерді жүктеу мүмкін болмады. Бұл әдетте 'payments.json' файлының табылмағанын (404 қате) білдіреді. Қате: ${error.message}</p>`;
         });
 }
 
-// --- 3. Аккордеон функциясы (Сіздің бастапқы кодыңыз) ---
+// --- 3. Аккордеон функциясы (Егер сіздің yi.css-те пайдалансаңыз) ---
 const list = document.querySelectorAll('.list');
-// ... (сіздің басқа JS логикаңыз)
+// Қажет болса, мұнда accordion функциясын қосыңыз.
 </script>
+
+</body>
+</html>
