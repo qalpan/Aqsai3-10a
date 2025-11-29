@@ -1,18 +1,34 @@
 [
   {
-    "apartment": "1",
-    "area_sqm": 60.5,
-    "has_video": true
-  },
-  {
     "apartment": "2",
-    "area_sqm": 90.2, 
+    "area_sqm": 44,60, 
     "has_video": true
   },
   {
     "apartment": "3",
-    "area_sqm": 72.8,
+    "area_sqm": 45,40,
     "has_video": true
-  }
+  },
+  {
+    "apartment": "4",
+    "area_sqm": 22,10,
+    "has_video": true
+  },
+  {
+    "apartment": "5",
+    "area_sqm": 23,
+    "has_video": true
+  },
+  {
+    "apartment": "6",
+    "area_sqm": 20,50,
+    "has_video": true
+  },
+  {
+    "apartment": "7",
+    "area_sqm": 21,2,
+    "has_video": true
+  },
   // ... 200 пәтерге дейін жалғастырыңыз
 ]
+
