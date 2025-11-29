@@ -1,0 +1,13 @@
+[
+  {
+    "apartment": "1",
+    "area_sqm": 60.5,
+    "has_video": true
+  },
+  {
+    "apartment": "2",
+    "area_sqm": 90.2, 
+    "has_video": true
+  },
+  // ... басқа пәтерлерді жалғастырыңыз
+]
