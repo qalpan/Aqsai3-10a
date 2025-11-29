@@ -34,6 +34,38 @@ function test(){return false}
 <a class="jami" href="https://jami.net">web - jami - aqsai3-10a</a>  
 </ul>
 
+
+<div id="payment-table-container">
+
+const targetApartment = '10'; // Пайдаланушының пәтер нөмірі
+const container = document.getElementById('payment-table-container');
+
+fetch('/Aqsai3-10a/payments.json') // Сіздің репозиторийіңіздегі жол
+    .then(response => response.json())
+    .then(data => {
+        let html = '<table>...';
+        // Деректерді кестеге айналдыру логикасы
+        data.filter(p => p.apartment === targetApartment).forEach(payment => {
+            html += `<tr>
+                <td>${payment.month}</td>
+                <td>${payment.amount}</td>
+                <td>${payment.status}</td>
+                <td>${payment.receipt_link ? '<a href="' + payment.receipt_link + '">Түбіртек</a>' : '—'}</td>
+            </tr>`;
+        });
+        html += '</table>';
+        container.innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Деректерді жүктеу қатесі:', error);
+        container.innerHTML = '<p>Төлем деректерін жүктеу мүмкін болмады.</p>';
+    });
+
+
+    </div>
+
+
+  
 <ul class="menu">
 <li class="list">
 <a href="https://qalpan.github.io/Aqsai3-10a/">web - site – Aqsai3-10a</a>
