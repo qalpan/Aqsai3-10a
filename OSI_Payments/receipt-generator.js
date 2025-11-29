@@ -1,7 +1,9 @@
 // receipt-generator.js - Түбіртек жасау және басып шығару логикасы
-import { getAllData, STORE_APARTMENTS, STORE_PAYMENTS } from './db.js';
-// calculateMonthlyCharges функциясын импорттау керек, бірақ қазір қарапайымдылық үшін тек ДБ-дан деректерді аламыз.
 
+// Қажетті IndexedDB деректерді басқару функцияларын импорттау
+import { getAllData, STORE_APARTMENTS, STORE_PAYMENTS } from './db.js';
+
+// Валюта форматы
 const formatCurrency = (amount) => new Intl.NumberFormat('kk-KZ', {
     style: 'currency',
     currency: 'KZT',
@@ -16,93 +18,78 @@ const MONTHS = ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "М�
  * @param {number} month - Ай нөмірі (1-12)
  * @param {number} year - Жыл
  */
-async function generateReceipt(flatNumber, month, year) {
+export async function generateReceipt(flatNumber, month, year) { // <--- 'export' қосылды
     try {
-        // 1. Деректерді алу (Төлемдер мен Пәтер туралы ақпарат)
-        const apartments = await getAllData(STORE_APARTMENTS);
+        // 1. Деректерді алу
         const payments = await getAllData(STORE_PAYMENTS);
 
-        const apartment = apartments.find(a => a.flatNumber === flatNumber);
-        if (!apartment) throw new Error(`Пәтер №${flatNumber} табылмады.`);
+        // Берілген айға, жылға және пәтерге сәйкес келетін төлем жазбасын табу
+        const paymentRecord = payments.find(p => 
+            p.flatNumber === flatNumber && 
+            p.month === month && 
+            p.year === year
+        );
 
-        // Тексерілген айлық төлем деректерін табу (нақты ДБ қосу логикасынан кейін)
-        // Қарапайымдылық үшін, егер ДБ-да сақталмаған болса, кестеден есептелген нәтижені қолданамыз.
-        // Қазір біз үлгі деректерін қолданамыз, себебі 2-қадамдағы saveMonthlyCharges әлі толық іске асырылмаған.
-        
-        // *******************************************************************
-        // НАҚТЫ ЖҮЙЕДЕ БҰЛ ЖЕРДЕ IndexedDB-ден төлем жазбасын алу керек.
-        // *******************************************************************
-        
-        // ҮЛГІ ДЕРЕКТЕРІ (егер DB-дан ала алмасақ)
-        const paymentData = {
-            flatNumber: flatNumber,
-            owner: apartment.owner,
-            area: apartment.area,
-            monthName: MONTHS[month - 1],
-            year: year,
-            dateGenerated: new Date().toLocaleDateString('kk-KZ'),
-            breakdown: {
-                'Үйді күтіп ұстау': 1800.00, // 40тг/м2 * 45м2 (1-ші пәтер үшін үлгі)
-                'Үй іші тазалығы': 850.00,
-                'Бейнебақылау': 300.00,
-                'Күрделі жөндеу': 1800.00
-            },
-            totalCharge: 4750.00,
-            previousBalance: 500.00, // Үлгі қарыз
-            amountDue: 5250.00,
-            dueDate: 'Айдың 25-і'
-        };
+        if (!paymentRecord) {
+            alert(`Пәтер №${flatNumber} үшін ${MONTHS[month - 1]} ${year} жылына есептелген жазба табылмады. Алдымен есептеуді іске қосыңыз.`);
+            return;
+        }
 
-        const receiptHtml = createReceiptHtml(paymentData);
+        // 2. Түбіртектің HTML мазмұнын жасау
+        const receiptHtml = createReceiptHtml(paymentRecord);
         
-        // Түбіртекті негізгі бетте көрсету
+        // 3. Түбіртекті көрсету және басып шығару
         displayReceipt(receiptHtml);
 
-        // Басып шығару диалогын ашу
-        window.print();
-        
     } catch (error) {
-        alert(`Түбіртек жасауда қате: ${error.message}`);
-        console.error(error);
+        console.error("Түбіртек жасаудағы қате:", error);
+        alert("Түбіртекті жасау кезінде қателік туындады. Консольді тексеріңіз.");
     }
 }
 
 /**
- * Төлем деректері негізінде HTML түбіртегін құрады.
+ * Түбіртек HTML мазмұнын жасайды.
  * @param {Object} data - Төлем деректері
- * @returns {string} - HTML мазмұны
+ * @returns {string} - HTML жолы
  */
 function createReceiptHtml(data) {
+    const monthName = MONTHS[data.month - 1];
+    
+    // Тарифтерді бөлек жолдарға бөлу
     let breakdownRows = '';
-    for (const [service, amount] of Object.entries(data.breakdown)) {
-        breakdownRows += `
-            <tr>
-                <td>${service}</td>
-                <td>${formatCurrency(amount)}</td>
-            </tr>
-        `;
+    for (const key in data.breakdown) {
+        if (data.breakdown.hasOwnProperty(key)) {
+            const item = data.breakdown[key];
+            breakdownRows += `
+                <tr>
+                    <td>${key}</td>
+                    <td>${formatCurrency(item.rate)}</td>
+                    <td>${formatCurrency(item.charge)}</td>
+                </tr>
+            `;
+        }
     }
+    
+    // Төлем мерзімін есептеу (айдың 25-і, қарапайым)
+    const dueDate = `${data.month}/25/${data.year}`;
 
     return `
         <div class="receipt-container">
-            <h2>📜 Төлем Түбіртегі</h2>
-            <p><strong>МИБ/ОСИ:</strong> Ақсай-3, 10а (Үлгі)</p>
-            <p><strong>Мерзімі:</strong> ${data.dateGenerated}</p>
+            <h3>МИБ/ОСИ ТӨЛЕМ ТҮБІРТЕГІ</h3>
+            <hr>
+            <p><strong>Мерзімі:</strong> ${monthName} ${data.year} жыл</p>
+            <p><strong>Пәтер №:</strong> ${data.flatNumber}</p>
+            <p><strong>Жасалу күні:</strong> ${new Date().toLocaleDateString('kk-KZ')}</p>
             <hr>
             
-            <div class="receipt-header">
-                <p><strong>Пәтер №:</strong> ${data.flatNumber}</p>
-                <p><strong>Төлеуші:</strong> ${data.owner}</p>
-                <p><strong>Есептеу айы:</strong> ${data.monthName}, ${data.year}</p>
-                <p><strong>Пәтер алаңы:</strong> ${data.area} м²</p>
-            </div>
-            
-            <hr>
-            
-            <h3>Айлық есептеудің бөлшектенуі:</h3>
-            <table class="receipt-table">
+            <h4>Есептеу егжей-тегжейі</h4>
+            <table>
                 <thead>
-                    <tr><th>Қызмет атауы</th><th>Сомасы</th></tr>
+                    <tr>
+                        <th>Қызмет</th>
+                        <th>Тариф</th>
+                        <th>Есептелген сома</th>
+                    </tr>
                 </thead>
                 <tbody>
                     ${breakdownRows}
@@ -113,11 +100,11 @@ function createReceiptHtml(data) {
             
             <div class="receipt-summary">
                 <p><strong>Айлық жиынтық төлем:</strong> <span>${formatCurrency(data.totalCharge)}</span></p>
-                <p><strong>Алдыңғы айдағы қарыз/артық төлем:</strong> <span>${formatCurrency(data.previousBalance)}</span></p>
+                <p><strong>Алдыңғы айдағы қарыз/артық төлем:</strong> <span>${formatCurrency(data.previousBalance || 0)}</span></p>
                 <h3 class="final-due">Төлеуге жататын сома (Қарызбен): <span>${formatCurrency(data.amountDue)}</span></h3>
             </div>
             
-            <p class="note">Төлем мерзімі: ${data.dueDate} дейін.</p>
+            <p class="note">Төлем мерзімі: ${dueDate} дейін.</p>
             <p class="signature">МИБ/ОСИ Басқармасы (Автоматты түрде жасалған)</p>
         </div>
     `;
@@ -127,19 +114,19 @@ function createReceiptHtml(data) {
  * Түбіртек HTML-ін DOM-ға енгізеді және басып шығаруға дайындайды.
  */
 function displayReceipt(htmlContent) {
-    const receiptDiv = document.getElementById('receipt-output');
+    // index.html-дегі #receipt-area элементін пайдалану
+    const receiptDiv = document.getElementById('receipt-area');
     if (!receiptDiv) {
-        // Егер түбіртек аймағы жоқ болса, оны жасау
-        const newDiv = document.createElement('div');
-        newDiv.id = 'receipt-output';
-        newDiv.className = 'print-only'; // Тек басып шығару үшін
-        document.body.appendChild(newDiv);
-        receiptDiv = newDiv;
+        console.error("Қате: #receipt-area элементі табылмады.");
+        return;
     }
+    
+    // Мазмұнды орналастыру
     receiptDiv.innerHTML = htmlContent;
+    
+    // Басып шығару диалогын ашу
+    window.print();
+    
+    // 5 секундтан кейін түбіртекті тазалау (қажет болмаса)
+    // setTimeout(() => receiptDiv.innerHTML = '', 5000); 
 }
-
-
-// generateReceipt функциясын глобалды етіп экспорттау
-// себебі ол index.html-ден тікелей шақырылады
-window.generateReceipt = generateReceipt;
