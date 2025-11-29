@@ -1,28 +1,24 @@
-// db.js - IndexedDB арқылы деректерді басқару
+// db-v2.js - IndexedDB арқылы деректерді басқару (Duplicate Export қатесі жойылған)
 
 const DB_NAME = 'OSIPaymentsDB';
 const DB_VERSION = 1;
-export const STORE_APARTMENTS = 'apartments';
-export const STORE_TARIFFS = 'tariffs';
-export const STORE_PAYMENTS = 'payments';
+const STORE_APARTMENTS = 'apartments'; 
+const STORE_TARIFFS = 'tariffs';       
+const STORE_PAYMENTS = 'payments';     
 
-export let db; // ✅ ӨЗГЕРІС: 'db' айнымалысы экспортталды
+let db;
 
-/**
- * IndexedDB қосылуды ашады немесе жаңа деректер қорын құрады
- */
-export function openDB() {
+function openDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = (event) => {
             console.error("IndexedDB ашылуында қате:", event.target.errorCode);
-            reject("IndexedDB қатесі");
+            reject(new Error("IndexedDB қатесі"));
         };
 
         request.onsuccess = (event) => {
             db = event.target.result;
-            console.log("IndexedDB сәтті ашылды.");
             resolve(db);
         };
 
@@ -30,129 +26,99 @@ export function openDB() {
             db = event.target.result;
 
             if (!db.objectStoreNames.contains(STORE_APARTMENTS)) {
-                const apartmentsStore = db.createObjectStore(STORE_APARTMENTS, { keyPath: 'id', autoIncrement: true });
-                apartmentsStore.createIndex('flatNumber', 'flatNumber', { unique: true });
+                const apartStore = db.createObjectStore(STORE_APARTMENTS, { keyPath: 'id', autoIncrement: true });
+                apartStore.createIndex('flatNumber', 'flatNumber', { unique: true });
             }
 
             if (!db.objectStoreNames.contains(STORE_TARIFFS)) {
-                db.createObjectStore(STORE_TARIFFS, { keyPath: 'id', autoIncrement: true });
+                db.createObjectStore(STORE_TARIFFS, { keyPath: 'serviceCode' });
             }
             
             if (!db.objectStoreNames.contains(STORE_PAYMENTS)) {
-                const paymentsStore = db.createObjectStore(STORE_PAYMENTS, { keyPath: 'id', autoIncrement: true });
-                paymentsStore.createIndex('flatMonthYear', ['flatNumber', 'month', 'year'], { unique: false });
+                const paymentStore = db.createObjectStore(STORE_PAYMENTS, { keyPath: 'id', autoIncrement: true });
+                paymentStore.createIndex('flatMonthYear', ['flatId', 'month', 'year'], { unique: true });
             }
-
-            console.log("IndexedDB структурасы жаңартылды.");
+            
+            event.target.transaction.oncomplete = () => {
+                populateInitialData();
+            };
         };
     });
 }
 
-/**
- * Тарифтерді инициализациялау
- */
-export async function initializeTariffs() {
-    try {
-        await openDB(); // db-ді ашу
-        const tariffs = await getAllData(STORE_TARIFFS);
-        if (tariffs.length === 0) {
-            const defaultTariffs = [
-                { name: 'ЖӨА', rate: 45, unit: 'sqm', description: 'Жалпы үй мүлкін ұстауға жұмсалатын шығыс' },
-                { name: 'ЦС', rate: 1000, unit: 'flat', description: 'Сапалы қызмет көрсету үшін қосымша төлем' }
-            ];
-            
-            const transaction = db.transaction([STORE_TARIFFS], 'readwrite');
-            const store = transaction.objectStore(STORE_TARIFFS);
-            defaultTariffs.forEach(tariff => store.add(tariff));
+async function populateInitialData() {
+    const apartData = [
+        { flatNumber: 1, area: 45.0, owner: "А.Е. Асанов", balance: 0 },
+        { flatNumber: 2, area: 60.5, owner: "Б.К. Беріков", balance: 0 },
+    ];
+    
+    const tariffData = [
+        { serviceCode: 'SD', name: 'Үйді күтіп ұстау', unit: 'sqm', rate: 40, description: '40 тг/м2' },
+        { serviceCode: 'UB', name: 'Үй іші тазалығы', unit: 'flat', rate: 850, description: '850 тг/пәтер' },
+        { serviceCode: 'VN', name: 'Бейнебақылау', unit: 'flat', rate: 300, description: '300 тг/пәтер' },
+        { serviceCode: 'KR', name: 'Күрделі жөндеу', unit: 'sqm', rate: 40, description: '40 тг/м2' },
+    ];
 
-            await new Promise((resolve, reject) => {
-                transaction.oncomplete = () => resolve();
-                transaction.onerror = (event) => reject(event.target.error);
-            });
-            console.log("Әдепкі тарифтер сәтті қосылды.");
-        }
+    try {
+        await addData(STORE_APARTMENTS, apartData);
+        await addData(STORE_TARIFFS, tariffData);
     } catch (error) {
-        console.error("Тарифтерді инициализациялау қатесі:", error);
-        throw error;
+        // Егер деректер бұрыннан бар болса, қате болуы мүмкін. Қалыпты жағдай.
     }
 }
 
-/**
- * Берілген қоймадағы барлық деректерді алады.
- */
-export function getAllData(storeName) {
+function addData(storeName, data) {
     return new Promise((resolve, reject) => {
-        if (!db) {
-            // Егер db ашылмаған болса, қате қайтару
-            return reject(new Error("IndexedDB қосылымы әлі ашылмаған."));
-        }
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
+        
+        data.forEach(item => store.add(item));
 
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = (event) => reject(event.target.error);
+    });
+}
+
+function getAllData(storeName) {
+    return new Promise((resolve, reject) => {
         const transaction = db.transaction([storeName], 'readonly');
         const store = transaction.objectStore(storeName);
         const request = store.getAll();
 
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = (event) => resolve(event.target.result);
         request.onerror = (event) => reject(event.target.error);
     });
 }
 
-/**
- * Пәтер нөмірі бойынша пәтер туралы деректі алады.
- */
-export function getApartmentByNumber(flatNumber) {
+function updateApartmentBalance(flatNumber, amount) {
     return new Promise((resolve, reject) => {
-        if (!db) return reject(new Error("IndexedDB қосылымы әлі ашылмаған."));
-        
-        const transaction = db.transaction([STORE_APARTMENTS], 'readonly');
+        const transaction = db.transaction([STORE_APARTMENTS], 'readwrite');
         const store = transaction.objectStore(STORE_APARTMENTS);
-        const index = store.index('flatNumber');
-        const request = index.get(flatNumber);
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = (event) => reject(event.target.error);
-    });
-}
-
-/**
- * Пәтердің балансын жаңартады.
- */
-function updateApartmentBalance(flatNumber, changeAmount) {
-    return new Promise(async (resolve, reject) => {
-        if (!db) return reject(new Error("IndexedDB қосылымы әлі ашылмаған."));
-        // ... (қалған updateApartmentBalance логикасы) ...
-
-        // Бұл логиканы db.js-тің өзінде толығымен сақтаңыз
-        try {
-            const transaction = db.transaction([STORE_APARTMENTS], 'readwrite');
-            const store = transaction.objectStore(STORE_APARTMENTS);
-            const index = store.index('flatNumber');
-            const getRequest = index.get(flatNumber);
-
-            getRequest.onsuccess = () => {
-                const apartment = getRequest.result;
-                if (!apartment) return reject(new Error(`Пәтер №${flatNumber} табылмады.`));
-                
-                apartment.balance = parseFloat((apartment.balance || 0) + changeAmount).toFixed(2); 
-                apartment.balance = parseFloat(apartment.balance); 
-
-                const updateRequest = store.put(apartment);
-                updateRequest.onsuccess = () => resolve(apartment.balance);
-                updateRequest.onerror = (event) => reject(event.target.error);
-            };
-            getRequest.onerror = (event) => reject(event.target.error);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-/**
- * Төлем жазбасын сақтайды және пәтер балансын жаңартады.
- */
-export function recordPayment(paymentRecord, balanceChange) {
-    return new Promise(async (resolve, reject) => {
-        if (!db) return reject(new Error("IndexedDB қосылымы әлі ашылмаған."));
         
+        // flatNumber бойынша іздеу үшін индекс қолданылады
+        const flatIndex = store.index('flatNumber');
+        const getRequest = flatIndex.get(flatNumber);
+
+        getRequest.onsuccess = (event) => {
+            const apartment = event.target.result;
+            if (!apartment) {
+                return reject(new Error(`Пәтер №${flatNumber} табылмады.`));
+            }
+            
+            apartment.balance = parseFloat((apartment.balance + amount).toFixed(2));
+            
+            const updateRequest = store.put(apartment); 
+            
+            updateRequest.onsuccess = () => resolve(apartment.balance);
+            updateRequest.onerror = (event) => reject(event.target.error);
+        };
+        
+        getRequest.onerror = (event) => reject(event.target.error);
+    });
+}
+
+function recordPayment(paymentRecord, balanceChange) {
+    return new Promise(async (resolve, reject) => {
         const transaction = db.transaction([STORE_PAYMENTS, STORE_APARTMENTS], 'readwrite');
         const paymentsStore = transaction.objectStore(STORE_PAYMENTS);
         
@@ -160,7 +126,7 @@ export function recordPayment(paymentRecord, balanceChange) {
         
         addRequest.onsuccess = async () => {
             try {
-                // Пәтер балансын жаңарту
+                // updateApartmentBalance енді пәтер нөмірін қабылдайды
                 const newBalance = await updateApartmentBalance(paymentRecord.flatNumber, balanceChange); 
                 resolve(newBalance);
             } catch (error) {
@@ -169,6 +135,18 @@ export function recordPayment(paymentRecord, balanceChange) {
         };
         
         addRequest.onerror = (event) => reject(event.target.error);
-        transaction.onerror = (event) => reject(event.target.error);
+
+        transaction.oncomplete = () => console.log("Төлем тіркеліп, баланс жаңартылды.");
     });
 }
+
+// Тек БІР РЕТ ЭКСПОРТТАУ
+export { 
+    openDB, 
+    getAllData, 
+    updateApartmentBalance, 
+    recordPayment, 
+    STORE_APARTMENTS, 
+    STORE_TARIFFS, 
+    STORE_PAYMENTS 
+};
