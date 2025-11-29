@@ -28,8 +28,24 @@
     "apartment": "7",
     "area_sqm": 21,2,
     "has_video": true
-  }
+  },
+  {
+    "apartment": "8",
+    "area_sqm": 20,50,
+    "has_video": true
+  }, 
+    {
+    "apartment": "9",
+    "area_sqm": 20,50,
+    "has_video": true
+  },
+   {
+    "apartment": "10",
+    "area_sqm": 20,50,
+    "has_video": true
+  } 
   // ... 200 пәтерге дейін жалғастырыңыз
 ]
+
 
 
