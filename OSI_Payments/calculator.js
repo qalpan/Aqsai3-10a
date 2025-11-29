@@ -1,5 +1,5 @@
 // calculator.js - Ай сайынғы төлемдерді есептеу логикасы
-import { getAllData, STORE_APARTMENTS, STORE_TARIFFS, STORE_PAYMENTS } from './db.js';
+import { db, getAllData, STORE_APARTMENTS, STORE_TARIFFS, STORE_PAYMENTS } from './db.js'; // <--- ӨЗГЕРІС: db импортталды
 
 /**
  * Әр пәтер үшін ай сайынғы жиынтық төлемді есептейді.
@@ -7,7 +7,7 @@ import { getAllData, STORE_APARTMENTS, STORE_TARIFFS, STORE_PAYMENTS } from './d
  * @param {number} year - Жыл
  * @returns {Promise<Array<Object>>} - Әр пәтерге есептелген жиынтық сома
  */
-async function calculateMonthlyCharges(month, year) {
+export async function calculateMonthlyCharges(month, year) {
     const apartments = await getAllData(STORE_APARTMENTS);
     const tariffs = await getAllData(STORE_TARIFFS);
     const monthlyCharges = [];
@@ -28,16 +28,13 @@ async function calculateMonthlyCharges(month, year) {
             
             // Төлемді есептеу логикасы
             if (tariff.unit === 'sqm') { // Шаршы метрмен есептелсе (тг/м2)
-                charge = tariff.rate * apart.area;
-            } else if (tariff.unit === 'flat') { // Пәтер бірлігімен есептелсе (тг/пәтер)
+                charge = apart.sqm * tariff.rate;
+            } else if (tariff.unit === 'flat') { // Пәтер бойынша есептелсе (бір пәтерден тг)
                 charge = tariff.rate;
             }
             
-            // Есептелген соманы жиынтыққа қосу
+            flatDetails.breakdown[tariff.name] = { rate: tariff.rate, charge: parseFloat(charge.toFixed(2)) };
             totalCharge += charge;
-            
-            // Есептеуді бөлшектеуге сақтау
-            flatDetails.breakdown[tariff.serviceCode] = parseFloat(charge.toFixed(2));
         }
 
         flatDetails.totalCharge = parseFloat(totalCharge.toFixed(2));
@@ -71,12 +68,47 @@ async function saveMonthlyCharges(charges, month, year) {
      // ДБ API-сін шақыру қажет, бірақ қазір қарапайым:
      console.log(`Төлемдер ${month}/${year} үшін сақталуда...`);
      
-     for (const charge of charges) {
-         // Бұл жерде Index арқылы бар екенін тексеріп, put (жаңарту) немесе add (қосу)
-         // операциясын орындау қажет. Қарапайымдылық үшін қазір тек консольге шығарамыз.
-         // Нақты жүйеде: store.put(charge);
-     }
-     // transaction.oncomplete = () => console.log("Сақтау сәтті.");
-}
+     // Сақтау логикасы (қайта жазу немесе жаңа жазба қосу)
+     charges.forEach(charge => {
+        // Есептелген төлем жазбасын сақтау (толық төлемдер тарихына арналған)
+        // Қазіргі уақытта бұл жай ғана ай сайынғы есептеуді сақтайды.
+        const record = {
+            flatNumber: charge.flatNumber,
+            month: month,
+            year: year,
+            totalCharge: charge.totalCharge,
+            amountDue: charge.amountDue,
+            breakdown: charge.breakdown,
+            // Төлем деректері (әлі төленбеген)
+            paidAmount: 0, 
+            datePaid: null, 
+            // id IndexedDB-де автоматты түрде қосылады
+        };
 
-export { calculateMonthlyCharges };
+        // Бұрынғы жазбаны іздеу және жаңарту (қажет болса)
+        const index = store.index('flatMonthYear');
+        const request = index.get([charge.flatNumber, month, year]);
+
+        request.onsuccess = (event) => {
+            const existingRecord = event.target.result;
+            if (existingRecord) {
+                // Егер жазба бар болса, жаңарту
+                record.id = existingRecord.id;
+                store.put(record);
+            } else {
+                // Жаңа жазба қосу
+                store.add(record);
+            }
+        };
+        request.onerror = (event) => console.error("Жазбаны іздеу/сақтау қатесі:", event.target.error);
+
+     });
+     
+     return new Promise((resolve, reject) => {
+        transaction.oncomplete = () => {
+            console.log(`Барлық айлық төлемдер ${month}/${year} үшін сәтті сақталды.`);
+            resolve();
+        };
+        transaction.onerror = (event) => reject(event.target.error);
+     });
+}
