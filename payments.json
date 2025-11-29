@@ -1,10 +1,12 @@
 [
   {"apartment": "2", "month": "2025-10", "amount": 19000, "status": "Paid", "receipt_link": "sůuretter/2.webp"},
   {"apartment": "2", "month": "2025-11", "amount": 14000, "status": "Pending", "receipt_link": "2.html"}, 
-  
+]
+[
   {"apartment": "10", "month": "2025-10", "amount": 15000, "status": "Paid", "receipt_link": "sůuretter/10.webp"},
   {"apartment": "10", "month": "2025-11", "amount": 15000, "status": "Pending", "receipt_link": "10.html"} 
 ]
+
 
 
 
