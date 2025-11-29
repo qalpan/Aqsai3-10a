@@ -1,0 +1,41 @@
+name: Monthly Payments Generator
+
+on:
+  # Әр айдың 1-і күні сағат 01:00-де (UTC уақытымен) іске қосады
+  schedule:
+    - cron: '0 1 1 * *' 
+  # Қолмен іске қосуға мүмкіндік
+  workflow_dispatch:
+
+jobs:
+  generate_payments:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Репозиторийді тексеру
+        uses: actions/checkout@v4
+
+      - name: Python орнату
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Төлемдерді есептеу скриптін орындау
+        run: python generate_payments.py
+      
+      - name: Өзгерістерді тексеру
+        id: git_status
+        run: |
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_made=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes_made=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Жаңартылған файлдарды жіберу (Commit)
+        if: steps.git_status.outputs.changes_made == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 [Auto] Aylyq tòlemderdi jäne túbirtekterdi jańartu"
+          branch: main # Немесе сіздің негізгі бранчіңіз (master)

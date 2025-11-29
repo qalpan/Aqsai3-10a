@@ -1,6 +1,0 @@
-# auto_update.yml бұрынғыдай қалады:
-# ... (Cron job логикасы)
-# ...
-      - name: Төлемдерді есептеу скриптін орындау
-        run: python generate_payments.py
-# ...
