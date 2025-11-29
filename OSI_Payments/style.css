@@ -1,0 +1,239 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background-color: #004d40;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    color: #004d40;
+}
+
+.controls, .results {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="number"], select, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #00796b;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #004d40;
+}
+
+/* Кесте стилі */
+#results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#results-table th, #results-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#results-table th {
+    background-color: #e0f2f1;
+    color: #004d40;
+    font-weight: bold;
+}
+
+#results-table tbody tr:hover {
+    background-color: #f0fdfd;
+}
+
+.status-message {
+    padding: 10px;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 5px;
+}
+
+
+
+
+/* style.css - Басып шығару және Түбіртек стильдері */
+
+/* ... (басқа стильдер осында) ... */
+
+/* Түбіртек контейнерінің стилі */
+.receipt-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.receipt-header p, .receipt-summary p {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.receipt-table th, .receipt-table td {
+    padding: 8px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+.final-due {
+    background-color: #e0f2f1;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ----------------------------------------------------------------- */
+/* Басып шығару стилі - Ең МАҢЫЗДЫ БӨЛІК */
+/* ----------------------------------------------------------------- */
+
+/* Әдетте барлық түбіртек мазмұнын жасыру */
+#receipt-output {
+    display: none;
+}
+
+@media print {
+    /* Басып шығару кезінде негізгі басқару элементтерін жасыру */
+    header, .controls, .results, .note, button {
+        display: none;
+    }
+
+    /* Басып шығару кезінде тек түбіртек мазмұнын көрсету */
+    #receipt-output {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: white;
+        z-index: 9999; 
+        overflow: auto;
+    }
+    
+    /* Түбіртек контейнерінің басып шығарудағы орналасуы */
+    .receipt-container {
+        max-width: 100%;
+        border: none;
+        box-shadow: none;
+        margin: 0;
+    }
+}
+
+
+
+/* style.css - Модальды терезеге арналған қосымша стильдер */
+
+/* ... (бұрынғы стильдер) ... */
+
+/* Модальды терезе стилі */
+.modal {
+    display: none; /* Жасыру */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content h3 {
+    border-bottom: 2px solid #00796b;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+}
+
+.modal-content input[type="number"],
+.modal-content input[type="date"] {
+    width: 95%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#save-payment-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
