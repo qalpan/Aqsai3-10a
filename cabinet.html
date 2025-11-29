@@ -1,19 +1,59 @@
-<div id="payment-table-container">
-    </div>
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">        
+<link rel="shortcut icon" href="sůuretter/taꞑba-aqsai3-10a.svg" type="image/svg">
+<title>Жеке Кабинет - Aqsai3-10a ůi býrlestýgý</title>
+<link rel='stylesheet' href='yi.css' type='text/css'/>  
 
-<script type="text/javascript">
-// ...
-// ... fetch логикасының ішінде ...
-            filteredData.forEach(payment => {
-                // ...
-                html += `
-                    <tr>
-                        <td>${payment.month}</td>
-                        <td style="text-align: right;">${payment.amount.toLocaleString('kk-KZ')}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                        <td style="text-align: center;">${payment.receipt_link ? '<a href="' + payment.receipt_link + '" target="_blank">Түбіртек көру</a>' : '—'}</td>
-                    </tr>
-                `;
-            });
-// ...
-</script>
+<style>
+/* -------------------------- */
+/* Cabinet арнайы стильдері */
+/* -------------------------- */
+body {
+    background-color: #f4f4f4;
+}
+.content-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.payment-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+.payment-history-table th, .payment-history-table td {
+    border: 1px solid #ddd;
+    padding: 12px 10px;
+    text-align: left;
+}
+.payment-history-table th {
+    background-color: #007bff; /* Басты түс */
+    color: white;
+    text-align: center;
+}
+.payment-history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.status-paid { color: green; font-weight: bold; }
+.status-pending { color: orange; font-weight: bold; }
+#apartment-input {
+    min-width: 100px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<ul class="belgi" href="https://qalpan.github.io/Aqsai3-10a/">
+<img src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" alt="Басты бет" title="Басты бетке - оралыу" data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" data-description="бастау">
+</ul>
+
+<ul class="injener">
+    <a><strong>Инженерлік желілерге қызы
