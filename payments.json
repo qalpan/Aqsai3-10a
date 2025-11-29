@@ -2,4 +2,33 @@
   {"apartment": "10", "month": "2025-10", "amount": 15000, "status": "Paid", "receipt_link": "receipts/10-10.pdf"},
   {"apartment": "10", "month": "2025-11", "amount": 15000, "status": "Pending", "receipt_link": ""},
   // ... басқа деректер
+
+]
+
+
+
+
+
+[
+  {
+    "apartment": "10",
+    "month": "2025-10",
+    "amount": 15000,
+    "status": "Төленді",
+    "receipt_link": "receipts/10-10-2025.pdf"
+  },
+  {
+    "apartment": "10",
+    "month": "2025-11",
+    "amount": 18500,
+    "status": "Күтуде",
+    "receipt_link": ""
+  },
+  {
+    "apartment": "12",
+    "month": "2025-11",
+    "amount": 19000,
+    "status": "Төленді",
+    "receipt_link": "receipts/12-11-2025.pdf"
+  }
 ]
