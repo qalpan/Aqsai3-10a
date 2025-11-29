@@ -60,3 +60,289 @@
                         <th>Алаңы (м²)</th>
                         <th>Айлық Сома</th>
                         <th>Алдыңғы Қарыз/Артық төлем</th>
+                        <th>Төлеуге Жататын Сома</th>
+                        <th>Әрекет</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </section>
+        
+        <div id="receipt-output" class="print-only"></div>
+
+    </main>
+
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Төлемді Тіркеу</h3>
+            <p><strong>Пәтер:</strong> <span id="modal-flat-number"></span></p>
+            <p><strong>Мерзім:</strong> <span id="modal-month-year"></span></p>
+            <p><strong>Төлеуге жататын сома:</strong> <span id="modal-amount-due"></span></p>
+            
+            <label for="paid-amount">Төленген сома:</label>
+            <input type="number" id="paid-amount" step="0.01">
+            
+            <button id="record-payment-btn">Төлемді Сақтау</button>
+            <p id="modal-message" class="status-message"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        // Қажетті функцияларды әр файлдан импорттау
+        import { openDB, initializeTariffs, recordPayment, getApartmentByNumber, STORE_APARTMENTS, STORE_PAYMENTS, STORE_TARIFFS } from './js/db.js';
+        import { calculateMonthlyCharges } from './js/calculator.js';
+        import { importApartments, exportData } from './js/data-io.js';
+        import { generateReceipt } from './js/receipt-generator.js';
+        import { generateYearlyReport } from './js/yearly-report.js';
+
+        // Элементтерді таңдау
+        const calcMonth = document.getElementById('calc-month');
+        const calcYear = document.getElementById('calc-year');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const messageElement = document.getElementById('message');
+        const paymentsTableBody = document.querySelector('#payments-table tbody');
+        
+        const reportFlatNumber = document.getElementById('report-flat-number');
+        const reportYear = document.getElementById('report-year');
+        const generateReportBtn = document.getElementById('generate-report-btn');
+        
+        const apartFile = document.getElementById('apart-file');
+        const importApartBtn = document.getElementById('import-apart-btn');
+        const exportApartBtn = document.getElementById('export-apart-btn');
+        const exportPaymentsBtn = document.getElementById('export-payments-btn');
+        const ioMessage = document.getElementById('io-message');
+
+        const paymentModal = document.getElementById('payment-modal');
+        const closeBtn = paymentModal.querySelector('.close-btn');
+        const recordPaymentBtn = document.getElementById('record-payment-btn');
+        const paidAmountInput = document.getElementById('paid-amount');
+        const modalFlatNumber = document.getElementById('modal-flat-number');
+        const modalMonthYear = document.getElementById('modal-month-year');
+        const modalAmountDue = document.getElementById('modal-amount-due');
+        const modalMessage = document.getElementById('modal-message');
+
+        const MONTHS_NAMES = ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "Мамыр", "Маусым", "Шілде", "Тамыз", "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"];
+        let currentCharges = []; 
+
+        const formatCurrency = (amount) => new Intl.NumberFormat('kk-KZ', {
+            style: 'currency',
+            currency: 'KZT',
+            minimumFractionDigits: 2
+        }).format(amount);
+
+        // ******************************************************
+        // ІСКЕ ҚОСУ ЖӘНЕ UI ФУНКЦИЯЛАРЫ
+        // ******************************************************
+
+        /**
+         * Айлар тізімін толтырады
+         */
+        function populateMonthSelect(selectElement) {
+            if (!selectElement) return;
+            
+            MONTHS_NAMES.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                selectElement.appendChild(option);
+            });
+            const currentMonth = new Date().getMonth() + 1;
+            selectElement.value = currentMonth;
+        }
+
+        /**
+         * Төлемдерді есептеуді іске қосады
+         */
+        async function handleCalculation() {
+            const month = parseInt(calcMonth.value);
+            const year = parseInt(calcYear.value);
+            
+            messageElement.textContent = `Пәтерлер үшін ${MONTHS_NAMES[month - 1]} ${year} жылына төлемдер есептелуде...`;
+
+            try {
+                currentCharges = await calculateMonthlyCharges(month, year);
+                renderPaymentsTable(currentCharges);
+                messageElement.textContent = `Төлемдер ${MONTHS_NAMES[month - 1]} ${year} жылына сәтті есептелді.`;
+                messageElement.style.display = 'block';
+            } catch (error) {
+                messageElement.textContent = `Есептеу қатесі: ${error.message}`;
+                messageElement.style.display = 'block';
+                console.error("Есептеу қатесі:", error);
+            }
+        }
+
+        /**
+         * Төлемдер кестесін DOM-да көрсетеді
+         */
+        function renderPaymentsTable(charges) {
+            paymentsTableBody.innerHTML = '';
+            charges.forEach(charge => {
+                const row = paymentsTableBody.insertRow();
+                const apartment = { sqm: 0 }; // Пәтер деректеріне қол жеткізу логикасын қосу қажет
+                
+                // Қарапайым: Пәтер алаңын дұрыс көрсету үшін DB-ден толық деректерді алу керек немесе charge объектісіне қосу керек
+                // Қазірше 'Алаңы (м²)' бағанын алып тастауға болады немесе мәнді '-' деп көрсетуге болады.
+                
+                row.innerHTML = `
+                    <td>${charge.flatNumber}</td>
+                    <td>-</td>
+                    <td>${formatCurrency(charge.totalCharge)}</td>
+                    <td style="color: ${charge.previousBalance < 0 ? 'green' : 'red'};">${formatCurrency(charge.previousBalance)}</td>
+                    <td style="font-weight: bold;">${formatCurrency(charge.amountDue)}</td>
+                    <td>
+                        <button class="receipt-btn" data-flat="${charge.flatNumber}" data-month="${charge.month}" data-year="${charge.year}">Түбіртек</button>
+                        <button class="pay-btn" data-flat="${charge.flatNumber}">Төлем</button>
+                    </td>
+                `;
+            });
+        }
+        
+        /**
+         * Төлем модальды терезесін ашады
+         */
+        function openPaymentModal(flatNumber) {
+            const charge = currentCharges.find(c => c.flatNumber === flatNumber);
+            if (!charge) return;
+            
+            paymentModal.dataset.flatNumber = flatNumber;
+            paymentModal.dataset.month = charge.month;
+            paymentModal.dataset.year = charge.year;
+            
+            modalFlatNumber.textContent = flatNumber;
+            modalMonthYear.textContent = `${MONTHS_NAMES[charge.month - 1]} ${charge.year}`;
+            modalAmountDue.textContent = formatCurrency(charge.amountDue);
+            paidAmountInput.value = charge.amountDue.toFixed(2);
+            modalMessage.textContent = '';
+            
+            paymentModal.style.display = 'block';
+        }
+
+        /**
+         * Төлемді сақтауды басқарады
+         */
+        async function handleRecordPayment() {
+            const flatNumber = parseInt(paymentModal.dataset.flatNumber);
+            const month = parseInt(paymentModal.dataset.month);
+            const year = parseInt(paymentModal.dataset.year);
+            const paidAmount = parseFloat(paidAmountInput.value);
+
+            if (isNaN(paidAmount) || paidAmount < 0) {
+                modalMessage.textContent = "Дұрыс соманы енгізіңіз.";
+                return;
+            }
+
+            modalMessage.textContent = "Төлем тіркелуде...";
+
+            try {
+                const charge = currentCharges.find(c => c.flatNumber === flatNumber);
+                if (!charge) throw new Error("Есептеу жазбасы табылмады.");
+
+                const paymentRecord = {
+                    flatNumber: flatNumber,
+                    month: month,
+                    year: year,
+                    paidAmount: paidAmount,
+                    datePaid: new Date().toISOString(),
+                    totalCharge: charge.totalCharge,
+                    amountDue: charge.amountDue
+                };
+                
+                // Баланстың өзгеруі: (Төленген сома) - (Төлеуге жататын сома)
+                const balanceChange = paidAmount - charge.amountDue;
+
+                const newBalance = await recordPayment(paymentRecord, balanceChange); 
+                modalMessage.textContent = `Төлем сәтті тіркелді. Жаңа баланс: ${formatCurrency(newBalance)}.`;
+                
+                await handleCalculation();
+                setTimeout(() => paymentModal.style.display = 'none', 2000);
+                
+            } catch (error) {
+                modalMessage.textContent = `Төлемді сақтау қатесі: ${error.message}`;
+                console.error(error);
+            }
+        }
+        
+        /**
+         * Импортты басқару
+         */
+        async function handleImportApartments() {
+            const file = apartFile.files[0];
+            if (!file) {
+                ioMessage.textContent = "Импорттау үшін CSV файлын таңдаңыз.";
+                return;
+            }
+            
+            ioMessage.textContent = "Пәтер деректері импортталуда...";
+            try {
+                const count = await importApartments(file);
+                ioMessage.textContent = `Сәтті импортталды: ${count} жазба.`;
+                await handleCalculation(); 
+            } catch (error) {
+                ioMessage.textContent = `Импорттау қатесі: ${error.message}`;
+                console.error(error);
+            }
+        }
+
+        // ******************************************************
+        // ОҚИҒА ТЫҢДАУШЫЛАРЫ ЖӘНЕ ИНИЦИАЛИЗАЦИЯ
+        // ******************************************************
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // ✅ 1. Айларды толтыру - Бұл айлар тізімін міндетті түрде шығаруы керек.
+            populateMonthSelect(calcMonth);
+            
+            // 2. ДБ инициализациясын бастау
+            try {
+                await openDB(); 
+                await initializeTariffs();
+                // 3. Әдепкі есептеуді іске қосу
+                await handleCalculation(); 
+            } catch (error) {
+                 console.error("Жүйені инициализациялау қатесі:", error);
+                 messageElement.textContent = `Жүйе іске қосылмады. Консольді тексеріңіз.`;
+            }
+        });
+
+        // Батырма оқиғалары
+        calculateBtn.addEventListener('click', handleCalculation);
+        importApartBtn.addEventListener('click', handleImportApartments);
+        exportApartBtn.addEventListener('click', () => exportData(STORE_APARTMENTS));
+        exportPaymentsBtn.addEventListener('click', () => exportData(STORE_PAYMENTS));
+        recordPaymentBtn.addEventListener('click', handleRecordPayment);
+        
+        // Модальды жабу
+        closeBtn.addEventListener('click', () => paymentModal.style.display = 'none');
+        window.addEventListener('click', (event) => {
+            if (event.target === paymentModal) {
+                paymentModal.style.display = 'none';
+            }
+        });
+        
+        // Кестедегі әрекеттер
+        paymentsTableBody.addEventListener('click', (e) => {
+            const flatNumber = parseInt(e.target.dataset.flat);
+            const month = parseInt(e.target.dataset.month);
+            const year = parseInt(e.target.dataset.year);
+
+            if (e.target.classList.contains('pay-btn')) {
+                openPaymentModal(flatNumber);
+            } else if (e.target.classList.contains('receipt-btn')) {
+                generateReceipt(flatNumber, month, year);
+            }
+        });
+        
+        // Жылдық есеп беру
+        generateReportBtn.addEventListener('click', () => {
+            const flat = parseInt(reportFlatNumber.value);
+            const year = parseInt(reportYear.value);
+            if (isNaN(flat) || isNaN(year)) {
+                alert("Пәтер нөмірін және жылды дұрыс енгізіңіз.");
+                return;
+            }
+            generateYearlyReport(flat, year);
+        });
+    </script>
+</body>
+</html>
