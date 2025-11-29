@@ -101,7 +101,7 @@ function test(){return false}
 
 // --- 2. Төлем Деректерін Жүктеу және Көрсету ---
 
-// Файл жолы. 'payments.json' - егер cabinet.html және payments.json бір папкада болса.
+// Файл жолы.
 const paymentDataUrl = 'payments.json'; 
 
 const container = document.getElementById('payment-table-container');
@@ -131,7 +131,6 @@ function loadPaymentData() {
 
     fetch(paymentDataUrl) 
         .then(response => {
-            // response.ok == true, егер статус 200-299 аралығында болса. Бұл fetch-тегі ең дұрыс тексеру.
             if (!response.ok) { 
                 // HTTP қатесі (мысалы 404 - файл табылмады)
                 throw new Error(`HTTP қатесі! Статус: ${response.status}. JSON файлын жүктеу мүмкін болмады.`);
@@ -139,8 +138,8 @@ function loadPaymentData() {
             return response.json();
         })
         .then(data => {
-            // Деректерді сүзу (apartment өрісі targetApartment-ке тең болса)
-            const filteredData = data.filter(p => p.apartment === targetApartment).reverse(); // Соңғы айлар жоғарыда
+            // Деректерді сүзу
+            const filteredData = data.filter(p => p.apartment === targetApartment).reverse(); 
 
             if (filteredData.length === 0) {
                  statusMessage.innerHTML = `<span style="color: blue; font-weight: bold;">Пәтер ${targetApartment} үшін төлем тарихы табылмады.</span>`;
@@ -166,8 +165,12 @@ function loadPaymentData() {
             `;
             
             filteredData.forEach(payment => {
-                const statusClass = payment.status === 'Төленді' ? 'status-paid' : 'status-pending';
-                const statusText = payment.status;
+                // ТҮЗЕТУ: 'Paid' және 'Төленді' статустарын қабылдайды
+                const isPaid = payment.status === 'Төленді' || payment.status === 'Paid';
+                
+                const statusClass = isPaid ? 'status-paid' : 'status-pending';
+                const statusText = isPaid ? 'Төленді' : 'Күтуде';
+                
                 const amountFormatted = (payment.amount || 0).toLocaleString('kk-KZ');
 
                 html += `
@@ -197,3 +200,4 @@ const list = document.querySelectorAll('.list');
 
 </body>
 </html>
+
