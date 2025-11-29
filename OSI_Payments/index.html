@@ -12,7 +12,6 @@
     </header>
 
     <main>
-        <!-- Ай таңдау -->
         <section class="controls">
             <h2>Есептеуді Бастау</h2>
             <div class="input-group">
@@ -23,62 +22,41 @@
                 <button id="calculate-btn">Айлық Төлемді Есептеу</button>
             </div>
             <p id="message" class="status-message"></p>
+
+            <hr style="margin: 20px 0;">
+            
+            <h2>Жылдық Есеп Беру</h2>
+            <div class="input-group">
+                <label for="report-flat-number">Пәтер №:</label>
+                <input type="number" id="report-flat-number" min="1">
+                <label for="report-year">Жыл:</label>
+                <input type="number" id="report-year" value="2025" min="2020" max="2030">
+                <button id="generate-report-btn">Есеп Беру</button>
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <h2>Деректерді Басқару (CSV)</h2>
+            <div class="io-controls">
+                <div class="input-group">
+                    <label for="apart-file">Пәтерлер (CSV) Импорттау:</label>
+                    <input type="file" id="apart-file" accept=".csv">
+                    <button id="import-apart-btn">Импорттау</button>
+                </div>
+                <div class="input-group">
+                    <button id="export-apart-btn">Пәтерлерді Экспорттау</button>
+                    <button id="export-payments-btn">Төлемдерді Экспорттау</button>
+                </div>
+                <p id="io-message" class="status-message"></p>
+            </div>
         </section>
 
-        <!-- Нәтижелер -->
         <section class="results">
-            <h2>Есептеу Нәтижелері</h2>
-            <table id="charges-table">
+            <h2>Есептелген Төлемдер</h2>
+            <table id="payments-table">
                 <thead>
                     <tr>
-                        <th>№</th>
                         <th>Пәтер №</th>
                         <th>Алаңы (м²)</th>
-                        <th>ЖӨА (тг)</th>
-                        <th>ЦС (тг)</th>
-                        <th>Жиынтық (тг)</th>
-                        <th>Қарыз/Артық төлем (тг)</th>
-                        <th>Төлеуге жатады (тг)</th>
-                        <th>Әрекет</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </section>
-    </main>
-
-    <!-- Скрипт -->
-    <script type="module">
-        import { openDB, initializeTariffs, recordPayment, getApartmentByNumber } from './db.js';
-        import { calculateMonthlyCharges } from './calculator.js';
-        import { importApartments, exportData, STORE_APARTMENTS } from './data-io.js';
-        import { generateReceipt } from './receipt-generator.js';
-        import { generateYearlyReport } from './yearly-report.js';
-
-        const calcMonth = document.getElementById('calc-month');
-        const calcYear = document.getElementById('calc-year');
-        const calculateBtn = document.getElementById('calculate-btn');
-
-        // Айларды толтыру
-        function populateMonthSelect(select) {
-            const MONTHS_KK = ["Қаңтар","Ақпан","Наурыз","Сәуір","Мамыр","Маусым",
-                               "Шілде","Тамыз","Қыркүйек","Қазан","Қараша","Желтоқсан"];
-            select.innerHTML = '';
-            MONTHS_KK.forEach((m, i) => {
-                const opt = document.createElement('option');
-                opt.value = i + 1;
-                opt.textContent = m;
-                select.appendChild(opt);
-            });
-            select.value = new Date().getMonth() + 1;
-        }
-
-        // Бастапқы іске қосу
-        document.addEventListener('DOMContentLoaded', async () => {
-            populateMonthSelect(calcMonth);
-            await openDB();
-            await initializeTariffs();
-        });
-    </script>
-</body>
-</html>
+                        <th>Айлық Сома</th>
+                        <th>Алдыңғы Қарыз/Артық төлем</th>
