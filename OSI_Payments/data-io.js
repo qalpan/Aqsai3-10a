@@ -2,19 +2,20 @@
 
 import { openDB, getAllData, STORE_APARTMENTS, STORE_TARIFFS } from './db.js';
 
-// Қайта экспорттау ✅
-export { STORE_APARTMENTS, STORE_TARIFFS };
+// ... (parseCSV функциясы - экспортталмаған, өйткені ол тек осы файлда қолданылады) ...
 
 /**
  * CSV файлдан пәтер деректерін оқиды және IndexedDB-ге сақтайды.
  */
-export async function importApartments(file) {
-    // ... функция коды ...
+export async function importApartments(file) { // ✅ EXPORT қосылды
+    // ... (функцияның қалған бөлігі) ...
 }
+
+// ... (toCSV, downloadCSV функциялары - экспортталмаған) ...
 
 /**
  * Пәтерлер немесе Төлемдер деректерін CSV ретінде экспорттау.
  */
-export async function exportData(storeName) {
-    // ... функция коды ...
+export async function exportData(storeName) { // ✅ EXPORT қосылды
+    // ... (функцияның қалған бөлігі) ...
 }
