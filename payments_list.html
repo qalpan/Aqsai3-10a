@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">        
+<link rel="shortcut icon" href="sůuretter/taꞑba-aqsai3-10a.svg" type="image/svg">
+<title>Төлемдер Тізілімі - Aqsai3-10a ůi býrlestýgý</title>
+<link rel='stylesheet' href='yi.css' type='text/css'/>  
+
+<style>
+/* ... ( cabinet.html -дағы стильдерді қалдырамыз ) ... */
+body {
+    background-color: #f4f4f4;
+}
+.content-wrapper {
+    max-width: 1200px; /* Тізілім кеңірек болуы үшін */
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.payment-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em; /* Кішірек шрифт тізілім үшін */
+}
+.payment-history-table th, .payment-history-table td {
+    border: 1px solid #ddd;
+    padding: 10px 8px;
+    text-align: left;
+}
+.payment-history-table th {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+.payment-history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.status-paid { color: green; font-weight: bold; }
+.status-pending { color: orange; font-weight: bold; }
+</style>
+</head>
+
+<body>
+<ul class="belgi" href="https://qalpan.github.io/Aqsai3-10a/">
+<img src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" alt="Басты бет" title="Басты бетке - оралыу" data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" data-description="бастау">
+</ul>
+
+<ul class="injener">
+    <a><strong>Инженерлік желілерге қызымет</strong></a>
+    <a href="tel:+7 700 740 0005">+7 700 740 0005 operator</a>
+    <a href="tel:+7 747 921 5140  tel:+7 705 765 1170">+7 747 921 5140  +7 705 765 1170 santex</a>
+</ul>
+
+<div class="content-wrapper">
+    <h2 id="page-title">Төлемдер Тізілімі</h2>
+    <hr>
+    
+    <div id="status-filter" style="margin-bottom: 20px;">
+        <label for="filter-select">Мәртебе бойынша сүзу:</label>
+        <select id="filter-select" onchange="filterTable()">
+            <option value="all">Барлығы</option>
+            <option value="Paid">Төленгендер</option>
+            <option value="Pending">Күтудегілер</option>
+        </select>
+        <span id="data-status" style="margin-left: 20px; font-weight: bold;"></span>
+    </div>
+
+    <div id="payments-list-container">
+        <p>Деректер жүктелуде, күтіңіз...</p>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+// --- Қорғау функциялары ---
+document.ondragstart = test;
+document.onselectstart = test;
+document.oncontextmenu = test;
+function test(){return false}
+
+// --- Төлем Тізілімін Жүктеу ---
+const paymentDataUrl = '/Aqsai3-10a/payments.json'; // Ең сенімді абсолютті жолды қолданамыз
+const container = document.getElementById('payments-list-container');
+const statusMessage = document.getElementById('data-status');
+const filterSelect = document.getElementById('filter-select');
+let allPayments = []; // Барлық деректерді сақтауға арналған айнымалы
+
+function loadPaymentsList() {
+    container.innerHTML = '<p>Деректер жүктелуде, күтіңіз...</p>';
+    
+    fetch(paymentDataUrl) 
+        .then(response => {
+            if (!response.ok) { 
+                throw new Error(`HTTP қатесі! Статус: ${response.status}. Файлды жүктеу мүмкін болмады.`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            allPayments = data;
+            
+            // 1. Ең соңғы айды анықтау
+            const latestMonth = getLatestMonth(data);
+            
+            if (!latestMonth) {
+                statusMessage.innerHTML = '<span style="color: red;">JSON файлын тексеріңіз. Деректер табылмады.</span>';
+                container.innerHTML = `<p>Төлем деректері табылған жоқ.</p>`;
+                return;
+            }
+
+            // 2. Соңғы ай бойынша сүзу
+            const latestData = data.filter(p => p.month === latestMonth);
+            allPayments = latestData; // Фильтрлеу үшін тек соңғы айды қалдырамыз
+            
+            document.getElementById('page-title').innerHTML = `💸 Төлемдер Тізілімі: ${formatMonth(latestMonth)}`;
+            
+            renderTable(allPayments);
+
+        })
+        .catch(error => {
+            console.error('Төлем деректерін жүктеу қатесі:', error);
+            statusMessage.innerHTML = '<span style="color: red; font-weight: bold;">Деректерді жүктеу кезінде қате шықты.</span>';
+            container.innerHTML = `<p style="color: red;">Деректерді жүктеу мүмкін болмады. Қате: ${error.message}</p>`;
+        });
+}
+
+function getLatestMonth(data) {
+    // Ең үлкен "YYYY-MM" жолын тауып, соңғы айды анықтайды
+    if (!data || data.length === 0) return null;
+    return data.reduce((latest, current) => {
+        return current.month > latest ? current.month : latest;
+    }, data[0].month);
+}
+
+function formatMonth(monthString) {
+    if (!monthString) return "Белгісіз ай";
+    // Қазақша ай атауларына аударуды қосуға болады, бірақ қазірге "YYYY-MM" форматын қалдырамыз
+    return monthString; 
+}
+
+function renderTable(dataToRender) {
+    statusMessage.innerHTML = `<span style="color: green; font-weight: bold;">${dataToRender.length} жазба көрсетілуде.</span>`;
+
+    let html = `
+        <table class="payment-history-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Пәтер №</th>
+                    <th style="width: 25%;">Сомасы (тг)</th>
+                    <th style="width: 25%;">Мәртебесі</th>
+                    <th style="width: 40%;">Әрекет</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    dataToRender.forEach(payment => {
+        // 'Paid' және 'Төленді' статустарын қабылдайды
+        const isPaid = payment.status === 'Төленді' || payment.status === 'Paid';
+        
+        const statusClass = isPaid ? 'status-paid' : 'status-pending';
+        const statusText = isPaid ? 'Төленді' : 'Күтуде';
+        
+        const amountFormatted = (payment.amount || 0).toLocaleString('kk-KZ');
+
+        html += `
+            <tr>
+                <td style="text-align: center;">${payment.apartment}</td>
+                <td style="text-align: right;">${amountFormatted}</td>
+                <td class="${statusClass}">${statusText}</td>
+                <td style="text-align: center;">
+                    ${payment.receipt_link ? '<a href="' + payment.receipt_link + '" target="_blank">Түбіртек көру</a>' : '—'}
+                    </td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function filterTable() {
+    const selectedStatus = filterSelect.value;
+    let filteredList;
+
+    if (selectedStatus === 'all') {
+        filteredList = allPayments;
+    } else {
+        // Екі тілді статустарды сүзу
+        filteredList = allPayments.filter(p => {
+            const status = p.status.toLowerCase();
+            if (selectedStatus === 'Paid') {
+                return status === 'paid' || status === 'төленді';
+            }
+            if (selectedStatus === 'Pending') {
+                return status === 'pending' || status === 'күтуде';
+            }
+            return true;
+        });
+    }
+
+    renderTable(filteredList);
+}
+
+// Бет жүктелгенде деректерді шақыру
+window.onload = loadPaymentsList;
+</script>
+
+</body>
+</html>
