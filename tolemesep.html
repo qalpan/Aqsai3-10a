@@ -304,8 +304,12 @@
     function renderLedgerTable(apt) {
         const editorDiv = document.getElementById('ledgerEditor');
         
-        // Көрсету үшін дөңгелектеуді қолданатын көмекші функция
-        const displayValue = (val) => roundToTenge(val).toFixed(2); 
+        // ✅ ӨЗГЕРІС: Ондық нөлдерді көрсетпеу үшін formatNumber-ді қолдану
+        const displayValue = (val) => {
+            const rounded = roundToTenge(val);
+            // Егер сан 100.00 болса, 100 ретінде көрсету.
+            return rounded; 
+        }; 
 
         let html = `
             <table>
@@ -516,7 +520,12 @@
         const apt = apartments[currentAptIndex];
         calculateAccumulated(apt);
 
-        const displayValue = (val) => roundToTenge(val).toFixed(2); 
+        // ✅ ӨЗГЕРІС: Ондық нөлдерді көрсетпеу үшін formatNumber-ді қолдану
+        const displayValue = (val) => {
+            const rounded = roundToTenge(val);
+            // Егер сан 100.00 болса, 100 ретінде көрсету.
+            return rounded; 
+        }; 
 
         let historyRows = '';
         
