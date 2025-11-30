@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Төлем есептеу Басқару Панелі</title>
+    <style>
+        /* БАСҚАРУ ПАНЕЛІНІҢ СТИЛІ */
+        body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+        .admin-panel { max-width: 1500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn { padding: 10px 15px; cursor: pointer; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        .btn-green { background: #28a745; }
+        .btn-blue { background: #007bff; }
+        .btn-red { background: #dc3545; }
+        input[type="number"], input[type="date"], select { padding: 5px; border: 1px solid #ccc; border-radius: 3px; }
+        
+        /* ЛЕДЖЕР КЕСТЕСІНІҢ СТИЛІ */
+        #ledgerEditor table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; min-width: 1300px; }
+        #ledgerEditor th, #ledgerEditor td { border: 1px solid #ddd; padding: 4px; text-align: right; vertical-align: top; }
+        #ledgerEditor th { background: #f8f9fa; }
+        
+        /* Жолдардың түстері мен мәтіні */
+        .month-group-header { text-align: left; font-weight: bold; background: #e0f7fa; }
+        .payment-row:not(:first-child) { background: #d4edda; } 
+        .total-acc-row td { background: #ffe680; font-weight: bold; font-size: 12px; } /* Жыйналғаны (Сары) */
+        .total-col { background: #e9e9ff; } /* Жалпы баған (Көкшіл) */
+        
+        .sub-col-header { background: #e9ecef; }
+        .payment-input { width: 60px; }
+        .small-input { width: 90%; }
+        .left-align { text-align: left; }
+        .center-align { text-align: center; }
+        
+        /* INPUT/SELECT/СОМА БІР ҚАТАРДА */
+        .payment-details-inline { 
+            display: flex; 
+            gap: 5px; 
+            justify-content: space-between; 
+            align-items: center;
+            font-size: 9px; 
+        }
+        .payment-details-input { 
+            width: 60px; 
+        }
+        .payment-total-amount { 
+            font-size: 11px; 
+            font-weight: bold;
+        }
+        
+        /* ӘРЕКЕТ БАТЫРМАЛАРЫНЫҢ БІР ҚАТАРДА ТҰРУЫН ҚАМТАМАСЫЗ ЕТУ */
+        .action-buttons-inline {
+            display: flex;
+            flex-direction: column; 
+            gap: 3px; 
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 2px 0;
+        }
+        .action-buttons-inline button {
+            width: 100%;
+            padding: 3px 5px;
+            font-size: 10px;
+        }
+
+        /* Бастапқы Қарыз жолының стилі */
+        .initial-debt-row .charge-cell { background: #fff3cd; } 
+        .initial-debt-row td { font-weight: bold; }
+    </style>
+</head>
+<body onload="init()">
+
+<div class="admin-panel">
+    <h2>ТКШ Леджер Басқару Панелі</h2>
+    <div class="controls">
+        <label>Пәтер №:</label>
+        <input type="number" id="aptInput" value="1" min="1" max="200" style="width: 60px;">
+        <button class="btn btn-blue" onclick="loadApartment()">Кестені жүктеу</button>
+        <button class="btn btn-green" onclick="saveData()">💾 Барлық деректерді сақтау</button>
+        <span id="msg" style="color:green; margin-left:10px;"></span>
+    </div>
+    
+    <hr>
+
+    <div id="editor" style="display:none;">
+        <h3 id="aptTitle"></h3>
+        
+        <div id="ledgerEditor" style="overflow-x: auto;">
+            </div>
+        
+        <br>
+        <button class="btn btn-green" onclick="updateLedger()">✅ Леджерді сақтау (Жыйналғанын қайта есептеу)</button>
+        <button class="btn btn-blue" onclick="downloadReceipt()">📥 Түбіртекті жүктеу (Скриншот үлгісі)</button>
+    </div>
+</div>
+
+<script>
+    // --- 1. ТАРИФТЕР ЖӘНЕ КОНСТАНТТАР ---
+    // Негізгі тариф: 40 тг/м2
+    const TARIFFS = { maint: 40, clean: 850, sec: 300, heat: 5, cap: 40 };
+    const SERVICE_KEYS = ['maint', 'clean', 'sec', 'heat', 'cap'];
+    const SERVICE_NAMES = { maint: 'Үй күтімі', clean: 'Тазалық', sec: 'Бейнебақылау', heat: 'Жылу есеп.', cap: 'Күрделі жөнд.' };
+    const MONTHS_KK = ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "Мамыр", "Маусым", "Шілде", "Тамыз", "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"];
+    const MONTHS_RU = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+
+    // 🛑 Коммерциялық тариф қолданылатын пәтерлердің ID-лері
+    const COMMERCIAL_APTS = [1, 15, 16]; 
+    const COMMERCIAL_MAINT_RATE = 60; // 60 тг/м2
+
+    let apartments = [];
+    let currentAptIndex = null;
+    
+    // =========================================================================
+    // 📢 2. ПӘТЕР ДЕРЕКТЕРІНІҢ АРНАЙЫ МАССИВІ - ОСЫ ЖЕРДІ ӨЗГЕРТІҢІЗ
+    // =========================================================================
+    const APARTMENT_DATA = [
+        // Ескерту: overall - қызметтер бойынша debt сомаларының қосындысы болуы керек.
+        
+        // --- ПӘТЕР 1 (Коммерциялық) ---
+        {
+            id: 1, 
+            account: "0005622", // Дербес шот нөмірі
+            area: 49.90, 
+            debt: { maint: 94909.8, clean: 22600, sec: 11100, heat: 9231.5, cap: 109836.92, overall: 247678.22 }
+        },
+        
+        // --- ПӘТЕР 2 ---
+        {
+            id: 2, 
+            account: 3552225, // Дербес шот нөмірі
+            area: 44.60, 
+            debt: { maint: 8920, clean: 4250, sec: 1500, heat: 1115, cap: 8920, overall: 24705 }
+        },
+        
+        // --- ПӘТЕР 3 ---
+        {
+            id: 3, 
+            account: 3552230, // Дербес шот нөмірі
+            area: 65.00, 
+            debt: { maint: 13000, clean: 4250, sec: 1500, heat: 1625, cap: 13000, overall: 33375 } 
+        },
+        
+        // --- ПӘТЕР 4 ---
+        {
+            id: 4, 
+            account: 3552235, // Дербес шот нөмірі
+            area: 44.60, 
+            debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } // Қарызы жоқ
+        },
+        
+        // Ескерту: Коммерциялық пәтерлер 15 және 16 да осы тізімде болуы керек.
+        
+    ];
+    // =========================================================================
+    // 📢 ПӘТЕР ДЕРЕКТЕРІНІҢ АРНАЙЫ МАССИВІНІҢ СОҢЫ
+    // =========================================================================
+
+
+    // --- КӨМЕКШІ ФУНКЦИЯ: ДӨҢГЕЛЕКТЕУ (2 ондық бөлшекке дейін) ---
+    function roundToTenge(num) {
+        if (typeof num !== 'number' || isNaN(num)) return 0;
+        return Math.round(num * 100) / 100;
+    }
+
+    // 3. АЙЛЫҚ ЕСЕПТЕУ (ДЕБЕТ)
+    function calculateAccruals(area, aptId) {
+        let maintRate = TARIFFS.maint; 
+        
+        // 🛑 Коммерциялық тарифті тексеру және орнату
+        if (COMMERCIAL_APTS.includes(aptId)) {
+            maintRate = COMMERCIAL_MAINT_RATE; 
+        }
+
+        return {
+            // "Үйді күтіп ұстау" үшін жаңа тарифті қолдану (roundToTenge қолдану)
+            maint: roundToTenge(area * maintRate), 
+            clean: TARIFFS.clean, 
+            sec: TARIFFS.sec, 
+            // ❗ Өзгеріс: Math.round орнына roundToTenge қолдану
+            heat: roundToTenge(area * TARIFFS.heat), 
+            // ❗ Өзгеріс: Math.round орнына roundToTenge қолдану
+            cap: roundToTenge(area * TARIFFS.cap) 
+        };
+    }
+    
+    /**
+     * Бастапқы леджерді құрады.
+     */
+    function getInitialLedger(area, aptId) {
+        // aptId-ны calculateAccruals-ке беру
+        const calc = calculateAccruals(area, aptId);
+        const zeroCalc = { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 }; 
+        const ledger = [];
+        
+        for (let i = 0; i < 12; i++) {
+            
+            let currentCharges = { ...calc }; 
+            
+            // 🛑 ЖЕЛТОҚСАН (индекс 11) ҮШІН Есептеулерді (Д) НӨЛГЕ ТЕҢЕУ
+            if (i === 11) {
+                currentCharges = zeroCalc;
+            }
+            
+            ledger.push({
+                month: MONTHS_KK[i] + '. ' + MONTHS_RU[i] + ' 2025',
+                charges: currentCharges,
+                paymentTransactions: [], 
+            });
+        }
+        return ledger;
+    }
+
+
+    // --- 5. ЖҮЙЕНІ БАСТАУ ЖӘНЕ САҚТАУ (LOCALSTORAGE) ---
+    function init() {
+        const saved = localStorage.getItem('kz_full_ledger_v5'); 
+        if (saved) {
+            apartments = JSON.parse(saved);
+        } else {
+            APARTMENT_DATA.forEach(data => {
+                // aptId-ны getInitialLedger-ге беру
+                const calculatedLedger = getInitialLedger(data.area, data.id);
+                
+                const overallSum = SERVICE_KEYS.reduce((sum, key) => sum + (data.debt[key] || 0), 0);
+                
+                const newApt = {
+                    id: data.id, 
+                    account: data.account, 
+                    area: data.area,
+                    // ❗ Бастапқы қарыздағы ондық бөлшектерді реттеу
+                    initialDebt: { ...data.debt, 
+                        maint: roundToTenge(data.debt.maint), 
+                        clean: roundToTenge(data.debt.clean), 
+                        sec: roundToTenge(data.debt.sec), 
+                        heat: roundToTenge(data.debt.heat), 
+                        cap: roundToTenge(data.debt.cap), 
+                        overall: roundToTenge(overallSum) 
+                    }, 
+                    ledger: calculatedLedger,
+                    lastPay: "" 
+                };
+
+                calculateAccumulated(newApt); 
+                apartments.push(newApt);
+            });
+            apartments.forEach(apt => calculateAccumulated(apt));
+            saveData();
+        }
+    }
+    
+    function saveData() {
+        localStorage.setItem('kz_full_ledger_v5', JSON.stringify(apartments));
+        document.getElementById('msg').innerText = "Деректер сақталды!";
+        setTimeout(() => document.getElementById('msg').innerText = "", 2000);
+    }
+    
+    // --- 6. КУМУЛЯТИВТІ ЕСЕПТЕУ ЛОГИКАСЫ ---
+    function calculateAccumulated(apt) {
+        let currentBal = { ...apt.initialDebt }; 
+        
+        apt.ledger.forEach((entry) => {
+            let monthTotalCharge = 0;
+            
+            SERVICE_KEYS.forEach(key => {
+                const totalPaymentForService = entry.paymentTransactions.reduce((sum, tx) => sum + (tx.amounts[key] || 0), 0);
+                
+                // ❗ Әр қадамда дөңгелектеуді қолдану
+                currentBal[key] = roundToTenge(currentBal[key] + entry.charges[key] - totalPaymentForService);
+                monthTotalCharge += entry.charges[key];
+            });
+
+            currentBal.overall = roundToTenge(currentBal.maint + currentBal.clean + currentBal.sec + currentBal.heat + currentBal.cap);
+            
+            entry.accumulated = { ...currentBal };
+            entry.totalMonthlyCharge = roundToTenge(monthTotalCharge); // Айлық есептеудің жалпы сомасын да дөңгелектеу
+        });
+        
+        return currentBal; 
+    }
+
+    // --- 7. ЛЕДЖЕР РЕДАКТОРЫН СЫЗУ ЖӘНЕ ЖҮКТЕУ ---
+    function loadApartment() {
+        const id = parseInt(document.getElementById('aptInput').value);
+        if (id < 1 || id > APARTMENT_DATA.length) { // APARTMENT_DATA.length қолдану
+            alert(`Пәтер №1 мен №${APARTMENT_DATA.length} арасында болу керек`); 
+            return; 
+        }
+        
+        currentAptIndex = apartments.findIndex(apt => apt.id === id); // id арқылы табу
+        if (currentAptIndex === -1) {
+             alert(`Пәтер №${id} деректер базасында табылмады.`); 
+            return;
+        }
+
+        const apt = apartments[currentAptIndex];
+        
+        document.getElementById('editor').style.display = 'block';
+        document.getElementById('aptTitle').innerText = `Пәтер №${apt.id} (Шот: ${apt.account}) - Леджер редакторы (Алаңы: ${apt.area} м2)`;
+        
+        calculateAccumulated(apt); 
+        renderLedgerTable(apt);
+    }
+    
+    function renderLedgerTable(apt) {
+        const editorDiv = document.getElementById('ledgerEditor');
+        
+        // Көрсету үшін дөңгелектеуді қолданатын көмекші функция
+        const displayValue = (val) => roundToTenge(val).toFixed(2); 
+
+        let html = `
+            <table>
+                <tr>
+                    <th rowspan="3" style="width:120px;">Ай / Месяц</th>
+                    <th colspan="10">Қызметтер (Тенге)</th>
+                    <th colspan="2" class="total-col">Жалпы <br> Жыйыны</th>
+                    <th rowspan="3">Әрекет</th>
+                </tr>
+                <tr>
+                    ${SERVICE_KEYS.map(key => `<th colspan="2">${SERVICE_NAMES[key]}</th>`).join('')}
+                    <th class="total-col sub-col-header" colspan="2">Деректер</th>
+                </tr>
+                <tr>
+                    ${SERVICE_KEYS.map(() => `<th class="sub-col-header charge-cell">Д</th><th class="sub-col-header payment-cell">К</th>`).join('')}
+                    <th class="total-col sub-col-header charge-cell">Д</th>
+                    <th class="total-col sub-col-header payment-cell">К (Төлем дерегі)</th>
+                </tr>
+                
+                <tr class="initial-debt-row">
+                    <td class="month-group-header left-align">2024 (Бастапқы Қарыз)</td>
+                    
+                    ${SERVICE_KEYS.map(key => `
+                        <td class="charge-cell">${displayValue(apt.initialDebt[key])}</td><td class="payment-cell"></td>
+                    `).join('')}
+                    
+                    <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td>
+                    <td class="total-col payment-cell"></td>
+                    
+                    <td></td>
+                </tr>
+
+                ${apt.ledger.map((entry, index) => {
+                    
+                    let monthHtml = ''; 
+                    const transactionsExist = entry.paymentTransactions.length > 0;
+                    const rowSpanCount = transactionsExist ? entry.paymentTransactions.length : 1;
+                    
+                    // --- 1. ЕСЕПТЕУ ЖӘНЕ БІРІНШІ ТРАНЗАКЦИЯНЫ БІРІКТІРУ ЖОЛЫ (Тр. 1) ---
+                    if (transactionsExist) {
+                        const tx = entry.paymentTransactions[0];
+                        const totalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (tx.amounts[key] || 0), 0);
+                        
+                        monthHtml += `
+                            <tr class="payment-row" data-month-index="${index}" data-tx-index="0" style="background:#f0f0f0;">
+                                <td class="month-group-header left-align" rowspan="${rowSpanCount}">${entry.month}</td>
+                                ${SERVICE_KEYS.map(key => `
+                                    <td class="charge-cell">${displayValue(entry.charges[key])}</td>
+                                    <td class="payment-cell">
+                                        <input type="number" class="payment-input pay-input" 
+                                            data-month-index="${index}" data-tx-index="0" data-key="${key}"
+                                            value="${displayValue(tx.amounts[key])}" min="0" step="0.01">
+                                    </td>
+                                `).join('')}
+                                <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                                <td class="total-col payment-cell payment-details-cell">
+                                    <div class="payment-details-inline">
+                                        <span class="payment-total-amount">
+                                            ${displayValue(totalTxAmount)}
+                                        </span>
+                                        <input type="date" class="payment-details-input" data-month-index="${index}" data-tx-index="0" data-field="date" value="${tx.date || ''}">
+                                        <select class="payment-details-input" data-month-index="${index}" data-tx-index="0" data-field="bank">
+                                            <option value="${tx.bank || ''}">${tx.bank || 'Таңдау'}</option>
+                                            <option value="Kaspi">Kaspi</option>
+                                            <option value="Halyk">Halyk</option>
+                                            <option value="Cash">Қолма-қол</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td rowspan="${rowSpanCount}" style="text-align: center;">
+                                    <div class="action-buttons-inline">
+                                        <button class="btn btn-red" onclick="removeTransaction(${index}, 0)">❌ Өшіру</button>
+                                        <button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+
+                        // --- 2. ЕКІНШІ ЖӘНЕ ОДАН КЕЙІНГІ ТРАНЗАКЦИЯЛАР (Тр. 2...) ---
+                        for(let txIndex = 1; txIndex < entry.paymentTransactions.length; txIndex++) {
+                            const tx = entry.paymentTransactions[txIndex];
+                            const nextTotalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (tx.amounts[key] || 0), 0);
+                            
+                            monthHtml += `
+                                <tr class="payment-row" data-month-index="${index}" data-tx-index="${txIndex}">
+                                    <td style="display:none;"></td> 
+                                    ${SERVICE_KEYS.map(key => `
+                                        <td class="charge-cell"></td>
+                                        <td class="payment-cell">
+                                            <input type="number" class="payment-input pay-input" 
+                                                data-month-index="${index}" data-tx-index="${txIndex}" data-key="${key}"
+                                                value="${displayValue(tx.amounts[key])}" min="0" step="0.01">
+                                        </td>
+                                    `).join('')}
+                                    <td class="total-col charge-cell"></td>
+                                    <td class="total-col payment-cell payment-details-cell">
+                                        <span class="payment-total-amount">
+                                            ${displayValue(nextTotalTxAmount)}
+                                        </span>
+                                    </td>
+                                    <td style="display:none;"></td>
+                                </tr>
+                            `;
+                        }
+
+                    } else {
+                        // --- 3. ТРАНЗАКЦИЯ ЖОҚ (ТЕК ЕСЕПТЕУ) ЖОЛЫ ---
+                         monthHtml += `
+                            <tr class="charge-row" data-month-index="${index}" style="background:${entry.totalMonthlyCharge > 0 ? '#f8d7da' : '#f0f0f0'};">
+                                <td class="month-group-header left-align">${entry.month}</td>
+                                ${SERVICE_KEYS.map(key => `
+                                    <td class="charge-cell">${displayValue(entry.charges[key])}</td>
+                                    <td class="charge-cell"></td>
+                                `).join('')}
+                                <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                                <td class="total-col charge-cell"></td>
+                                <td><button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button></td>
+                            </tr>
+                        `;
+                    }
+                    
+                    // Айып соңындағы жыйналғаны жолы
+                    const accRow = `
+                        <tr class="total-acc-row">
+                            <td class="month-group-header left-align">Жыйналғаны (Ай соңы)</td>
+                            
+                            ${SERVICE_KEYS.map(key => `
+                                <td colspan="2">${displayValue(entry.accumulated[key])}</td>
+                            `).join('')}
+                            
+                            <td colspan="2" class="total-col">${displayValue(entry.accumulated.overall)}</td>
+                            <td></td>
+                        </tr>
+                    `;
+                    return monthHtml + accRow;
+                }).join('')}
+
+            </table>
+        `;
+        editorDiv.innerHTML = html;
+    }
+    
+    // --- 8. ТРАНЗАКЦИЯЛАРДЫ БАСҚАРУ ---
+    function addTransaction(monthIndex) {
+        const apt = apartments[currentAptIndex];
+        const newTx = {
+            amounts: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 },
+            date: new Date().toISOString().slice(0, 10), 
+            bank: 'Kaspi'
+        };
+        apt.ledger[monthIndex].paymentTransactions.push(newTx);
+        
+        saveData();
+        loadApartment();
+    }
+    
+    function removeTransaction(monthIndex, txIndex) {
+        if(!confirm("Төлем транзакциясын өшіруге сенімдісіз бе?")) return;
+        const apt = apartments[currentAptIndex];
+        apt.ledger[monthIndex].paymentTransactions.splice(txIndex, 1);
+        
+        if (apt.ledger[monthIndex].paymentTransactions.length === 0) {
+            saveData();
+            loadApartment(); 
+            return;
+        }
+        
+        saveData();
+        loadApartment();
+    }
+
+    function updateLedger() {
+        const apt = apartments[currentAptIndex];
+        
+        // Input-тардан деректерді жинау
+        document.querySelectorAll('.pay-input').forEach(input => {
+            const monthIndex = parseInt(input.getAttribute('data-month-index'));
+            const txIndex = parseInt(input.getAttribute('data-tx-index'));
+            const key = input.getAttribute('data-key');
+            
+            // ❗ Input мәнін алар кезде де дөңгелектеу
+            apt.ledger[monthIndex].paymentTransactions[txIndex].amounts[key] = roundToTenge(parseFloat(input.value)) || 0;
+        });
+
+        // Бірінші транзакция үшін ғана басқа деректерді (күн, банк) жинау
+        document.querySelectorAll('tr[data-tx-index="0"]').forEach(row => {
+            const monthIndex = parseInt(row.getAttribute('data-month-index'));
+            const txIndex = 0; 
+            
+            if (apt.ledger[monthIndex] && apt.ledger[monthIndex].paymentTransactions[txIndex]) {
+                 const dateInput = row.querySelector('input[data-field="date"]');
+                const bankSelect = row.querySelector('select[data-field="bank"]');
+
+                if (dateInput && bankSelect) {
+                    apt.ledger[monthIndex].paymentTransactions[txIndex].date = dateInput.value;
+                    apt.ledger[monthIndex].paymentTransactions[txIndex].bank = bankSelect.value;
+                }
+            }
+        });
+
+        calculateAccumulated(apt);
+        saveData();
+        renderLedgerTable(apt); 
+    }
+    
+    // --- 9. ТҮБІРТЕК ГЕНЕРАТОРЫ ---
+    function downloadReceipt() {
+        const apt = apartments[currentAptIndex];
+        calculateAccumulated(apt);
+
+        const displayValue = (val) => roundToTenge(val).toFixed(2); 
+
+        let historyRows = '';
+        
+        // 1. 2024 жылғы бастапқы қарыз жолы
+        historyRows += `
+            <tr class="charge-row receipt-style">
+                <td class="left-align bold">2024 (Бастапқы Қарыз)</td>
+                <td class="charge-cell">${displayValue(apt.initialDebt.maint)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.initialDebt.clean)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.initialDebt.sec)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.initialDebt.heat)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.initialDebt.cap)}</td><td></td>
+                <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td><td></td>
+            </tr>`;
+
+        // 2. 2025 жылғы айлар және транзакциялар
+        apt.ledger.forEach(entry => {
+            if (entry.paymentTransactions.length > 0) {
+                const tx = entry.paymentTransactions[0];
+                const totalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (tx.amounts[key] || 0), 0);
+                const paymentDetails = totalTxAmount > 0 ? `<div style="font-size: 8px;">${displayValue(totalTxAmount)} K${tx.date.replace(/-/g, '.')} (${tx.bank})</div>` : '';
+                
+                historyRows += `
+                    <tr class="payment-row receipt-style">
+                        <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
+                        ${SERVICE_KEYS.map(key => `
+                            <td class="charge-cell">${displayValue(entry.charges[key])}</td>
+                            <td class="payment-cell">${displayValue(tx.amounts[key])}</td>
+                        `).join('')}
+                        <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                        <td class="total-col payment-cell">
+                            ${paymentDetails} 
+                        </td>
+                    </tr>
+                `;
+
+                   for(let txIndex = 1; txIndex < entry.paymentTransactions.length; txIndex++) {
+                    const nextTx = entry.paymentTransactions[txIndex];
+                    const nextTotalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (nextTx.amounts[key] || 0), 0);
+                    const nextPaymentDetails = nextTotalTxAmount > 0 ? `<div style="font-size: 8px;">${displayValue(nextTotalTxAmount)} K${nextTx.date.replace(/-/g, '.')} (${nextTx.bank})</div>` : '';
+                    
+                    historyRows += `
+                        <tr class="payment-row receipt-style">
+                            <td class="left-align"></td> 
+                            ${SERVICE_KEYS.map(key => `
+                                <td></td><td class="payment-cell">${displayValue(nextTx.amounts[key])}</td>
+                            `).join('')}
+                            <td></td>
+                            <td class="total-col payment-cell">
+                                ${nextPaymentDetails}
+                            </td>
+                        </tr>
+                    `;
+                    }
+
+            } else {
+                 historyRows += `
+                    <tr class="charge-row receipt-style">
+                        <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
+                        <td class="charge-cell">${displayValue(entry.charges.maint)}</td><td></td>
+                        <td class="charge-cell">${displayValue(entry.charges.clean)}</td><td></td>
+                        <td class="charge-cell">${displayValue(entry.charges.sec)}</td><td></td>
+                        <td class="charge-cell">${displayValue(entry.charges.heat)}</td><td></td>
+                        <td class="charge-cell">${displayValue(entry.charges.cap)}</td><td></td>
+                        <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td><td></td>
+                    </tr>
+                `;
+            }
+        });
+        
+        // 3. Ең соңғы "Жыйналғаны" жолы
+        const finalAccumulated = apt.ledger[11] ? apt.ledger[11].accumulated : apt.initialDebt; 
+        
+        // --- ТОЛЫҚ HTML ҚҰРЫЛЫМЫН ҚҰРУ ---
+        const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="kk">
+        <head>
+            <meta charset="UTF-8">
+            <title>Төлем Түбіртегі: Пәтер ${apt.id}</title>
+            <style>
+                body { font-family: "Times New Roman", serif; font-size: 11px; margin: 20px; }
+                table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+                th, td { border: 1px solid black; padding: 4px 6px; text-align: right; vertical-align: top; }
+                .header-cell { vertical-align: top; text-align: center; font-weight: bold; padding: 6px 4px; }
+                .month-header { text-align: left; font-size: 14px; font-weight: bold; }
+                .acc-info { text-align: left; font-size: 10px; }
+                .charge-cell { background-color: #f8f8f8; } 
+                .payment-cell { background-color: #e8f5e9; }
+                .total-acc-row td { background-color: #ffe082; font-weight: bold; font-size: 12px; }
+                .total-col { background-color: #e3f2fd; }
+                .left-align { text-align: left; }
+                .center-align { text-align: center; }
+                .bold { font-weight: bold; }
+            </style>
+        </head>
+        <body>
+
+        <table>
+            <tr>
+                <td class="acc-info" style="width: 25%">
+                    <span class="month-header">Қараша / Ноябрь 2025</span><br>
+                    дербес шот. лицевой счет ${apt.account}<br>
+                    Aqsai-3, 10a, <strong>${apt.id}</strong> - ${apt.area} m2<br> </td>
+                
+                <td colspan="2" class="header-cell">Үйді күтіп ұстау.<br>${COMMERCIAL_APTS.includes(apt.id) ? '60' : '40'} тңг,м2</td>
+                <td colspan="2" class="header-cell">Үй іші тазалығы.<br>850 тңг,пт.кв.</td>
+                <td colspan="2" class="header-cell">Кіреберіс есікке...<br>300 тңг,пт.кв.</td>
+                <td colspan="2" class="header-cell">Жылыу есептеу...<br>5 тңг,м2</td>
+                <td colspan="2" class="header-cell">Күрделі жөндеу.<br>40 тңг,м2</td>
+                
+                <td colspan="2" class="header-cell total-col">Жыйыны.<br>Итого</td>
+            </tr>
+
+            <tr>
+                <td class="left-align">Айына есептеу. Расчет в месяц</td>
+                <td class="charge-cell">${displayValue(apt.ledger[0].charges.maint)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.ledger[0].charges.clean)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.ledger[0].charges.sec)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.ledger[0].charges.heat)}</td><td></td>
+                <td class="charge-cell">${displayValue(apt.ledger[0].charges.cap)}</td><td></td>
+                <td class="total-col charge-cell">${displayValue(apt.ledger[0].totalMonthlyCharge)}</td><td></td>
+            </tr>
+
+            <tr class="total-acc-row">
+                <td class="left-align">жыйналғаны, накопившееся</td>
+                
+                <td colspan="2">${displayValue(finalAccumulated.maint)}</td>
+                <td colspan="2">${displayValue(finalAccumulated.clean)}</td>
+                <td colspan="2">${displayValue(finalAccumulated.sec)}</td>
+                <td colspan="2">${displayValue(finalAccumulated.heat)}</td>
+                <td colspan="2">${displayValue(finalAccumulated.cap)}</td>
+                
+                <td class="total-col charge-cell">${displayValue(finalAccumulated.overall)}</td>
+                
+                <td class="total-col payment-cell" style="text-align: center; background: #fff3cd; padding: 4px;">
+                    Төлемге - К оплате
+                </td>
+            </tr>
+
+            ${historyRows}
+
+        </table>
+        
+        <p style="margin-top: 30px; font-size: 10px;">Бұл түбіртек автоматтандырылған жүйе арқылы құрылған.</p>
+        </body>
+        </html>
+        `;
+
+        const blob = new Blob([htmlContent], {type: "text/html"});
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `kvartira-${apt.id}-full-ledger.html`;
+        link.click();
+        
+        document.getElementById('msg').innerText = `Пәтер №${apt.id} үшін түбіртек жүктелді!`;
+        setTimeout(() => document.getElementById('msg').innerText = "", 3000);
+    }
+</script>
+</body>
+</html>
