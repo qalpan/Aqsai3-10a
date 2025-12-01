@@ -687,20 +687,14 @@ function renderLedgerTable(apt) {
     let html = `
         <table>
             <tr>
-                <th rowspan="3" style="width:120px;">Ай / Месяц</th>
-                <th colspan="10">Қызметтер (Тенге)</th>
-                <th colspan="2" class="total-col">Жалпы <br> Жыйыны</th>
-                <th rowspan="3">Әрекет</th>
+                <th rowspan="2" style="width:120px;">Ай / Месяц</th>
             </tr>
             <tr>
                 ${SERVICE_KEYS.map(key => `<th colspan="2">${SERVICE_NAMES[key]}</th>`).join('')}
-                <th class="total-col sub-col-header" colspan="2">Деректер</th>
+                <th class="total-col sub-col-header" colspan="2">Жалпы
+Жыйыны</th>
             </tr>
-            <tr>
-                ${SERVICE_KEYS.map(() => `<th class="sub-col-header charge-cell">Д</th><th class="sub-col-header payment-cell">К</th>`).join('')}
-                <th class="total-col sub-col-header charge-cell">Д</th>
-                <th class="total-col sub-col-header payment-cell">К (Төлем дерегі)</th>
-            </tr>
+           
             
             <tr class="initial-debt-row">
                 <td class="month-group-header left-align">2024 (Бастапқы Қарыз)</td>
@@ -814,7 +808,8 @@ function addTransaction(monthIndex) {
     };
     apt.ledger[monthIndex].paymentTransactions.push(newTx);
     
-    loadApartment();
+    calculateAccumulated(apt); 
+    renderLedgerTable(apt);
 }
 
 function removeTransaction(monthIndex, txIndex) {
@@ -1508,7 +1503,6 @@ function downloadFinanceLedger() {
 </script>
 </body>
 </html>
-
 
 
 
