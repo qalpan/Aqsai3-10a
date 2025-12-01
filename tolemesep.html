@@ -36,9 +36,9 @@
         
         /* Қаржы Леджерінің Стилі */
         .finance-header { background: #cce5ff; font-weight: bold; }
-        .income-row { background: #d4edda; } /* Кіріс */
-        .expense-row { background: #f8d7da; } /* Шығыс */
-        .balance-row { background: #ffe080; font-weight: bold; } /* Қалдық */
+        .income-row { background: #d4edda; } 
+        .expense-row { background: #f8d7da; } 
+        .balance-row { background: #ffe080; font-weight: bold; } 
         .balance-row input { font-weight: bold; }
         .balance-row td:not(:first-child) { color: black; }
         .balance-row td:nth-child(2) input { font-size: 11px; }
@@ -47,6 +47,16 @@
         .description-input { width: 95%; }
         .account-balance-cell { background: #e3f2fd; font-weight: bold; }
         .account-total-balance { background: #ffc107; color: black; font-size: 14px; }
+        
+        /* Custom Settings UI */
+        .custom-settings-container { margin-top: 20px; padding: 10px; border: 1px dashed #007bff; border-radius: 5px; background: #f8faff; }
+        .setting-group { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dotted #ccc; }
+        .setting-group h4 { margin-top: 0; margin-bottom: 10px; color: #007bff; }
+        .setting-entry { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
+        .setting-entry label { font-weight: normal; }
+        .setting-entry input, .setting-entry select { padding: 3px; border: 1px solid #ccc; width: 100px; }
+        .setting-entry button { padding: 3px 5px; font-size: 10px; }
+
     </style>
 </head>
 <body onload="init()">
@@ -59,7 +69,7 @@
         <input type="file" id="uploadJson" accept=".json" onchange="uploadDataJSON(event)" style="display:none;">
         
         <label>Пәтер №:</label>
-        <input type="text" id="aptInput" value="1" style="width: 60px;">
+        <input type="text" id="aptInput" value="11" style="width: 60px;">
         
         <button class="btn btn-blue" onclick="loadApartment()">Кестені көрсету</button>
         
@@ -103,6 +113,9 @@
     <div id="editor" style="display:none;">
         <h3 id="aptTitle"></h3>
         
+        <div class="custom-settings-container" id="customSettingsEditor">
+            </div>
+        
         <div id="ledgerEditor" style="overflow-x: auto;">
             </div>
         
@@ -119,19 +132,17 @@
     const SERVICE_NAMES = { maint: 'Үй күтімі', clean: 'Тазалық', sec: 'Бейнебақылау', heat: 'Жылу есеп.', cap: 'Күрделі жөнд.' };
     const MONTHS_KK = ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "Мамыр", "Маусым", "Шілде", "Тамыз", "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"];
     const MONTHS_RU = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-
+    
+    // Бұл константалар тек тексеру үшін қолданылады, тарифтің негізгі мәнін getTariffRateForMonth функциясы анықтайды.
     const COMMERCIAL_APTS = ['1', '15', '16']; 
     const COMMERCIAL_MAINT_RATE = 60; 
     
-    // ❗ КӨП ШОТТАР ТІЗІМІ
     const ACCOUNTS = ['Kaspi', 'Halyk', 'Cash']; 
 
     let apartments = [];
     let currentAptIndex = null;
     
-    // ❗ ҚАРЖЫЛЫҚ ОПЕРАЦИЯЛАРДЫҢ БАСЫНҒЫ ДЕРЕКТЕРІ
     let FINANCE_LEDGER = [
-        // Бастапқы қалдықтарды әр шотқа бөлу
         { 
             type: 'balance', 
             date: '2025-01-01', 
@@ -147,25 +158,28 @@
     ];
     // =========================================================================
     
-    // ПӘТЕР ДЕРЕКТЕРІ
+    // ПӘТЕР ДЕРЕКТЕРІ (customSettings қосылды)
     const APARTMENT_DATA = [
         { id: '1', account: "0005622", area: 49.9, debt: { maint: 94909.8, clean: 22600, sec: 11100, heat: 9231.5, cap: 109836.92, overall: 247678.22 } },
         { id: '2', account: '3552225', area: 44.6, debt: { maint: 3332, clean: 1700, sec: 600, heat: 446, cap: 3568, overall: 9646 } },
         { id: '3', account: '3552233', area: 45.4, debt: { maint: 5221.4, clean: 2550, sec: 900, heat: 681, cap: 5448, overall: 14800.4 } },
         { id: '4', account: '3552241', area: 22.1, debt: { maint: 29814.4, clean: 6400, sec: 2400, heat: 1804, cap: 40864.94, overall: 81283.34 } },
         { id: '5', account: '355', area: 23, debt: { maint: 29814.4, clean: 6400, sec: 2400, heat: 1804, cap: 40864.94, overall: 81283.34 } },
+        // 6, 7, 9, 12, 13 пәтерлері үшін арнайы басталу логикасы жойылды
         { id: '6', account: '3552268', area: 20.5, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
         { id: '7', account: '3552276', area: 21.2, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
         { id: '8', account: '3552284', area: 41.5, debt: { maint: 50630, clean: 21600, sec: 9600, heat: 6640, cap: 66801.72, overall: 155271.72 } },
         { id: '9', account: '3552292', area: 20.7, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
         { id: '9a', account: '3559599', area: 25.7, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
-        { id: '10', account: '3552306', area: 36.9, debt: { maint: 37490.4, clean: 18600, sec: 7800, heat: 4428, cap: 38376, overall: 106694.4 } },
+        
+        // 11 және 11а пәтерлері үшін customSettings орнатылады
         { id: '11', account: '3552314', area: 17.2, debt: { maint: 20430, clean: 12400, sec: 4800, heat: 2752, cap: 46341.5, overall: 86723.5 } },
         { id: '11a', account: '355', area: 17.2, debt: { maint: 20430, clean: 12400, sec: 4800, heat: 2752, cap: 46341.5, overall: 86723.5  } },
+        
         { id: '12', account: '3552322', area: 27.6, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
         { id: '13', account: '3552330', area: 34.8, debt: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0, overall: 0 } },
+        
         { id: '14', account: '3552349', area: 38, debt: { maint: 6940, clean: 3400, sec: 1200, heat: 760, cap: 66000, overall: 18900 } },
-
         { id: '15', account: '3552357', area: 69.2, debt: { maint: 102416, clean: 22600, sec: 11100, heat: 8996, cap: 71968, overall: 217080 } },
         { id: '16', account: '3552365', area: 40.7, debt: { maint: 60236, clean: 18600, sec: 7800, heat: 4884, cap: 42328, overall: 133848 } },
         { id: '17', account: '3552373', area: 49.1, debt: { maint: 23806.6, clean: 750, sec: 1500, heat: 1718.5, cap: 15712, overall: 43487.1 } },
@@ -181,10 +195,14 @@
         return Math.round(num * 100) / 100;
     }
     
-    // 3. АЙЛЫҚ ЕСЕПТЕУ (ДЕБЕТ)
-    function calculateAccruals(initialArea, aptId, monthIndex) { 
-        let area = initialArea; 
-        
+    // --- 2. ЖАҢА АУДАН ЖӘНЕ ТАРИФТЕРДІ АЛУ ХЕЛПЕРЛЕРІ ---
+
+    // Ай бойынша қолданылатын ауданды анықтайды
+    function getAreaForMonth(initialArea, aptId, monthIndex) {
+        const apt = apartments.find(a => a.id === aptId);
+        let area = initialArea;
+
+        // 1. Пәтер 4, 5 үшін арнайы логика (өзгеріссіз қалдырылған)
         if (aptId === '4' || aptId === '5') {
             let changedArea = aptId === '4' ? 22.1 : 23; 
             if (monthIndex >= 5 && monthIndex <= 10) { 
@@ -194,42 +212,107 @@
             }
         }
         
-        let maintRate = COMMERCIAL_APTS.includes(aptId) ? COMMERCIAL_MAINT_RATE : TARIFFS.maint; 
+        // 2. Custom Settings арқылы ауданды ауыстыру
+        if (apt && apt.customSettings && apt.customSettings.area) {
+            // Сол айда күшіне енген соңғы өзгерісті табамыз
+            const change = apt.customSettings.area
+                .filter(c => c.startMonth <= monthIndex)
+                .sort((a, b) => b.startMonth - a.startMonth)[0]; 
 
+            if (change) {
+                area = change.area;
+            }
+        }
+        
+        return roundToTenge(area);
+    }
+
+    // Ай бойынша қолданылатын тариф мөлшерін анықтайды
+    function getTariffRateForMonth(aptId, serviceKey, monthIndex) {
+        const apt = apartments.find(a => a.id === aptId);
+        
+        // 1. Бастапқы/Стандартты тариф
+        let defaultRate = TARIFFS[serviceKey];
+        if (serviceKey === 'maint' && COMMERCIAL_APTS.includes(aptId)) {
+            defaultRate = COMMERCIAL_MAINT_RATE;
+        }
+
+        let rate = defaultRate;
+
+        // 2. Custom Settings арқылы тарифті ауыстыру
+        if (apt && apt.customSettings && apt.customSettings.tariffs && apt.customSettings.tariffs[serviceKey]) {
+            // Сол айда күшіне енген соңғы өзгерісті табамыз
+            const change = apt.customSettings.tariffs[serviceKey]
+                .filter(c => c.startMonth <= monthIndex)
+                .sort((a, b) => b.startMonth - a.startMonth)[0];
+                
+            if (change) {
+                rate = change.rate;
+            }
+        }
+        
+        return rate;
+    }
+
+    // --- 3. АЙЛЫҚ ЕСЕПТЕУ (ДЕБЕТ) - ТҮЗЕТІЛГЕН ФУНКЦИЯ
+    function calculateAccruals(initialArea, aptId, monthIndex) { 
+        // Хелпер функциялардан ауданды және тарифтерді аламыз
+        const area = getAreaForMonth(initialArea, aptId, monthIndex); 
+
+        let maintRate = getTariffRateForMonth(aptId, 'maint', monthIndex);
+        let cleanRate = getTariffRateForMonth(aptId, 'clean', monthIndex);
+        let secRate = getTariffRateForMonth(aptId, 'sec', monthIndex);
+        let heatRate = getTariffRateForMonth(aptId, 'heat', monthIndex);
+        let capRate = getTariffRateForMonth(aptId, 'cap', monthIndex);
+        
+        // Тазалық/Бейнебақылау (Ауданға қатыссыз, бірақ тариф/аудан 0 болса 0)
+        let cleanCharge = (cleanRate === 0 || area === 0) ? 0 : cleanRate;
+        let secCharge = (secRate === 0 || area === 0) ? 0 : secRate;
+        
+        // Ауданға негізделген қызметтер
         return {
             maint: roundToTenge(area * maintRate), 
-            clean: TARIFFS.clean, 
-            sec: TARIFFS.sec,     
-            heat: roundToTenge(area * TARIFFS.heat), 
-            cap: roundToTenge(area * TARIFFS.cap) 
+            clean: cleanCharge, 
+            sec: secCharge,     
+            heat: roundToTenge(area * heatRate), 
+            cap: roundToTenge(area * capRate) 
         };
     }
-    
-    function getInitialLedger(area, aptId) {
-        const zeroCalc = { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 }; 
-        const ledger = [];
-        
-        for (let i = 0; i < 12; i++) {
-            let currentCharges = calculateAccruals(area, aptId, i); 
-            if (i === 11) { // Желтоқсан
-                currentCharges = zeroCalc;
-            }
-            ledger.push({
-                month: MONTHS_KK[i] + '. ' + MONTHS_RU[i] + ' 2025',
-                charges: currentCharges,
-                paymentTransactions: [], 
-            });
-        }
-        return ledger;
-    }
 
-    // --- 5. ЖҮЙЕНІ БАСТАУ ЖӘНЕ JSON АРҚЫЛЫ БАСҚАРУ ---
-    
+    // --- 4. ДЕРЕКТЕРДІ БАСТАПҚЫ ЖҮКТЕУ ---
     function initializeApartmentData() {
         apartments = [];
         APARTMENT_DATA.forEach(data => {
-            const calculatedLedger = getInitialLedger(data.area, data.id);
             const overallSum = SERVICE_KEYS.reduce((sum, key) => sum + (data.debt[key] || 0), 0);
+            
+            // Custom Settings-ті инициализациялау
+            let settings = { area: [], tariffs: { maint: [], clean: [], sec: [], heat: [], cap: [] } };
+            
+            // ❗ 11 және 11а үшін бастапқы аудан өзгерісін енгізу
+            if (data.id === '11') {
+                settings.area = [
+                    { startMonth: 0, area: 34.4, name: "Жаңтар 2025 (34.4м2)" }, // Қаңтардан (0) Мамырға дейін
+                    { startMonth: 5, area: 17.2, name: "Маусым 2025 (17.2м2)" } // Маусымнан (5) бастап
+                ];
+            } else if (data.id === '11a') {
+                settings.area = [
+                    { startMonth: 0, area: 0, name: "Жаңтар 2025 (0м2)" }, // Қаңтардан (0) Мамырға дейін
+                    { startMonth: 5, area: 17.2, name: "Маусым 2025 (17.2м2)" } // Маусымнан (5) бастап
+                ];
+            }
+            // Басқа пәтерлер үшін: ауданды 0 айдан бастап бастапқы ауданға орнату
+            else {
+                 settings.area = [{ startMonth: 0, area: data.area, name: "Бастапқы Аудан" }];
+            }
+            
+            // Тарифтерді де бастапқы мәнмен орнату
+            SERVICE_KEYS.forEach(key => {
+                let defaultRate = TARIFFS[key];
+                if (key === 'maint' && COMMERCIAL_APTS.includes(data.id)) {
+                    defaultRate = COMMERCIAL_MAINT_RATE;
+                }
+                settings.tariffs[key].push({ startMonth: 0, rate: defaultRate });
+            });
             
             const newApt = {
                 id: data.id, 
@@ -243,96 +326,21 @@
                     cap: roundToTenge(data.debt.cap), 
                     overall: roundToTenge(overallSum) 
                 }, 
-                ledger: calculatedLedger,
-                lastPay: "" 
+                ledger: [], 
+                lastPay: "",
+                customSettings: settings
             };
+            
+            newApt.ledger = getInitialLedger(newApt.area, newApt.id);
+
             apartments.push(newApt);
         });
         apartments.forEach(apt => calculateAccumulated(apt));
     }
-
-    function init() {
-        initializeApartmentData(); 
-        updateFinanceLedger(false); 
-        document.getElementById('msg').innerText = "Бастапқы деректер жүктелді. Жұмысты бастау үшін JSON жүктеңіз немесе төлемдер енгізіңіз.";
-    }
     
-    function downloadDataJSON() {
-        if (currentAptIndex !== null) { updateLedger(false); }
-        updateFinanceLedger(false);
-
-        const fullData = {
-            apartments: apartments,
-            financeLedger: FINANCE_LEDGER
-        };
-
-        const dataStr = JSON.stringify(fullData, null, 4);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-        
-        const exportFileDefaultName = 'kz_tulem_database_' + new Date().toISOString().slice(0, 10) + '.json';
-        
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
-        
-        document.getElementById('msg').innerText = "✅ Деректер базасы (JSON) сәтті сақталды!";
-        setTimeout(() => document.getElementById('msg').innerText = "", 3000);
-    }
-
-    function uploadDataJSON(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const uploadedData = JSON.parse(e.target.result);
-                
-                apartments = uploadedData.apartments || APARTMENT_DATA;
-                FINANCE_LEDGER = uploadedData.financeLedger || [];
-
-                apartments.forEach(apt => calculateAccumulated(apt));
-                updateFinanceLedger(false);
-
-                document.getElementById('msg').innerText = "✅ Деректер базасы сәтті жүктелді!";
-                
-                if (currentAptIndex !== null) {
-                    loadApartment();
-                }
-                
-            } catch (error) {
-                console.error("JSON файлын өңдеуде қате:", error);
-                document.getElementById('msg').innerText = "❌ JSON файлы дұрыс форматта емес немесе бүлінген!";
-            }
-        };
-        reader.readAsText(file);
-    }
+    // ... (getInitialLedger, autoCheckMonthlyCharges, init, downloadDataJSON, uploadDataJSON, calculateAccumulated функциялары өзгеріссіз)
     
-    // --- 6. КУМУЛЯТИВТІ ЕСЕПТЕУ ЛОГИКАСЫ ---
-    function calculateAccumulated(apt) {
-        let currentBal = { ...apt.initialDebt }; 
-        
-        apt.ledger.forEach((entry) => {
-            let monthTotalCharge = 0;
-            
-            SERVICE_KEYS.forEach(key => {
-                const totalPaymentForService = entry.paymentTransactions.reduce((sum, tx) => sum + (tx.amounts[key] || 0), 0);
-                
-                currentBal[key] = roundToTenge(currentBal[key] + entry.charges[key] - totalPaymentForService);
-                monthTotalCharge += entry.charges[key];
-            });
-
-            currentBal.overall = roundToTenge(currentBal.maint + currentBal.clean + currentBal.sec + currentBal.heat + currentBal.cap);
-            
-            entry.accumulated = { ...currentBal };
-            entry.totalMonthlyCharge = roundToTenge(monthTotalCharge); 
-        });
-        
-        return currentBal; 
-    }
-
-    // --- 7. ЛЕДЖЕР РЕДАКТОРЫН СЫЗУ ЖӘНЕ ЖҮКТЕУ (ПӘТЕР БОЙЫНША) ---
+    // --- 5. ЛЕДЖЕР РЕДАКТОРЫН ЖҮКТЕУ (customSettings қосылды) ---
     function loadApartment() {
         const id = document.getElementById('aptInput').value.trim(); 
         
@@ -347,373 +355,684 @@
         const apt = apartments[currentAptIndex];
         
         document.getElementById('editor').style.display = 'block';
-        document.getElementById('aptTitle').innerText = `Пәтер ${apt.id} (Шот: ${apt.account}) ${apt.area} м2`;
         
+        document.getElementById('aptTitle').innerHTML = `
+            <h3>Пәтер ${apt.id} (Шот: ${apt.account})</h3>
+        `;
+        
+        // ❗ Жаңа Custom Settings редакторын сызу
+        renderCustomSettingsUI(apt);
+
+        // Жаңа Custom Settings бойынша леджерді қайта есептеу
+        apt.ledger = getInitialLedger(apt.area, apt.id);
         calculateAccumulated(apt); 
         renderLedgerTable(apt);
     }
     
-    function renderLedgerTable(apt) {
-        const editorDiv = document.getElementById('ledgerEditor');
-        const displayValue = (val) => roundToTenge(val); 
+    // --- 6. CUSTOM SETTINGS UI ЖӘНЕ БАСҚАРУ ФУНКЦИЯЛАРЫ ---
 
-        let html = `
-            <table>
-                <tr>
-                    <th rowspan="3" style="width:120px;">Ай / Месяц</th>
-                    <th colspan="10">Қызметтер (Тенге)</th>
-                    <th colspan="2" class="total-col">Жалпы <br> Жыйыны</th>
-                    <th rowspan="3">Әрекет</th>
-                </tr>
-                <tr>
-                    ${SERVICE_KEYS.map(key => `<th colspan="2">${SERVICE_NAMES[key]}</th>`).join('')}
-                    <th class="total-col sub-col-header" colspan="2">Деректер</th>
-                </tr>
-                <tr>
-                    ${SERVICE_KEYS.map(() => `<th class="sub-col-header charge-cell">Д</th><th class="sub-col-header payment-cell">К</th>`).join('')}
-                    <th class="total-col sub-col-header charge-cell">Д</th>
-                    <th class="total-col sub-col-header payment-cell">К (Төлем дерегі)</th>
-                </tr>
-                
-                <tr class="initial-debt-row">
-                    <td class="month-group-header left-align">2024 (Бастапқы Қарыз)</td>
-                    
-                    ${SERVICE_KEYS.map(key => `
-                        <td class="charge-cell">${displayValue(apt.initialDebt[key])}</td><td class="payment-cell"></td>
-                    `).join('')}
-                    
-                    <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td>
-                    <td class="total-col payment-cell"></td>
-                    
-                    <td></td>
-                </tr>
-
-                ${apt.ledger.map((entry, index) => {
-                    
-                    let monthHtml = ''; 
-                    const transactionsExist = entry.paymentTransactions.length > 0;
-                    
-                    if (transactionsExist) {
-                        
-                        entry.paymentTransactions.forEach((tx, txIndex) => {
-                            const totalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (tx.amounts[key] || 0), 0);
-                            
-                            monthHtml += `
-                                <tr class="payment-row" data-month-index="${index}" data-tx-index="${txIndex}" style="background:#f0f0f0;">
-                                    
-                                    <td class="month-group-header left-align" ${txIndex === 0 ? `rowspan="${entry.paymentTransactions.length}"` : 'style="display:none;"'}>
-                                        ${entry.month}
-                                    </td>
-                                    
-                                    ${SERVICE_KEYS.map(key => `
-                                        <td class="charge-cell">${txIndex === 0 ? displayValue(entry.charges[key]) : ''}</td>
-                                        
-                                        <td class="payment-cell">
-                                            <input type="number" class="payment-input pay-input" 
-                                                data-month-index="${index}" data-tx-index="${txIndex}" data-key="${key}"
-                                                value="${tx.amounts[key] === 0 ? '' : displayValue(tx.amounts[key])}" min="0" step="0.01">
-                                        </td>
-                                    `).join('')}
-                                    
-                                    <td class="total-col charge-cell">${txIndex === 0 ? displayValue(entry.totalMonthlyCharge) : ''}</td>
-                                    
-                                    <td class="total-col payment-cell payment-details-cell">
-                                        <div class="payment-details-inline">
-                                            <span class="payment-total-amount">
-                                                ${displayValue(totalTxAmount)}
-                                            </span>
-                                            <input type="date" class="payment-details-input date-input" data-month-index="${index}" data-tx-index="${txIndex}" data-field="date" value="${tx.date || ''}">
-                                            <select class="payment-details-input bank-select" data-month-index="${index}" data-tx-index="${txIndex}" data-field="bank">
-                                                ${ACCOUNTS.map(acc => `<option value="${acc}" ${tx.bank === acc ? 'selected' : ''}>${acc}</option>`).join('')}
-                                            </select>
-                                        </div>
-                                    </td>
-                                    
-                                    <td ${txIndex === 0 ? `rowspan="${entry.paymentTransactions.length}"` : 'style="display:none;"'} style="text-align: center;">
-                                        <div class="action-buttons-inline">
-                                            <button class="btn btn-red" onclick="removeTransaction(${index}, ${txIndex})">❌ Өшіру</button>
-                                            <button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-
-                    } else {
-                         monthHtml += `
-                            <tr class="charge-row" data-month-index="${index}" style="background:${entry.totalMonthlyCharge > 0 ? '#f8d7da' : '#f0f0f0'};">
-                                <td class="month-group-header left-align">${entry.month}</td>
-                                ${SERVICE_KEYS.map(key => `
-                                    <td class="charge-cell">${displayValue(entry.charges[key])}</td>
-                                    <td class="charge-cell"></td>
-                                `).join('')}
-                                <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
-                                <td class="total-col charge-cell"></td>
-                                <td><button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button></td>
-                            </tr>
-                        `;
-                    }
-                    
-                    const accRow = `
-                        <tr class="total-acc-row">
-                            <td class="month-group-header left-align">Жыйналғаны (Ай соңы)</td>
-                            
-                            ${SERVICE_KEYS.map(key => `
-                                <td colspan="2" style="color: ${entry.accumulated[key] > 0 ? 'red' : 'green'};">${displayValue(entry.accumulated[key])}</td>
-                            `).join('')}
-                            
-                            <td colspan="2" class="total-col" style="color: ${entry.accumulated.overall > 0 ? 'red' : 'green'};">${displayValue(entry.accumulated.overall)}</td>
-                            <td></td>
-                        </tr>
-                    `;
-                    return monthHtml + accRow;
-                }).join('')}
-
-            </table>
+    function getMonthSelect(id, selectedMonth = 0) {
+        return `
+            <select id="${id}">
+                ${MONTHS_KK.map((name, index) => 
+                    `<option value="${index}" ${index === selectedMonth ? 'selected' : ''}>${name}</option>`
+                ).join('')}
+            </select>
         `;
-        editorDiv.innerHTML = html;
+    }
+
+    function renderCustomSettingsUI(apt) {
+        const container = document.getElementById('customSettingsEditor');
+        const s = apt.customSettings;
         
-        document.querySelectorAll('.pay-input, .date-input, .bank-select').forEach(input => {
-            input.addEventListener('change', () => updateLedger(false)); 
-        });
+        let html = `
+            <h3 style="margin-top:0;">Есептеу Параметрлерін Басқару (Аудан / Тариф)</h3>
+            
+            <div class="setting-group">
+                <h4>1. Ауданды Өзгерту (м²)</h4>
+                <div style="margin-bottom: 10px;">
+                    ${s.area.map((a, index) => `
+                        <div class="setting-entry" style="font-size: 11px; background: #e9ecef; padding: 5px; border-radius: 3px;">
+                            <label style="width: 130px; font-weight: bold;">${MONTHS_KK[a.startMonth]} айынан бастап:</label>
+                            <input type="number" id="area-val-${index}" value="${a.area}" min="0" step="0.1" style="width: 80px;">
+                            
+                            ${index === 0 ? `<span style="width: 100px;">(Бастапқы)</span>` : getMonthSelect(`area-month-${index}`, a.startMonth)}
+                            
+                            <button class="btn btn-blue" onclick="saveAreaChange(${index})">💾 Сақтау</button>
+                            ${index > 0 ? `<button class="btn btn-red" onclick="removeChange('area', ${index})">❌ Өшіру</button>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="setting-entry" style="padding-top: 10px; border-top: 1px dashed #ccc;">
+                    <label style="font-weight: bold;">➕ Жаңа аудан:</label>
+                    <input type="number" id="newAreaValue" value="" min="0" step="0.1" style="width: 80px;">
+                    <label>Қай айдан:</label>
+                    ${getMonthSelect('newAreaMonth', new Date().getMonth())}
+                    <button class="btn btn-green" onclick="addAreaChange()">✅ Қосу</button>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <h4>2. Қызмет Тарифін Өзгерту (Тг немесе Тг/м²)</h4>
+                ${SERVICE_KEYS.map(key => `
+                    <div style="border: 1px solid #ddd; padding: 5px; margin-bottom: 10px; border-radius: 3px;">
+                        <h5 style="margin: 0; padding-bottom: 5px; color: green;">${SERVICE_NAMES[key]} (${key === 'clean' || key === 'sec' ? 'Тг/пәтер' : 'Тг/м²'})</h5>
+                        <div style="margin-bottom: 5px;">
+                            ${s.tariffs[key].map((t, index) => `
+                                <div class="setting-entry" style="font-size: 11px;">
+                                    <label style="width: 130px;">${MONTHS_KK[t.startMonth]} айынан бастап:</label>
+                                    <input type="number" id="tariff-${key}-val-${index}" value="${t.rate}" min="0" step="0.01" style="width: 80px;">
+                                    
+                                    ${index === 0 ? `<span style="width: 100px;">(Бастапқы)</span>` : getMonthSelect(`tariff-${key}-month-${index}`, t.startMonth)}
+                                    
+                                    <button class="btn btn-blue" onclick="saveTariffChange('${key}', ${index})">💾 Сақтау</button>
+                                    ${index > 0 ? `<button class="btn btn-red" onclick="removeChange('tariff', ${index}, '${key}')">❌ Өшіру</button>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="setting-entry" style="padding-top: 5px; border-top: 1px dotted #ccc;">
+                            <label style="font-weight: bold;">➕ Жаңа тариф:</label>
+                            <input type="number" id="newTariffValue-${key}" value="" min="0" step="0.01" style="width: 80px;">
+                            <label>Қай айдан:</label>
+                            ${getMonthSelect('newTariffMonth-' + key, new Date().getMonth())}
+                            <button class="btn btn-green" onclick="addTariffChange('${key}')">✅ Қосу</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        container.innerHTML = html;
     }
     
-    // --- 8. ПӘТЕР ТРАНЗАКЦИЯЛАРЫН БАСҚАРУ ---
-    function addTransaction(monthIndex) {
+    // Ауданды өзгертуді қосу
+    function addAreaChange() {
         const apt = apartments[currentAptIndex];
-        const newTx = {
-            amounts: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 },
-            date: new Date().toISOString().slice(0, 10), 
-            bank: ACCOUNTS[0] || 'Cash' 
-        };
-        apt.ledger[monthIndex].paymentTransactions.push(newTx);
+        const newArea = parseFloat(document.getElementById('newAreaValue').value);
+        const startMonth = parseInt(document.getElementById('newAreaMonth').value);
+
+        if (isNaN(newArea) || newArea < 0) {
+            return alert("Дұрыс аудан мәнін енгізіңіз (0 немесе оң сан).");
+        }
         
+        // Қосу
+        apt.customSettings.area.push({ startMonth: startMonth, area: roundToTenge(newArea) });
+        
+        // Сорттау (айы бойынша)
+        apt.customSettings.area.sort((a, b) => a.startMonth - b.startMonth);
+        
+        alert(`Аудан ${newArea} м² ${MONTHS_KK[startMonth]} айынан бастап қосылды.`);
+        loadApartment(); 
+    }
+    
+    // Аудан өзгерісін сақтау
+    function saveAreaChange(index) {
+        const apt = apartments[currentAptIndex];
+        const newArea = parseFloat(document.getElementById(`area-val-${index}`).value);
+        const newMonth = index === 0 ? 0 : parseInt(document.getElementById(`area-month-${index}`).value);
+
+        if (isNaN(newArea) || newArea < 0) {
+            return alert("Дұрыс аудан мәнін енгізіңіз.");
+        }
+
+        apt.customSettings.area[index].area = roundToTenge(newArea);
+        if (index > 0) {
+            apt.customSettings.area[index].startMonth = newMonth;
+        }
+
+        apt.customSettings.area.sort((a, b) => a.startMonth - b.startMonth);
+
+        alert(`Аудан өзгерісі сақталды. ${MONTHS_KK[apt.customSettings.area[index].startMonth]} айынан бастап ${newArea} м².`);
         loadApartment();
     }
     
-    function removeTransaction(monthIndex, txIndex) {
-        if(!confirm("Төлем транзакциясын өшіруге сенімдісіз бе?")) return;
+    // Тариф өзгерісін қосу
+    function addTariffChange(serviceKey) {
         const apt = apartments[currentAptIndex];
-        apt.ledger[monthIndex].paymentTransactions.splice(txIndex, 1);
+        const newRate = parseFloat(document.getElementById(`newTariffValue-${serviceKey}`).value);
+        const startMonth = parseInt(document.getElementById(`newTariffMonth-${serviceKey}`).value);
+
+        if (isNaN(newRate) || newRate < 0) {
+            return alert("Дұрыс тариф мәнін енгізіңіз (0 немесе оң сан).");
+        }
         
+        // Қосу
+        apt.customSettings.tariffs[serviceKey].push({ startMonth: startMonth, rate: roundToTenge(newRate) });
+        
+        // Сорттау (айы бойынша)
+        apt.customSettings.tariffs[serviceKey].sort((a, b) => a.startMonth - b.startMonth);
+        
+        alert(`${SERVICE_NAMES[serviceKey]} тарифі ${newRate} тг ${MONTHS_KK[startMonth]} айынан бастап қосылды.`);
+        loadApartment(); 
+    }
+    
+    // Тариф өзгерісін сақтау
+    function saveTariffChange(serviceKey, index) {
+        const apt = apartments[currentAptIndex];
+        const newRate = parseFloat(document.getElementById(`tariff-${serviceKey}-val-${index}`).value);
+        const newMonth = index === 0 ? 0 : parseInt(document.getElementById(`tariff-${serviceKey}-month-${index}`).value);
+
+        if (isNaN(newRate) || newRate < 0) {
+            return alert("Дұрыс тариф мәнін енгізіңіз.");
+        }
+
+        apt.customSettings.tariffs[serviceKey][index].rate = roundToTenge(newRate);
+        if (index > 0) {
+            apt.customSettings.tariffs[serviceKey][index].startMonth = newMonth;
+        }
+
+        apt.customSettings.tariffs[serviceKey].sort((a, b) => a.startMonth - b.startMonth);
+
+        alert(`${SERVICE_NAMES[serviceKey]} тарифі сақталды. ${MONTHS_KK[apt.customSettings.tariffs[serviceKey][index].startMonth]} айынан бастап ${newRate} тг.`);
         loadApartment();
     }
 
-    function updateLedger(render = true) {
+    // Өзгерісті өшіру
+    function removeChange(type, index, serviceKey = null) {
+        if (!confirm("Бұл өзгерісті өшіруге сенімдісіз бе?")) return;
         const apt = apartments[currentAptIndex];
+
+        if (type === 'area') {
+            apt.customSettings.area.splice(index, 1);
+        } else if (type === 'tariff' && serviceKey) {
+            apt.customSettings.tariffs[serviceKey].splice(index, 1);
+        }
+
+        alert("Өзгеріс сәтті өшірілді.");
+        loadApartment();
+    }
+
+    // ... (renderLedgerTable, updateLedger, downloadReceipt және Қаржылық Леджер функциялары өзгеріссіз)
+
+// Қажетті функциялардың қалған бөлігі (алдыңғы нұсқадан алынған және өзгеріссіз қалған)
+function getInitialLedger(area, aptId) {
+    const ledger = [];
+    const currentDate = new Date();
+    const currentMonthIndex = currentDate.getMonth(); 
+    
+    for (let i = 0; i < 12; i++) {
+        let currentCharges;
         
-        document.querySelectorAll('.pay-input').forEach(input => {
-            const monthIndex = parseInt(input.getAttribute('data-month-index'));
-            const txIndex = parseInt(input.getAttribute('data-tx-index'));
-            const key = input.getAttribute('data-key');
-            
-            // Енгізу кезіндегі логика: бос болса 0 ретінде қабылдау
-            const value = input.value === '' ? 0 : parseFloat(input.value); 
+        if (i <= currentMonthIndex) {
+            currentCharges = calculateAccruals(area, aptId, i); 
+        } else {
+            currentCharges = { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 };
+        }
 
-            apt.ledger[monthIndex].paymentTransactions[txIndex].amounts[key] = roundToTenge(value) || 0;
+        ledger.push({
+            month: MONTHS_KK[i] + '. ' + MONTHS_RU[i] + ' 2025',
+            charges: currentCharges,
+            paymentTransactions: [], 
         });
+    }
+    return ledger;
+}
 
-        document.querySelectorAll('.date-input, .bank-select').forEach(input => {
-            const monthIndex = parseInt(input.getAttribute('data-month-index'));
-            const txIndex = parseInt(input.getAttribute('data-tx-index'));
-            const field = input.getAttribute('data-field');
-            
-            if (apt.ledger[monthIndex] && apt.ledger[monthIndex].paymentTransactions[txIndex]) {
-                if (field === 'bank') {
-                    apt.ledger[monthIndex].paymentTransactions[txIndex].bank = input.value;
-                } else if (field === 'date') {
-                    apt.ledger[monthIndex].paymentTransactions[txIndex].date = input.value;
+function autoCheckMonthlyCharges() {
+    const currentMonthIndex = new Date().getMonth();
+    let updated = false;
+
+    apartments.forEach(apt => {
+        for (let i = 0; i <= currentMonthIndex; i++) {
+            const ch = apt.ledger[i].charges;
+            const totalCharge = ch.maint + ch.clean + ch.sec + ch.heat + ch.cap;
+
+            if (totalCharge === 0) {
+                apt.ledger[i].charges = calculateAccruals(apt.area, apt.id, i);
+                const newTotalCharge = apt.ledger[i].charges.maint + apt.ledger[i].charges.clean + apt.ledger[i].charges.sec + apt.ledger[i].charges.heat + apt.ledger[i].charges.cap;
+                if (newTotalCharge > 0) {
+                    updated = true;
                 }
             }
+        }
+    });
+
+    if (updated) {
+        apartments.forEach(apt => calculateAccumulated(apt));
+        console.log("Жаңа айдың төлемдері автоматты түрде қосылды!");
+        document.getElementById('msg').innerText = "📅 Жаңа ай басталды! Төлемдер кестеге қосылды.";
+        setTimeout(() => { if(document.getElementById('msg').innerText.includes('Жаңа ай')) document.getElementById('msg').innerText = ""; }, 5000);
+    }
+}
+
+function init() {
+    initializeApartmentData(); 
+    autoCheckMonthlyCharges();
+    updateFinanceLedger(false); 
+    document.getElementById('msg').innerText = "Бастапқы деректер жүктелді. Жұмысты бастау үшін JSON жүктеңіз немесе төлемдер енгізіңіз.";
+}
+
+function downloadDataJSON() {
+    if (currentAptIndex !== null) { updateLedger(false); }
+    updateFinanceLedger(false);
+
+    const fullData = {
+        apartments: apartments,
+        financeLedger: FINANCE_LEDGER
+    };
+
+    const dataStr = JSON.stringify(fullData, null, 4);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'kz_tulem_database_' + new Date().toISOString().slice(0, 10) + '.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    document.getElementById('msg').innerText = "✅ Деректер базасы (JSON) сәтті сақталды!";
+    setTimeout(() => document.getElementById('msg').innerText = "", 3000);
+}
+
+function uploadDataJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const uploadedData = JSON.parse(e.target.result);
+            
+            apartments = uploadedData.apartments || APARTMENT_DATA;
+            FINANCE_LEDGER = uploadedData.financeLedger || [];
+
+            autoCheckMonthlyCharges();
+
+            apartments.forEach(apt => calculateAccumulated(apt));
+            updateFinanceLedger(false);
+
+            document.getElementById('msg').innerText = "✅ Деректер базасы сәтті жүктелді!";
+            
+            if (currentAptIndex !== null) {
+                loadApartment();
+            }
+            
+        } catch (error) {
+            console.error("JSON файлын өңдеуде қате:", error);
+            document.getElementById('msg').innerText = "❌ JSON файлы дұрыс форматта емес немесе бүлінген!";
+        }
+    };
+    reader.readAsText(file);
+}
+
+function calculateAccumulated(apt) {
+    let currentBal = { ...apt.initialDebt }; 
+    
+    apt.ledger.forEach((entry) => {
+        let monthTotalCharge = 0;
+        
+        SERVICE_KEYS.forEach(key => {
+            const totalPaymentForService = entry.paymentTransactions.reduce((sum, tx) => sum + (tx.amounts[key] || 0), 0);
+            
+            currentBal[key] = roundToTenge(currentBal[key] + entry.charges[key] - totalPaymentForService);
+            monthTotalCharge += entry.charges[key];
         });
 
-        calculateAccumulated(apt);
+        currentBal.overall = roundToTenge(currentBal.maint + currentBal.clean + currentBal.sec + currentBal.heat + currentBal.cap);
         
-        if (render) {
-            renderLedgerTable(apt); 
-            document.getElementById('msg').innerText = "✅ Төлемдер тіркелді және есептеу жаңартылды. Деректерді сақтау үшін 💾 батырмасын басыңыз!";
-            setTimeout(() => document.getElementById('msg').innerText = "", 5000);
-        }
-    }
+        entry.accumulated = { ...currentBal };
+        entry.totalMonthlyCharge = roundToTenge(monthTotalCharge); 
+    });
     
-    // --- 9. ТҮБІРТЕК ГЕНЕРАТОРЫ (Өзгеріссіз қалдырылды) ---
-    function downloadReceipt() {
-        const apt = apartments[currentAptIndex];
-        if (!apt) return alert("Алдымен пәтерді жүктеңіз.");
-        calculateAccumulated(apt);
+    return currentBal; 
+}
+//... Қалған функциялар (renderLedgerTable, addTransaction, removeTransaction, updateLedger, downloadReceipt, generateReport, renderReportTables, downloadGeneralReport, finance functions) өзгеріссіз қалдырылды.
+function renderLedgerTable(apt) {
+    const editorDiv = document.getElementById('ledgerEditor');
+    const displayValue = (val) => roundToTenge(val); 
 
-        const displayValue = (val) => roundToTenge(val); 
-
-        let historyRows = '';
-        
-        historyRows += `
-            <tr class="charge-row receipt-style">
-                <td class="left-align bold">2024 (Бастапқы Қарыз)</td>
-                <td class="charge-cell">${displayValue(apt.initialDebt.maint)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.initialDebt.clean)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.initialDebt.sec)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.initialDebt.heat)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.initialDebt.cap)}</td><td></td>
-                <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td><td></td>
-            </tr>`;
-
-        apt.ledger.forEach(entry => {
+    let html = `
+        <table>
+            <tr>
+                <th rowspan="3" style="width:120px;">Ай / Месяц</th>
+                <th colspan="10">Қызметтер (Тенге)</th>
+                <th colspan="2" class="total-col">Жалпы <br> Жыйыны</th>
+                <th rowspan="3">Әрекет</th>
+            </tr>
+            <tr>
+                ${SERVICE_KEYS.map(key => `<th colspan="2">${SERVICE_NAMES[key]}</th>`).join('')}
+                <th class="total-col sub-col-header" colspan="2">Деректер</th>
+            </tr>
+            <tr>
+                ${SERVICE_KEYS.map(() => `<th class="sub-col-header charge-cell">Д</th><th class="sub-col-header payment-cell">К</th>`).join('')}
+                <th class="total-col sub-col-header charge-cell">Д</th>
+                <th class="total-col sub-col-header payment-cell">К (Төлем дерегі)</th>
+            </tr>
             
-            if (entry.paymentTransactions.length > 0) {
-                const tx0 = entry.paymentTransactions[0];
-                const totalTxAmount0 = SERVICE_KEYS.reduce((sum, key) => sum + (tx0.amounts[key] || 0), 0);
-                const paymentDetails0 = totalTxAmount0 > 0 ? `<div style="font-size: 8px;">${displayValue(totalTxAmount0)} K${tx0.date.replace(/-/g, '.')} (${tx0.bank})</div>` : '';
+            <tr class="initial-debt-row">
+                <td class="month-group-header left-align">2024 (Бастапқы Қарыз)</td>
+                
+                ${SERVICE_KEYS.map(key => `
+                    <td class="charge-cell">${displayValue(apt.initialDebt[key])}</td><td class="payment-cell"></td>
+                `).join('')}
+                
+                <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td>
+                <td class="total-col payment-cell"></td>
+                
+                <td></td>
+            </tr>
+
+            ${apt.ledger.map((entry, index) => {
+                
+                let monthHtml = ''; 
+                const transactionsExist = entry.paymentTransactions.length > 0;
+                
+                if (transactionsExist) {
+                    
+                    entry.paymentTransactions.forEach((tx, txIndex) => {
+                        const totalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (tx.amounts[key] || 0), 0);
+                        
+                        monthHtml += `
+                            <tr class="payment-row" data-month-index="${index}" data-tx-index="${txIndex}" style="background:#f0f0f0;">
+                                
+                                <td class="month-group-header left-align" ${txIndex === 0 ? `rowspan="${entry.paymentTransactions.length}"` : 'style="display:none;"'}>
+                                    ${entry.month}
+                                </td>
+                                
+                                ${SERVICE_KEYS.map(key => `
+                                    <td class="charge-cell">${txIndex === 0 ? displayValue(entry.charges[key]) : ''}</td>
+                                    
+                                    <td class="payment-cell">
+                                        <input type="number" class="payment-input pay-input" 
+                                            data-month-index="${index}" data-tx-index="${txIndex}" data-key="${key}"
+                                            value="${tx.amounts[key] === 0 ? '' : displayValue(tx.amounts[key])}" min="0" step="0.01">
+                                    </td>
+                                `).join('')}
+                                
+                                <td class="total-col charge-cell">${txIndex === 0 ? displayValue(entry.totalMonthlyCharge) : ''}</td>
+                                
+                                <td class="total-col payment-cell payment-details-cell">
+                                    <div class="payment-details-inline">
+                                        <span class="payment-total-amount">
+                                            ${displayValue(totalTxAmount)}
+                                        </span>
+                                        <input type="date" class="payment-details-input date-input" data-month-index="${index}" data-tx-index="${txIndex}" data-field="date" value="${tx.date || ''}">
+                                        <select class="payment-details-input bank-select" data-month-index="${index}" data-tx-index="${txIndex}" data-field="bank">
+                                            ${ACCOUNTS.map(acc => `<option value="${acc}" ${tx.bank === acc ? 'selected' : ''}>${acc}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                </td>
+                                
+                                <td ${txIndex === 0 ? `rowspan="${entry.paymentTransactions.length}"` : 'style="display:none;"'} style="text-align: center;">
+                                    <div class="action-buttons-inline">
+                                        <button class="btn btn-red" onclick="removeTransaction(${index}, ${txIndex})">❌ Өшіру</button>
+                                        <button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                } else {
+                        monthHtml += `
+                        <tr class="charge-row" data-month-index="${index}" style="background:${entry.totalMonthlyCharge > 0 ? '#f8d7da' : '#f0f0f0'};">
+                            <td class="month-group-header left-align">${entry.month}</td>
+                            ${SERVICE_KEYS.map(key => `
+                                <td class="charge-cell">${displayValue(entry.charges[key])}</td>
+                                <td class="charge-cell"></td>
+                            `).join('')}
+                            <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                            <td class="total-col charge-cell"></td>
+                            <td><button class="btn btn-blue" onclick="addTransaction(${index})">💰 Төлем қосу</button></td>
+                        </tr>
+                    `;
+                }
+                
+                const accRow = `
+                    <tr class="total-acc-row">
+                        <td class="month-group-header left-align">Жыйналғаны (Ай соңы)</td>
+                        
+                        ${SERVICE_KEYS.map(key => `
+                            <td colspan="2" style="color: ${entry.accumulated[key] > 0 ? 'red' : 'green'};">${displayValue(entry.accumulated[key])}</td>
+                        `).join('')}
+                        
+                        <td colspan="2" class="total-col" style="color: ${entry.accumulated.overall > 0 ? 'red' : 'green'};">${displayValue(entry.accumulated.overall)}</td>
+                        <td></td>
+                    </tr>
+                `;
+                return monthHtml + accRow;
+            }).join('')}
+
+        </table>
+    `;
+    editorDiv.innerHTML = html;
+    
+    document.querySelectorAll('.pay-input, .date-input, .bank-select').forEach(input => {
+        input.addEventListener('change', () => updateLedger(false)); 
+    });
+}
+
+function addTransaction(monthIndex) {
+    const apt = apartments[currentAptIndex];
+    const newTx = {
+        amounts: { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 },
+        date: new Date().toISOString().slice(0, 10), 
+        bank: ACCOUNTS[0] || 'Cash' 
+    };
+    apt.ledger[monthIndex].paymentTransactions.push(newTx);
+    
+    loadApartment();
+}
+
+function removeTransaction(monthIndex, txIndex) {
+    if(!confirm("Төлем транзакциясын өшіруге сенімдісіз бе?")) return;
+    const apt = apartments[currentAptIndex];
+    apt.ledger[monthIndex].paymentTransactions.splice(txIndex, 1);
+    
+    loadApartment();
+}
+
+function updateLedger(render = true) {
+    const apt = apartments[currentAptIndex];
+    
+    document.querySelectorAll('.pay-input').forEach(input => {
+        const monthIndex = parseInt(input.getAttribute('data-month-index'));
+        const txIndex = parseInt(input.getAttribute('data-tx-index'));
+        const key = input.getAttribute('data-key');
+        
+        const value = input.value === '' ? 0 : parseFloat(input.value); 
+
+        apt.ledger[monthIndex].paymentTransactions[txIndex].amounts[key] = roundToTenge(value) || 0;
+    });
+
+    document.querySelectorAll('.date-input, .bank-select').forEach(input => {
+        const monthIndex = parseInt(input.getAttribute('data-month-index'));
+        const txIndex = parseInt(input.getAttribute('data-tx-index'));
+        const field = input.getAttribute('data-field');
+        
+        if (apt.ledger[monthIndex] && apt.ledger[monthIndex].paymentTransactions[txIndex]) {
+            if (field === 'bank') {
+                apt.ledger[monthIndex].paymentTransactions[txIndex].bank = input.value;
+            } else if (field === 'date') {
+                apt.ledger[monthIndex].paymentTransactions[txIndex].date = input.value;
+            }
+        }
+    });
+
+    calculateAccumulated(apt);
+    
+    if (render) {
+        renderLedgerTable(apt); 
+        document.getElementById('msg').innerText = "✅ Төлемдер тіркелді және есептеу жаңартылды. Деректерді сақтау үшін 💾 батырмасын басыңыз!";
+        setTimeout(() => document.getElementById('msg').innerText = "", 5000);
+    }
+}
+
+function downloadReceipt() {
+    const apt = apartments[currentAptIndex];
+    if (!apt) return alert("Алдымен пәтерді жүктеңіз.");
+    calculateAccumulated(apt);
+
+    const displayValue = (val) => roundToTenge(val); 
+
+    let historyRows = '';
+    
+    historyRows += `
+        <tr class="charge-row receipt-style">
+            <td class="left-align bold">2024 (Бастапқы Қарыз)</td>
+            <td class="charge-cell">${displayValue(apt.initialDebt.maint)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.initialDebt.clean)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.initialDebt.sec)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.initialDebt.heat)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.initialDebt.cap)}</td><td></td>
+            <td class="total-col charge-cell">${displayValue(apt.initialDebt.overall)}</td><td></td>
+        </tr>`;
+
+    apt.ledger.forEach(entry => {
+        
+        if (entry.paymentTransactions.length > 0) {
+            const tx0 = entry.paymentTransactions[0];
+            const totalTxAmount0 = SERVICE_KEYS.reduce((sum, key) => sum + (tx0.amounts[key] || 0), 0);
+            const paymentDetails0 = totalTxAmount0 > 0 ? `<div style="font-size: 8px;">${displayValue(totalTxAmount0)} K${tx0.date.replace(/-/g, '.')} (${tx0.bank})</div>` : '';
+            
+            historyRows += `
+                <tr class="payment-row receipt-style">
+                    <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
+                    ${SERVICE_KEYS.map(key => `
+                        <td class="charge-cell">${displayValue(entry.charges[key])}</td>
+                        <td class="payment-cell">${displayValue(tx0.amounts[key])}</td>
+                    `).join('')}
+                    <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                    <td class="total-col payment-cell">
+                        ${paymentDetails0} 
+                    </td>
+                </tr>
+            `;
+
+               for(let txIndex = 1; txIndex < entry.paymentTransactions.length; txIndex++) {
+                const nextTx = entry.paymentTransactions[txIndex];
+                const nextTotalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (nextTx.amounts[key] || 0), 0);
+                const nextPaymentDetails = nextTotalTxAmount > 0 ? `<div style="font-size: 8px;">${displayValue(nextTotalTxAmount)} K${nextTx.date.replace(/-/g, '.')} (${nextTx.bank})</div>` : '';
                 
                 historyRows += `
                     <tr class="payment-row receipt-style">
-                        <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
+                        <td class="left-align"></td> 
                         ${SERVICE_KEYS.map(key => `
-                            <td class="charge-cell">${displayValue(entry.charges[key])}</td>
-                            <td class="payment-cell">${displayValue(tx0.amounts[key])}</td>
+                            <td></td><td class="payment-cell">${displayValue(nextTx.amounts[key])}</td>
                         `).join('')}
-                        <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td>
+                        <td></td>
                         <td class="total-col payment-cell">
-                            ${paymentDetails0} 
+                            ${nextPaymentDetails}
                         </td>
                     </tr>
                 `;
+                }
 
-                   for(let txIndex = 1; txIndex < entry.paymentTransactions.length; txIndex++) {
-                    const nextTx = entry.paymentTransactions[txIndex];
-                    const nextTotalTxAmount = SERVICE_KEYS.reduce((sum, key) => sum + (nextTx.amounts[key] || 0), 0);
-                    const nextPaymentDetails = nextTotalTxAmount > 0 ? `<div style="font-size: 8px;">${displayValue(nextTotalTxAmount)} K${nextTx.date.replace(/-/g, '.')} (${nextTx.bank})</div>` : '';
-                    
-                    historyRows += `
-                        <tr class="payment-row receipt-style">
-                            <td class="left-align"></td> 
-                            ${SERVICE_KEYS.map(key => `
-                                <td></td><td class="payment-cell">${displayValue(nextTx.amounts[key])}</td>
-                            `).join('')}
-                            <td></td>
-                            <td class="total-col payment-cell">
-                                ${nextPaymentDetails}
-                            </td>
-                        </tr>
-                    `;
-                    }
+        } else {
+             historyRows += `
+                <tr class="charge-row receipt-style">
+                    <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
+                    <td class="charge-cell">${displayValue(entry.charges.maint)}</td><td></td>
+                    <td class="charge-cell">${displayValue(entry.charges.clean)}</td><td></td>
+                    <td class="charge-cell">${displayValue(entry.charges.sec)}</td><td></td>
+                    <td class="charge-cell">${displayValue(entry.charges.heat)}</td><td></td>
+                    <td class="charge-cell">${displayValue(entry.charges.cap)}</td><td></td>
+                    <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td><td></td>
+                </tr>
+            `;
+        }
+    });
+    
+    const finalAccumulated = apt.ledger[11] ? apt.ledger[11].accumulated : apt.initialDebt; 
+    
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="kk">
+    <head>
+        <meta charset="UTF-8">
+        <title>Төлем Түбіртегі: Пәтер ${apt.id}</title>
+        <style>
+            body { font-family: Arial, serif; font-size: 11px; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            th, td { border: 1px solid black; padding: 4px 6px; text-align: right; vertical-align: top; }
+            .header-cell { vertical-align: top; text-align: center; font-weight: bold; padding: 6px 4px; }
+            .month-header { text-align: left; font-size: 14px; font-weight: bold; }
+            .acc-info { text-align: left; font-size: 10px; }
+            .charge-cell { background-color: #f8f8f8; } 
+            .payment-cell { background-color: #e8f5e9; }
+            .total-acc-row td { background-color: #ffe082; font-weight: bold; font-size: 12px; }
+            .total-col { background-color: #e3f2fd; }
+            .left-align { text-align: left; }
+            .center-align { text-align: center; }
+            .bold { font-weight: bold; }
+        </style>
+    </head>
+    <body>
 
-            } else {
-                 historyRows += `
-                    <tr class="charge-row receipt-style">
-                        <td class="left-align">${entry.month.split(' ')[0]} ${entry.month.split(' ')[2]}</td>
-                        <td class="charge-cell">${displayValue(entry.charges.maint)}</td><td></td>
-                        <td class="charge-cell">${displayValue(entry.charges.clean)}</td><td></td>
-                        <td class="charge-cell">${displayValue(entry.charges.sec)}</td><td></td>
-                        <td class="charge-cell">${displayValue(entry.charges.heat)}</td><td></td>
-                        <td class="charge-cell">${displayValue(entry.charges.cap)}</td><td></td>
-                        <td class="total-col charge-cell">${displayValue(entry.totalMonthlyCharge)}</td><td></td>
-                    </tr>
-                `;
-            }
-        });
-        
-        const finalAccumulated = apt.ledger[11] ? apt.ledger[11].accumulated : apt.initialDebt; 
-        
-        const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="kk">
-        <head>
-            <meta charset="UTF-8">
-            <title>Төлем Түбіртегі: Пәтер ${apt.id}</title>
-            <style>
-                body { font-family: Arial, serif; font-size: 11px; margin: 20px; }
-                table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-                th, td { border: 1px solid black; padding: 4px 6px; text-align: right; vertical-align: top; }
-                .header-cell { vertical-align: top; text-align: center; font-weight: bold; padding: 6px 4px; }
-                .month-header { text-align: left; font-size: 14px; font-weight: bold; }
-                .acc-info { text-align: left; font-size: 10px; }
-                .charge-cell { background-color: #f8f8f8; } 
-                .payment-cell { background-color: #e8f5e9; }
-                .total-acc-row td { background-color: #ffe082; font-weight: bold; font-size: 12px; }
-                .total-col { background-color: #e3f2fd; }
-                .left-align { text-align: left; }
-                .center-align { text-align: center; }
-                .bold { font-weight: bold; }
-            </style>
-        </head>
-        <body>
+    <table>
+        <tr>
+            <td class="acc-info" style="width: 25%">
+                <span class="month-header">Қараша / Ноябрь 2025</span><br>
+                дербес шот. лицевой счет ${apt.account}<br>
+                Aqsai-3, 10a, <strong>${apt.id}</strong> - ${apt.area} m2<br> </td>
+            
+            <td colspan="2" class="header-cell">Үйді күтіп ұстау.<br>${COMMERCIAL_APTS.includes(apt.id) ? '60' : '40'} тңг,м2</td>
+            <td colspan="2" class="header-cell">Үй іші тазалығы.<br>850 тңг,пт.кв.</td>
+            <td colspan="2" class="header-cell">Кіреберіс есікке...<br>300 тңг,пт.кв.</td>
+            <td colspan="2" class="header-cell">Жылыу есептеу...<br>5 тңг,м2</td>
+            <td colspan="2" class="header-cell">Күрделі жөндеу.<br>40 тңг,м2</td>
+            
+            <td colspan="2" class="header-cell total-col">Жыйыны.<br>Итого</td>
+        </tr>
 
-        <table>
-            <tr>
-                <td class="acc-info" style="width: 25%">
-                    <span class="month-header">Қараша / Ноябрь 2025</span><br>
-                    дербес шот. лицевой счет ${apt.account}<br>
-                    Aqsai-3, 10a, <strong>${apt.id}</strong> - ${apt.area} m2<br> </td>
-                
-                <td colspan="2" class="header-cell">Үйді күтіп ұстау.<br>${COMMERCIAL_APTS.includes(apt.id) ? '60' : '40'} тңг,м2</td>
-                <td colspan="2" class="header-cell">Үй іші тазалығы.<br>850 тңг,пт.кв.</td>
-                <td colspan="2" class="header-cell">Кіреберіс есікке...<br>300 тңг,пт.кв.</td>
-                <td colspan="2" class="header-cell">Жылыу есептеу...<br>5 тңг,м2</td>
-                <td colspan="2" class="header-cell">Күрделі жөндеу.<br>40 тңг,м2</td>
-                
-                <td colspan="2" class="header-cell total-col">Жыйыны.<br>Итого</td>
-            </tr>
+        <tr>
+            <td class="left-align">Айына есептеу. Расчет в месяц</td>
+            <td class="charge-cell">${displayValue(apt.ledger[0].charges.maint)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.ledger[0].charges.clean)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.ledger[0].charges.sec)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.ledger[0].charges.heat)}</td><td></td>
+            <td class="charge-cell">${displayValue(apt.ledger[0].charges.cap)}</td><td></td>
+            <td class="total-col charge-cell">${displayValue(apt.ledger[0].totalMonthlyCharge)}</td><td></td>
+        </tr>
 
-            <tr>
-                <td class="left-align">Айына есептеу. Расчет в месяц</td>
-                <td class="charge-cell">${displayValue(apt.ledger[0].charges.maint)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.ledger[0].charges.clean)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.ledger[0].charges.sec)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.ledger[0].charges.heat)}</td><td></td>
-                <td class="charge-cell">${displayValue(apt.ledger[0].charges.cap)}</td><td></td>
-                <td class="total-col charge-cell">${displayValue(apt.ledger[0].totalMonthlyCharge)}</td><td></td>
-            </tr>
+        <tr class="total-acc-row">
+            <td class="left-align">жыйналғаны, накопившееся</td>
+            
+            <td colspan="2">${displayValue(finalAccumulated.maint)}</td>
+            <td colspan="2">${displayValue(finalAccumulated.clean)}</td>
+            <td colspan="2">${displayValue(finalAccumulated.sec)}</td>
+            <td colspan="2">${displayValue(finalAccumulated.heat)}</td>
+            <td colspan="2">${displayValue(finalAccumulated.cap)}</td>
+            
+            <td class="total-col charge-cell">${displayValue(finalAccumulated.overall)}</td>
+            
+            <td class="total-col payment-cell" style="text-align: center; background: #fff3cd; padding: 4px;">
+                Төлемге - К оплате
+            </td>
+        </tr>
 
-            <tr class="total-acc-row">
-                <td class="left-align">жыйналғаны, накопившееся</td>
-                
-                <td colspan="2">${displayValue(finalAccumulated.maint)}</td>
-                <td colspan="2">${displayValue(finalAccumulated.clean)}</td>
-                <td colspan="2">${displayValue(finalAccumulated.sec)}</td>
-                <td colspan="2">${displayValue(finalAccumulated.heat)}</td>
-                <td colspan="2">${displayValue(finalAccumulated.cap)}</td>
-                
-                <td class="total-col charge-cell">${displayValue(finalAccumulated.overall)}</td>
-                
-                <td class="total-col payment-cell" style="text-align: center; background: #fff3cd; padding: 4px;">
-                    Төлемге - К оплате
-                </td>
-            </tr>
+        ${historyRows}
 
-            ${historyRows}
+    </table>
+    
+    <p style="margin-top: 30px; font-size: 10px;">Бұл түбіртек автоматтандырылған жүйе арқылы құрылған.</p>
+    </body>
+    </html>
+    `;
 
-        </table>
-        
-        <p style="margin-top: 30px; font-size: 10px;">Бұл түбіртек автоматтандырылған жүйе арқылы құрылған.</p>
-        </body>
-        </html>
-        `;
-
-        const blob = new Blob([htmlContent], {type: "text/html"});
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${apt.id}.html`; 
-        link.click();
-        
-        document.getElementById('msg').innerText = `Пәтер №${apt.id} үшін түбіртек жүктелді!`;
-        setTimeout(() => document.getElementById('msg').innerText = "", 3000);
-    }
-
-// --- 10. ЖАЛПЫ ЖИЫНТЫҚ ЕСЕПТІ ҚҰРУ (БАРЛЫҚ ҚЫЗМЕТТЕР БІР КЕСТЕҢДЕ) ---
+    const blob = new Blob([htmlContent], {type: "text/html"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${apt.id}.html`; 
+    link.click();
+    
+    document.getElementById('msg').innerText = `Пәтер №${apt.id} үшін түбіртек жүктелді!`;
+    setTimeout(() => document.getElementById('msg').innerText = "", 3000);
+}
 
 function generateReport() {
-    // Есепті құру алдында барлық деректерді сақтау және есептеуді жаңарту
     apartments.forEach(apt => calculateAccumulated(apt));
 
     const monthlyReport = {}; 
     const totalApts = apartments.length;
     const year = '2025'; 
 
-    // 1. Агрегатты деректерді жинау
-    for (let i = 0; i < 12; i++) { // 12 ай (0-ден 11-ге дейін)
+    for (let i = 0; i < 12; i++) { 
         const monthName = MONTHS_KK[i];
         
-        // Бастапқы нөлдік мәндер
         let totalArea = 0;
         let totalCharges = { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 };
         let totalPayments = { maint: 0, clean: 0, sec: 0, heat: 0, cap: 0 };
@@ -726,25 +1045,16 @@ function generateReport() {
             const entry = apt.ledger[i];
             if (!entry) return;
 
-            // А) Пәтер ауданы
-            let currentArea = apt.area;
-            if (apt.id === '4' || apt.id === '5') {
-                let changedArea = apt.id === '4' ? 22.1 : 23;
-                if (i >= 5 && i <= 10) { 
-                    currentArea = changedArea; 
-                } else if (i >= 0 && i < 5) { 
-                    currentArea = apt.area; 
-                }
-            }
-            totalArea += currentArea;
+            // ❗ Ауданды getAreaForMonth арқылы аламыз
+            let currentArea = getAreaForMonth(apt.area, apt.id, i); 
+            
+            totalArea += currentArea; 
 
-            // Ә) Жоспар бойынша есептеулер (Дебет)
             SERVICE_KEYS.forEach(key => {
                 totalCharges[key] += entry.charges[key];
             });
             monthlyTotalCharge += entry.totalMonthlyCharge;
 
-            // Б) Нақты төлемдер (Кредит)
             const monthPayments = entry.paymentTransactions;
             if (monthPayments.length > 0) {
                  const paidTxExists = monthPayments.some(tx => 
@@ -763,7 +1073,6 @@ function generateReport() {
             }
         });
         
-        // Айлық жиынтық деректерді сақтау
         monthlyReport[monthName] = {
             totalArea: roundToTenge(totalArea),
             totalCharges: totalCharges, 
@@ -779,14 +1088,12 @@ function generateReport() {
     setTimeout(() => document.getElementById('msg').innerText = "", 3000);
 }
 
-// 2. Есеп Кестесін (Барлық Қызметтер Бір Кестеде) Көрсету
 function renderReportTables(reportData, totalApts, year) {
     const container = document.getElementById('reportContainer');
     const displayValue = (val) => roundToTenge(val).toLocaleString('kk-KZ'); 
 
-    // Бағандарды есептеу
     const numServices = SERVICE_KEYS.length;
-    const colspanServices = numServices * 2; // <-- Syntax Error FIXED here
+    const colspanServices = numServices * 2;
     
     let html = `
         <h4 style="margin-top: 20px; background: #cce5ff; padding: 5px;">
@@ -824,7 +1131,6 @@ function renderReportTables(reportData, totalApts, year) {
         totalChargesYear += data.monthlyTotalCharge;
         totalPaymentsYear += data.monthlyTotalPayment;
         
-        // Жинақталған қарызды есептеу
         const totalOverallAccumulated = apartments.reduce((sum, apt) => {
             const entry = apt.ledger[index];
             const currentAccumulated = apt.ledger[index] ? apt.ledger[index].accumulated.overall : apt.initialDebt.overall;
@@ -859,7 +1165,6 @@ function renderReportTables(reportData, totalApts, year) {
         `;
     });
     
-    // Жылдық қорытынды
     let finalDebtOverall = apartments.reduce((sum, apt) => {
         const lastEntry = apt.ledger[apt.ledger.length - 1];
         return roundToTenge(sum + (lastEntry ? lastEntry.accumulated.overall : apt.initialDebt.overall));
@@ -877,10 +1182,15 @@ function renderReportTables(reportData, totalApts, year) {
             <tr style="background: #e9ecef; font-weight: bold; font-size: 11px;">
                 <td colspan="3" style="text-align: right;">ЖЫЛДЫҚ ЖИЫНТЫҚ (Есептелген/Төленген):</td>
                 
-                ${SERVICE_KEYS.map(key => `
-                    <td style="background:#ffe0b2;">${displayValue(reportData[MONTHS_KK[10]].totalCharges[key] + reportData[MONTHS_KK[11]].totalCharges[key])}</td>
-                    <td style="background:#c8e6c9;">${displayValue(reportData[MONTHS_KK[10]].totalPayments[key] + reportData[MONTHS_KK[11]].totalPayments[key])}</td>
-                `).join('')}
+                ${SERVICE_KEYS.map(key => {
+                    const totalCharges = MONTHS_KK.slice(0, 12).reduce((sum, month) => sum + (reportData[month]?.totalCharges[key] || 0), 0);
+                    const totalPayments = MONTHS_KK.slice(0, 12).reduce((sum, month) => sum + (reportData[month]?.totalPayments[key] || 0), 0);
+                    
+                    return `
+                        <td style="background:#ffe0b2;">${displayValue(totalCharges)}</td>
+                        <td style="background:#c8e6c9;">${displayValue(totalPayments)}</td>
+                    `;
+                }).join('')}
                 
                 <td style="background:#ffe0b2;">${displayValue(totalChargesYear)}</td>
                 
@@ -903,9 +1213,7 @@ function renderReportTables(reportData, totalApts, year) {
     container.innerHTML = html;
 }
 
-// --- ЖАҢА ФУНКЦИЯ: Жалпы Айлық Есепті Жүктеу ---
 function downloadGeneralReport() {
-    // Есептің ең соңғы нұсқасын алу үшін generateReport функциясын шақыру
     generateReport(); 
 
     const reportContent = document.getElementById('reportContainer').innerHTML;
@@ -919,7 +1227,6 @@ function downloadGeneralReport() {
             table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; }
             th, td { border: 1px solid #ddd; padding: 4px; text-align: right; vertical-align: top; }
             th { background: #f8f9fa; }
-            /* Қосымша стильдер */
             .total-col { background-color: #e3f2fd; }
             .sub-col-header { background: #e9ecef; }
             .total-acc-row td { background-color: #ffe680; font-weight: bold; }
@@ -953,278 +1260,251 @@ function downloadGeneralReport() {
     setTimeout(() => document.getElementById('msg').innerText = "", 3000);
 }
 
-// --- 11. ҚАРЖЫЛЫҚ ОПЕРАЦИЯЛАРДЫ БАСҚАРУ (КӨП ШОТТЫ ЖӘНЕ ЫҚШАМ) ---
+function addFinanceTransaction() {
+    const type = document.getElementById('transactionTypeSelect').value;
+    const newTx = {
+        type: type,
+        date: new Date().toISOString().slice(0, 10),
+        description: type === 'income' ? 'Пәтерлерден түскен жиынтық төлем' : 'Қызметке төленген шығыс',
+        account: ACCOUNTS[0], 
+        amount: 0,
+        commission: 0,
+        source: type === 'income' ? 'Payment' : 'Service'
+    };
+    FINANCE_LEDGER.push(newTx);
+    FINANCE_LEDGER.sort((a, b) => new Date(a.date) - new Date(b.date));
+    updateFinanceLedger(true);
+}
 
-    // ❗ ҚОСЫМША ФУНКЦИЯЛАР (НӨЛДЕРДІ БАСҚАРУ)
-    function clearZero(input) {
-        if (input.value === '0') {
-            input.value = '';
-        }
+function removeFinanceTransaction(index) {
+    if (FINANCE_LEDGER[index].type === 'balance') {
+        alert("Бастапқы қалдықты өшіруге болмайды!");
+        return;
     }
-    function fillZero(input) {
-        if (input.value === '' || isNaN(parseFloat(input.value))) {
-            input.value = '0';
-        }
-    }
+    if (!confirm("Қаржылық операцияны өшіруге сенімдісіз бе?")) return;
+    FINANCE_LEDGER.splice(index, 1);
+    updateFinanceLedger(true);
+}
 
-    function addFinanceTransaction() {
-        const type = document.getElementById('transactionTypeSelect').value;
-        const newTx = {
-            type: type,
-            date: new Date().toISOString().slice(0, 10),
-            description: type === 'income' ? 'Пәтерлерден түскен жиынтық төлем' : 'Қызметке төленген шығыс',
-            account: ACCOUNTS[0], 
-            amount: 0,
-            commission: 0,
-            source: type === 'income' ? 'Payment' : 'Service'
-        };
-        FINANCE_LEDGER.push(newTx);
-        FINANCE_LEDGER.sort((a, b) => new Date(a.date) - new Date(b.date));
-        updateFinanceLedger(true);
-    }
-
-    function removeFinanceTransaction(index) {
-        if (FINANCE_LEDGER[index].type === 'balance') {
-            alert("Бастапқы қалдықты өшіруге болмайды!");
-            return;
-        }
-        if (!confirm("Қаржылық операцияны өшіруге сенімдісіз бе?")) return;
-        FINANCE_LEDGER.splice(index, 1);
-        updateFinanceLedger(true);
-    }
-
-    function updateFinanceLedger(render = true) {
-        if (render) {
-            document.querySelectorAll('.finance-tx-input').forEach(input => {
-                const index = parseInt(input.getAttribute('data-index'));
-                const field = input.getAttribute('data-field');
-                const tx = FINANCE_LEDGER[index];
-                
-                if (!tx) return;
-                
-                // Барлық number input-тардың бос мәнін 0-ге ауыстыру
-                if (input.type === 'number' && input.value === '') {
-                    input.value = '0';
-                }
-
-                if (tx.type === 'balance' && field === 'accounts') {
-                    const acc = input.getAttribute('data-account');
-                    tx.accounts[acc] = roundToTenge(parseFloat(input.value) || 0);
-                }
-                else if (field === 'amount' || field === 'commission') {
-                    const amountInput = document.querySelector(`[data-index="${index}"][data-field="amount"]:not([readonly])`);
-                    if (amountInput) {
-                         tx.amount = roundToTenge(parseFloat(amountInput.value) || 0);
-                    }
-                    if (field === 'commission') {
-                         tx.commission = roundToTenge(parseFloat(input.value) || 0);
-                    }
-                } else if (field === 'account' || field === 'description' || field === 'date' || field === 'source') {
-                    tx[field] = input.value;
-                }
-            });
-        }
-        
-        let balances = {};
-        ACCOUNTS.forEach(acc => balances[acc] = 0); 
-
-        FINANCE_LEDGER.forEach(tx => {
-            if (tx.type === 'balance') {
-                ACCOUNTS.forEach(acc => {
-                    balances[acc] = roundToTenge(tx.accounts[acc] || 0);
-                });
-            } else {
-                let netAmount = tx.amount - tx.commission;
-                let factor = tx.type === 'income' ? 1 : -1;
-                
-                if (tx.account && balances.hasOwnProperty(tx.account)) {
-                    balances[tx.account] = roundToTenge(balances[tx.account] + netAmount * factor);
-                }
-            }
-            tx.balancesAfter = { ...balances };
-        });
-        
-        if (render) {
-            renderFinanceLedgerTable();
-            document.getElementById('msg').innerText = "✅ Қаржылық леджер жаңартылды.";
-            setTimeout(() => document.getElementById('msg').innerText = "", 3000);
-        }
-    }
-
-    function renderFinanceLedgerTable() {
-        const container = document.getElementById('financeLedgerTable');
-        const displayValue = (val) => roundToTenge(val).toLocaleString('kk-KZ'); 
-
-        const lastTx = FINANCE_LEDGER[FINANCE_LEDGER.length - 1];
-        const finalBalances = lastTx ? lastTx.balancesAfter : {};
-        const totalOverallBalance = ACCOUNTS.reduce((sum, acc) => sum + (finalBalances[acc] || 0), 0);
-
-        let html = `
-            <table style="table-layout: auto;">
-                <thead>
-                    <tr class="finance-header">
-                        <th rowspan="2" style="width: 70px;">Күні</th>
-                        <th rowspan="2" style="width: 250px;">Түсініктеме (Не үшін)</th>
-                        <th rowspan="2" style="width: 90px; background: #d4edda;">Кіріс сомасы</th>
-                        <th rowspan="2" style="width: 90px; background: #f8d7da;">Шығыс сомасы</th>
-                        <th rowspan="2" style="width: 80px;">Комиссия</th>
-                        <th rowspan="2" style="width: 90px;">Шот</th>
-                        <th colspan="${ACCOUNTS.length}" class="account-balance-cell">Шоттардағы Қалдық (Баланс)</th>
-                        <th rowspan="2" style="width: 70px;">Әрекет</th>
-                    </tr>
-                    <tr class="finance-header">
-                        ${ACCOUNTS.map(acc => `<th class="account-balance-cell">${acc}</th>`).join('')}
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        FINANCE_LEDGER.forEach((tx, index) => {
-            const isBalance = tx.type === 'balance';
-            const isIncome = tx.type === 'income';
-            const isExpense = tx.type === 'expense';
-            
-            const rowClass = isBalance ? 'balance-row' : (isIncome ? 'income-row' : 'expense-row');
-            
-            const balanceInputStyle = isBalance ? 'readonly' : '';
-            
-            // Мән 0 болса, енгізу өрісінде бос қалдыру үшін
-            const amountValue = isBalance ? '' : (tx.amount === 0 ? '' : roundToTenge(tx.amount));
-            const incomeAmount = isIncome ? amountValue : '';
-            const expenseAmount = isExpense ? amountValue : '';
-            const commissionAmount = tx.commission === 0 ? '' : roundToTenge(tx.commission);
-
-            
-            // onfocus/onblur логикасы тек Кіріс, Шығыс және Комиссия өрістеріне қосылады
-            const focusAttr = `onfocus="this.value==='0' && (this.value='')"`;
-            const blurAttr = `onblur="this.value==='' && (this.value='0'); updateFinanceLedger(false)"`;
-
-            html += `
-                <tr class="${rowClass}">
-                    <td class="left-align">
-                        <input type="date" class="small-input finance-tx-input" data-index="${index}" data-field="date" value="${tx.date}" style="width: 95%;" ${balanceInputStyle}>
-                    </td>
-                    <td class="left-align">
-                        <input type="text" class="description-input finance-tx-input" data-index="${index}" data-field="description" value="${tx.description}" ${balanceInputStyle}>
-                    </td>
-                    
-                    <td style="background: #d4edda;">
-                        <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="amount" value="${incomeAmount}" ${!isIncome || isBalance ? 'readonly' : focusAttr + blurAttr}>
-                    </td>
-                    
-                    <td style="background: #f8d7da;">
-                        <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="amount" value="${expenseAmount}" ${!isExpense || isBalance ? 'readonly' : focusAttr + blurAttr}>
-                    </td>
-                    
-                    <td>
-                        <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="commission" value="${commissionAmount}" ${isBalance ? 'readonly' : focusAttr + blurAttr}>
-                    </td>
-                    
-                    <td>
-                        <select class="finance-input finance-tx-input" data-index="${index}" data-field="account" style="width: 95%;" ${isBalance ? 'readonly' : ''} ${isBalance ? 'disabled' : ''}>
-                             ${isBalance ? `<option value="">-</option>` : ''}
-                             ${ACCOUNTS.map(acc => `<option value="${acc}" ${tx.account === acc ? 'selected' : ''}>${acc}</option>`).join('')}
-                        </select>
-                    </td>
-
-                    ${ACCOUNTS.map(acc => {
-                        let balance = isBalance ? tx.accounts[acc] : tx.balancesAfter[acc];
-                        let content;
-                        
-                        if (isBalance) {
-                            // Бастапқы қалдықтарда мән бос болмайды
-                            content = `<input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="accounts" data-account="${acc}" value="${roundToTenge(tx.accounts[acc] || 0)}" style="width: 95%; font-weight: bold;">`;
-                        } else {
-                            content = displayValue(balance);
-                        }
-                        return `<td class="account-balance-cell">${content}</td>`;
-                    }).join('')}
-                    
-                    <td>
-                        ${!isBalance ? `<button class="btn btn-red" style="font-size: 10px; padding: 3px;" onclick="removeFinanceTransaction(${index})">❌</button>` : ''}
-                    </td>
-                </tr>
-            `;
-        });
-        
-        // Жалпы қорытынды жолы
-        html += `
-            <tr class="account-total-balance">
-                <td colspan="6" style="text-align: right; font-size: 14px;">
-                    БАРЛЫҚ ШОТТАРДАҒЫ ЖАЛПЫ ҚАЛДЫҚ:
-                </td>
-                <td colspan="${ACCOUNTS.length}" class="account-total-balance" style="text-align: right; font-size: 14px; background: #ffc107;">
-                    ${displayValue(totalOverallBalance)}
-                </td>
-                <td></td>
-            </tr>
-        `;
-
-        html += `
-            </tbody>
-        </table>`;
-        container.innerHTML = html;
-        
-        // change оқиғаларын қайта қосу
+function updateFinanceLedger(render = true) {
+    if (render) {
         document.querySelectorAll('.finance-tx-input').forEach(input => {
-             // onblur-де updateFinanceLedger(false) шақырылған. Қосымша change тыңдаушысы қажет емес.
+            const index = parseInt(input.getAttribute('data-index'));
+            const field = input.getAttribute('data-field');
+            const tx = FINANCE_LEDGER[index];
+            
+            if (!tx) return;
+            
+            if (input.type === 'number' && input.value === '') {
+                input.value = '0';
+            }
+
+            if (tx.type === 'balance' && field === 'accounts') {
+                const acc = input.getAttribute('data-account');
+                tx.accounts[acc] = roundToTenge(parseFloat(input.value) || 0);
+            }
+            else if (field === 'amount' || field === 'commission') {
+                const amountInput = document.querySelector(`[data-index="${index}"][data-field="amount"]:not([readonly])`);
+                if (amountInput) {
+                     tx.amount = roundToTenge(parseFloat(amountInput.value) || 0);
+                }
+                if (field === 'commission') {
+                     tx.commission = roundToTenge(parseFloat(input.value) || 0);
+                }
+            } else if (field === 'account' || field === 'description' || field === 'date' || field === 'source') {
+                tx[field] = input.value;
+            }
         });
-    }
-
-    // --- ЖАҢА ФУНКЦИЯ: Қаржы Леджерін Жүктеу ---
-    function downloadFinanceLedger() {
-        // Есептің ең соңғы нұсқасын алу үшін updateFinanceLedger функциясын шақыру
-        updateFinanceLedger(true); 
-
-        const ledgerContent = document.getElementById('financeLedgerTable').innerHTML;
-        if (!ledgerContent.includes('<table')) {
-            return alert("Алдымен 'Қаржыны Тіркеу және Есептеу' батырмасын басып, леджерді құрыңыз!");
-        }
-
-        const htmlStyle = `
-            <style>
-                body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
-                th, td { border: 1px solid #ddd; padding: 4px; text-align: right; vertical-align: top; }
-                /* Қосымша стильдер */
-                .finance-header { background: #cce5ff; font-weight: bold; }
-                .income-row { background: #d4edda; } 
-                .expense-row { background: #f8d7da; } 
-                .balance-row { background: #ffe080; font-weight: bold; } 
-                .account-balance-cell { background: #e3f2fd; font-weight: bold; }
-                .account-total-balance { background: #ffc107; font-weight: bold; }
-                .left-align { text-align: left; }
-                input { display:none; } /* Жүктелген файлдағы input өрістерін жасыру */
-                select { display: none; }
-                button { display: none; }
-            </style>
-        `;
-
-        const fullHtml = `
-            <!DOCTYPE html>
-            <html lang="kk">
-            <head>
-                <meta charset="UTF-8">
-                <title>Қаржылық Леджер (Шот Басқару)</title>
-                ${htmlStyle}
-            </head>
-            <body>
-                <h3>💰 Қаржылық Леджер (Шот Басқару) - ${new Date().toISOString().slice(0, 10)}</h3>
-                ${ledgerContent}
-            </body>
-            </html>
-        `;
-
-        const blob = new Blob([fullHtml], {type: "text/html"});
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `kz_finance_ledger_${new Date().toISOString().slice(0, 10)}.html`; 
-        link.click();
-        
-        document.getElementById('msg').innerText = "✅ Қаржылық Леджер сәтті жүктелді!";
-        setTimeout(() => document.getElementById('msg').innerText = "", 3000);
     }
     
+    let balances = {};
+    ACCOUNTS.forEach(acc => balances[acc] = 0); 
+
+    FINANCE_LEDGER.forEach(tx => {
+        if (tx.type === 'balance') {
+            ACCOUNTS.forEach(acc => {
+                balances[acc] = roundToTenge(tx.accounts[acc] || 0);
+            });
+        } else {
+            let netAmount = tx.amount - tx.commission;
+            let factor = tx.type === 'income' ? 1 : -1;
+            
+            if (tx.account && balances.hasOwnProperty(tx.account)) {
+                balances[tx.account] = roundToTenge(balances[tx.account] + netAmount * factor);
+            }
+        }
+        tx.balancesAfter = { ...balances };
+    });
+    
+    if (render) {
+        renderFinanceLedgerTable();
+        document.getElementById('msg').innerText = "✅ Қаржылық леджер жаңартылды.";
+        setTimeout(() => { if(document.getElementById('msg').innerText.includes('жаңартылды')) document.getElementById('msg').innerText = ""; }, 3000);
+    }
+}
+
+function renderFinanceLedgerTable() {
+    const container = document.getElementById('financeLedgerTable');
+    const displayValue = (val) => roundToTenge(val).toLocaleString('kk-KZ'); 
+
+    const lastTx = FINANCE_LEDGER[FINANCE_LEDGER.length - 1];
+    const finalBalances = lastTx ? lastTx.balancesAfter : {};
+    const totalOverallBalance = ACCOUNTS.reduce((sum, acc) => sum + (finalBalances[acc] || 0), 0);
+
+    let html = `
+        <table style="table-layout: auto;">
+            <thead>
+                <tr class="finance-header">
+                    <th rowspan="2" style="width: 70px;">Күні</th>
+                    <th rowspan="2" style="width: 250px;">Түсініктеме (Не үшін)</th>
+                    <th rowspan="2" style="width: 90px; background: #d4edda;">Кіріс сомасы</th>
+                    <th rowspan="2" style="width: 90px; background: #f8d7da;">Шығыс сомасы</th>
+                    <th rowspan="2" style="width: 80px;">Комиссия</th>
+                    <th rowspan="2" style="width: 90px;">Шот</th>
+                    <th colspan="${ACCOUNTS.length}" class="account-balance-cell">Шоттардағы Қалдық (Баланс)</th>
+                    <th rowspan="2" style="width: 70px;">Әрекет</th>
+                </tr>
+                <tr class="finance-header">
+                    ${ACCOUNTS.map(acc => `<th class="account-balance-cell">${acc}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    FINANCE_LEDGER.forEach((tx, index) => {
+        const isBalance = tx.type === 'balance';
+        const isIncome = tx.type === 'income';
+        const isExpense = tx.type === 'expense';
+        
+        const rowClass = isBalance ? 'balance-row' : (isIncome ? 'income-row' : 'expense-row');
+        
+        const balanceInputStyle = isBalance ? 'readonly' : '';
+        
+        const amountValue = isBalance ? '' : (tx.amount === 0 ? '' : roundToTenge(tx.amount));
+        const incomeAmount = isIncome ? amountValue : '';
+        const expenseAmount = isExpense ? amountValue : '';
+        const commissionAmount = tx.commission === 0 ? '' : roundToTenge(tx.commission);
+
+        
+        const focusAttr = `onfocus="this.value==='0' && (this.value='')"`;
+        const blurAttr = `onblur="this.value==='' && (this.value='0'); updateFinanceLedger(false)"`;
+
+        html += `
+            <tr class="${rowClass}">
+                <td class="left-align">
+                    <input type="date" class="small-input finance-tx-input" data-index="${index}" data-field="date" value="${tx.date}" style="width: 95%;" ${balanceInputStyle}>
+                </td>
+                <td class="left-align">
+                    <input type="text" class="description-input finance-tx-input" data-index="${index}" data-field="description" value="${tx.description}" ${balanceInputStyle}>
+                </td>
+                
+                <td style="background: #d4edda;">
+                    <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="amount" value="${incomeAmount}" ${!isIncome || isBalance ? 'readonly' : focusAttr + blurAttr}>
+                </td>
+                
+                <td style="background: #f8d7da;">
+                    <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="amount" value="${expenseAmount}" ${!isExpense || isBalance ? 'readonly' : focusAttr + blurAttr}>
+                </td>
+                
+                <td>
+                    <input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="commission" value="${commissionAmount}" ${isBalance ? 'readonly' : focusAttr + blurAttr}>
+                </td>
+                
+                <td>
+                    <select class="finance-input finance-tx-input" data-index="${index}" data-field="account" style="width: 95%;" ${isBalance ? 'readonly' : ''} ${isBalance ? 'disabled' : ''}>
+                         ${isBalance ? `<option value="">-</option>` : ''}
+                         ${ACCOUNTS.map(acc => `<option value="${acc}" ${tx.account === acc ? 'selected' : ''}>${acc}</option>`).join('')}
+                    </select>
+                </td>
+
+                ${ACCOUNTS.map(acc => {
+                    let balance = isBalance ? tx.accounts[acc] : tx.balancesAfter[acc];
+                    let content;
+                    
+                    if (isBalance) {
+                        content = `<input type="number" class="finance-input finance-tx-input" data-index="${index}" data-field="accounts" data-account="${acc}" value="${roundToTenge(tx.accounts[acc] || 0)}" style="width: 95%; font-weight: bold;">`;
+                    } else {
+                        content = displayValue(balance);
+                    }
+                    return `<td class="account-balance-cell">${content}</td>`;
+                }).join('')}
+                
+                <td>
+                    ${!isBalance ? `<button class="btn btn-red" style="font-size: 10px; padding: 3px;" onclick="removeFinanceTransaction(${index})">❌</button>` : ''}
+                </td>
+            </tr>
+        `;
+    });
+    
+    html += `
+        <tr class="account-total-balance">
+            <td colspan="6" style="text-align: right; font-size: 14px;">
+                БАРЛЫҚ ШОТТАРДАҒЫ ЖАЛПЫ ҚАЛДЫҚ:
+            </td>
+            <td colspan="${ACCOUNTS.length}" class="account-total-balance" style="text-align: right; font-size: 14px; background: #ffc107;">
+                ${displayValue(totalOverallBalance)}
+            </td>
+            <td></td>
+        </tr>
+    `;
+
+    html += `
+        </tbody>
+    </table>`;
+    container.innerHTML = html;
+}
+
+function downloadFinanceLedger() {
+    updateFinanceLedger(true); 
+
+    const ledgerContent = document.getElementById('financeLedgerTable').innerHTML;
+    if (!ledgerContent.includes('<table')) {
+        return alert("Алдымен 'Қаржыны Тіркеу және Есептеу' батырмасын басып, леджерді құрыңыз!");
+    }
+
+    const htmlStyle = `
+        <style>
+            body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+            th, td { border: 1px solid #ddd; padding: 4px; text-align: right; vertical-align: top; }
+            .finance-header { background: #cce5ff; font-weight: bold; }
+            .income-row { background: #d4edda; } 
+            .expense-row { background: #f8d7da; } 
+            .balance-row { background: #ffe080; font-weight: bold; } 
+            .account-balance-cell { background: #e3f2fd; font-weight: bold; }
+            .account-total-balance { background: #ffc107; font-weight: bold; }
+            .left-align { text-align: left; }
+            input { display:none; } 
+            select { display: none; }
+            button { display: none; }
+        </style>
+    `;
+
+    const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="kk">
+        <head>
+            <meta charset="UTF-8">
+            <title>Қаржылық Леджер (Шот Басқару)</title>
+            ${htmlStyle}
+        </head>
+        <body>
+            <h3>💰 Қаржылық Леджер (Шот Басқару) - ${new Date().toISOString().slice(0, 10)}</h3>
+            ${ledgerContent}
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob([fullHtml], {type: "text/html"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kz_finance_ledger_${new Date().toISOString().slice(0, 10)}.html`; 
+    link.click();
+    
+    document.getElementById('msg').innerText = "✅ Қаржылық Леджер сәтті жүктелді!";
+    setTimeout(() => document.getElementById('msg').innerText = "", 3000);
+}
+//...
 </script>
 </body>
 </html>
