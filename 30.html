@@ -1,144 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">       
-<link rel="shortcut icon" href="sůuretter/taꞑba-aqsai3-10a.svg" type="image/svg">
-<title>Aqsai3-10a - ůi býrlestýgý</title>
-<link rel='stylesheet' href='yi.css' type='text/css'/>  
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">     
+    <link rel="shortcut icon" href="sůuretter/taꞑba-aqsai3-10a.svg" type="image/svg">
+    <title>Aqsai3-10a - ůi býrlestýgý</title>
+    <link rel='stylesheet' href='yi.css' type='text/css'/> 
 </head>
 
 <body>
-<ul class="belgi" href="https://qalpan.github.io/Aqsai3-10a/">
-<img src="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" alt="Басты бет" title="Басты бетке - оралыу" data-image="sůuretter/jazyu-Aqsai3-10a yi birlestigi.svg" data-description="бастау">
-</ul>
 
-  
-<ul class="injener">
-<a><strong>Инженерлік желілерге қызымет</strong></a>
-<a href="tel:+7 747 921 5140">+7 747 921 5140 santex</a>
-<a href="tel:+7 705 765 1170">+7 705 765 1170 santex  electr</a>
-<a><strong>Үи бірлестігі</strong></a>
-<a class="email" href="mailto:aqsai3-10a@groups.outlook.com">sk-joba@outlook.com</a>
-<a href="tel:+7 701 739 8309">+7 701 739 8309</a>
-<a class="skype" href="https://teams.live.com/l/invite/FEATXbIY6Xr_F0bPAE">web - tems (skype)</a>
-<a class="jami" href="https://jami.net">web - jami - aqsai3-10a</a>  
-</ul>
+    <div class="kөrme">
+        <a>
+            <img src="sůuretter/30.webp" title="30" alt="30" data-image="sůuretter/30.webp" data-description="30">
+        </a>    
+    </div>
 
-
-<div id="payment-table-container">
-    <p>Төлем деректері жүктелуде...</p>
-</div>
-
-
-<ul class="menu">
-<li class="list">
-<a href="https://qalpan.github.io/Aqsai3-10a/">web - site – Aqsai3-10a</a>
-</li>
-</ul>
-
-<div class="kөrme1">
-<a>
-<img src="sůuretter/30.webp" title="30" alt="30" data-image="sůuretter/30.webp" data-description="30">
-</a>
-<a>
-<img src="sůuretter/30esep.webp" title="30" alt="30" data-image="sůuretter/30esep.webp" data-description="30">  
-</a>	
-<p>Ағымдағы аидағы банкке төлемдеріңіз Үш жұмыс күн ішінде үишотына түседі, есебі келесі аида көрсетіледі</p>  
-</div>
-
-
-<footer>
-<p>Aqsai3-10a yi birlestigi</p>
-</footer>
-
-<script type="text/javascript">
-// --- 1. Бастапқы функциялар (Мәтінді көшіруден қорғау) ---
-document.ondragstart = test;
-document.onselectstart = test;
-document.oncontextmenu = test;
-function test(){return false}
-
-
-// --- 2. Төлем Деректерін Жүктеу және Көрсету ---
-
-// Сіздің репозиторийіңіздің атауы Aqsai3-10a болғандықтан, бұл жол дұрыс жұмыс істеуі керек:
-const paymentDataUrl = '/Aqsai3-10a/payments.json'; 
-
-// Немесе егер сіз тек root-те болсаңыз, осыны қолданып көріңіз:
-// const paymentDataUrl = 'payments.json'; 
-
-const targetApartment = '10'; // Көрсетілетін пәтер нөмірі (қажет болса, өзгертіңіз)
-const container = document.getElementById('payment-table-container');
-
-fetch(paymentDataUrl) 
-    .then(response => {
-        if (!response.ok) {
-            // Файл жолы қате болса (404) немесе басқа HTTP қатесі
-            throw new Error(`HTTP қатесі! Статус: ${response.status}. Файл жолы: ${paymentDataUrl}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Кесте тақырыбын қосу
-        let html = `
-            <h2>Пәтер ${targetApartment} бойынша төлем тарихы</h2>
-            <table class="payment-history-table" style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="border: 1px solid #ddd; padding: 8px;">Ай</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Сомасы (тг)</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Мәртебесі</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Түбіртек</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-        
-        // Деректерді сүзу және кесте жолдарына айналдыру
-        data.filter(p => p.apartment === targetApartment).forEach(payment => {
-            html += `
-                <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${payment.month}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${payment.amount.toLocaleString('kk-KZ')}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${payment.status}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${payment.receipt_link ? '<a href="' + payment.receipt_link + '" target="_blank">Көру</a>' : '—'}</td>
-                </tr>
-            `;
-        });
-
-        html += '</tbody></table>';
-        container.innerHTML = html;
-    })
-    .catch(error => {
-        console.error('Төлем деректерін жүктеу қатесі:', error);
-        container.innerHTML = `<p style="color: red;">Деректерді жүктеу мүмкін болмады. Консольді тексеріңіз. Қате: ${error.message}</p>`;
-    });
-
-
-// --- 3. Аккордеон функциясы (Сіздің бастапқы кодыңыз) ---
-const list = document.querySelectorAll('.list');
-
-function accordion(e){
-    e.stopPropagation(); 
-    if(this.classList.contains('active')){
-        this.classList.remove('active');
-    }
-    else if(this.parentElement.parentElement.classList.contains('active')){
-        this.classList.add('active');
-    }
-    else{
-        for(i=0; i < list.length; i++){
-          list[i].classList.remove('active');
-        }
-          this.classList.add('active');
-        }
-}
-for(i = 0; i < list.length; i++ ){
-    list[i].addEventListener('click', accordion);
-}
-</script>
+    <script src="layout.js"></script>
 
 </body>
 </html>
