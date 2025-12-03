@@ -16,8 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         <ul class="injener">
             <a><strong>Инженерлік желілерге қызымет</strong></a>
-            <a href="tel:+7 700 740 0005">+7 700 740 0005 operator</a>
-            <a href="tel:+7 747 921 5140  tel:+7 705 765 1170">+7 747 921 5140  +7 705 765 1170 santex</a>
+            <a href="tel:+7 747 921 5140">+7 747 921 5140 santex</a>
             <a href="tel:+7 705 765 1170">+7 705 765 1170 santex  electr</a>
             <a><strong>Үи бірлестігі</strong></a>
             <a class="email" href="mailto:aqsai3-10a@groups.outlook.com">sk-joba@outlook.com</a>
